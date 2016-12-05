@@ -1,33 +1,51 @@
 import React from 'react'
 import styled from 'styled-components'
-import {Container, Grid} from './Grid'
+import autobind from 'autobind-decorator'
+import {Container, Columns} from './Grid'
+import YouTube from 'react-youtube'
 
-const Msg = styled('span')`
-    font-size: 45px;
-    color: #111;
-`
+export default class Home extends React.Component {
+    state = {
+        content: ""
+    }
 
-const BlockMsg = styled(Msg)`
-    color: #111;
-    display: block;
-    box-shadow: 1px 1px 1px #eef;
-`
+    handleEditorChange = ev => {
+        const nextContent = ev.target.getContent()
+        this.setState({
+            content: nextContent
+        })
+    }
 
-const msgs = [
-    "Hello, World!",
-    "HMR Test",
-    "Lorem"
-].map((msg, i) => (
-    <BlockMsg key={i}>{msg}</BlockMsg>
-))
-export default function Home() {
-    return (
-        <div>
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            nextState.content !== this.state.content
+        )
+    }
+
+    handlePlayerReady = ev => {
+        console.log("Player ready!")
+        ev.target.pauseVideo()
+    }
+
+    handlePlayerError = ev => {
+        console.log("Got player error")
+    }
+
+    render() {
+        const {content} = this.state
+        const [VIDEO_ID, HEIGHT, WIDTH] = ['nGt_JGHYEO4', 390, 640]
+        return (
             <Container>
-                <Grid>
-                    {msgs}
-                </Grid>
+                <div>
+                    <h3>Player:</h3>
+                    <YouTube
+                        videoId={VIDEO_ID}
+                        opts={{height: HEIGHT, width: WIDTH}}
+                        onReady={this.handlePlayerReady}
+                        onError={this.handlePlayerError}
+                    />
+                </div>
             </Container>
-        </div>
-    )
+        )
+    }
 }

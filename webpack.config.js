@@ -92,6 +92,7 @@ if (isProduction) {
 } else {
     config.plugins.unshift(
         new webpack.NoErrorsPlugin(),
+        new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin()
     )
     config.entry["app"].unshift(

@@ -18,7 +18,7 @@ import configureStore from './store'
 import configureApolloClient from './data'
 import routes from './routes'
 import styleSheet from 'styled-components/lib/models/StyleSheet'
-import {AppContainer} from 'react-hot-loader'
+import config from './config'
 
 const compose = (...mws) => (ctx, next) => {
     const dispatch = async i => {
@@ -50,9 +50,10 @@ app.use(mount('/graphql', compose(
     }))
 )))
 
+const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
 app.use(async ctx => {
     ctx.type = 'html'
-    if (DEV) return ctx.body = renderToStaticMarkup(
+    if (isDevServer) return ctx.body = renderToStaticMarkup(
         <Html />
     )
 
@@ -81,26 +82,42 @@ app.use(async ctx => {
             resolve(args)
         })
     })
-    
+
+    {
+        const method = ctx.method.toLowerCase()
+        const {params, location, components} = renderProps
+        Object.assign(ctx.state, {store, params, location})
+
+        for (let component of components) {
+            if (!component) continue
+
+            while (component && !component[method]) {
+                component = component.WrappedComponent
+            }
+
+            if (component && component[method]) {
+                await component[method](ctx)
+            }
+        }
+    }
+
     const component = (
-        <AppContainer>
-            <ApolloProvider
-                client={client}
-                store={store}>
-                <RouterContext {...renderProps} />
-            </ApolloProvider>
-        </AppContainer>
+        <ApolloProvider
+            client={client}
+            store={store}>
+            <RouterContext {...renderProps} />
+        </ApolloProvider>
     )
 
     await getDataFromTree(component)
-    
+
     const htmlProps = {
         locale,
         children: component,
         state: store.getState(),
         styles: styleSheet.rules().map(r => r.cssText).join('')
     }
-    
+
     ctx.body = renderToString(
         <Html {...htmlProps} />
     )

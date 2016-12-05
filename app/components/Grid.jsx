@@ -54,11 +54,69 @@ const breakpoints = new function() {
     return this
 }
 
+const fullWidth = `
+    width: 100%;
+    box-sizing: border-box;
+`
+const pullRight = `float:right;`
+const pullLeft = `float:left;`
 const clearfix = `
     &:after {
         content: "";
         display: table;
         clear: both;
+    }
+`
+
+const headings = `
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 400;
+        margin-top: 0;
+        margin-bottom: 2rem;
+    }
+
+    h1 { font-size: 4.0rem; line-height: 1.2;  letter-spacing: -.1rem;}
+    h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -.1rem; }
+    h3 { font-size: 3.0rem; line-height: 1.3;  letter-spacing: -.1rem; }
+    h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
+    h5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }
+    h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+    @media (min-width: 550px) {
+        h1 { font-size: 5.0rem; }
+        h2 { font-size: 4.2rem; }
+        h3 { font-size: 3.6rem; }
+        h4 { font-size: 3.0rem; }
+        h5 { font-size: 2.4rem; }
+        h6 { font-size: 1.5rem; }
+    }
+`
+injectGlobal`
+    ${normalize}
+    html { font-size: 62.5%; }
+    body {
+        font-size: 1.5em;
+        line-height: 1.6;
+        font-weight: 300;
+        font-family: Roboto, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #222;
+
+    }
+
+    ${headings}
+
+    p {margin-top: 0;}
+    a {
+        color: #1EAEDB;;
+        &:hover {
+            color: #0FA0CE;
+        }
+    }
+    hr {
+        margin-top: 3rem;
+        margin-bottom: 3.5rem;
+        border-width: 0;
+        border-top: 1px solid #E1E1E1;
     }
 `
 
@@ -80,6 +138,7 @@ export const Container = styled.div`
     }
 
     ${clearfix}
+    ${p => p.wide ? 'max-width:99% !important;' : ''}
 `
 
 export const Row = styled.div`${clearfix}`
@@ -97,12 +156,12 @@ export const Column = styled.div`
     }
 `
 
-export const Grid = ({size, children}) => createElement(
-    Row, null, children.map((child, key) =>
-        createElement(Column, {
-            key,
-            size: size || 12 / children.length
-        }, child)))
+export const Columns = ({size, children}) => createElement(Row, null, (
+        children[0] ? children : [children]
+    ).map((child, key) => createElement(Column, {
+        key,
+        size: size || 12 / children.length
+    }, child)))
 
 export const FlexGrid = styled.div`
     display: flex;
@@ -111,37 +170,4 @@ export const FlexGrid = styled.div`
 
 export const OffestBy = styled.div`
     margin-left: ${p => offsets[p.count || 1]}%;
-`
-
-export const inject = () => injectGlobal`
-    ${normalize}
-    html { font-size: 62.5%; }
-    body {
-        font-size: 1.5em;
-        line-height: 1.6;
-        font-weight: 300;
-        font-family: HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        color: #222;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        margin-top: 0;
-        margin-bottom: 2rem;
-    }
-    h1 { font-size: 4.0rem; line-height: 1.2;  letter-spacing: -.1rem;}
-    h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -.1rem; }
-    h3 { font-size: 3.0rem; line-height: 1.3;  letter-spacing: -.1rem; }
-    h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
-    h5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }
-    h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
-
-    @media (${breakpoints.phablet}) {
-        h1 { font-size: 5.0rem; }
-        h2 { font-size: 4.2rem; }
-        h3 { font-size: 3.6rem; }
-        h4 { font-size: 3.0rem; }
-        h5 { font-size: 2.4rem; }
-        h6 { font-size: 1.5rem; }
-    }
-
-    p {margin-top: 0;}
 `

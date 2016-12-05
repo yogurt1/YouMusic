@@ -6,12 +6,10 @@ import {Router, browserHistory} from 'react-router'
 import {ApolloProvider} from 'react-apollo'
 import {createNetworkInterface} from 'apollo-client'
 import {syncHistoryWithStore} from 'react-router-redux'
+import styleSheet from 'styled-components/lib/models/StyleSheet'
 import configureApolloClient from './data'
 import configureStore from './store'
 import routes from './routes'
-import {inject} from './components/Grid'
-
-inject()
 
 const networkInterface = createNetworkInterface({
     uri: '/graphql'
@@ -37,4 +35,6 @@ render((
     </AppContainer>
 ), document.querySelector('#app'))
 
-if (module.hot) module.hot.accept()
+if (module.hot) module.hot.accept(() => {
+    // styleSheet.flush()
+})
