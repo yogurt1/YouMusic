@@ -97,6 +97,7 @@ if (isProduction) {
     config.entry["app"].unshift(
         "react-hot-loader/patch",
         "webpack-dev-server/client?http://localhost:3000",
-        "webpack-hot-middleware/client"
+        "webpack/hot/dev-server"
+        // "webpack-hot-middleware/client"
     )
 }

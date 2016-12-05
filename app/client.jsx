@@ -9,6 +9,9 @@ import {syncHistoryWithStore} from 'react-router-redux'
 import configureApolloClient from './data'
 import configureStore from './store'
 import routes from './routes'
+import {inject} from './components/Grid'
+
+inject()
 
 const networkInterface = createNetworkInterface({
     uri: '/graphql'
