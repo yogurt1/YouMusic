@@ -3,7 +3,7 @@ const config = {
         port: process.env.PORT || 3000
     },
     youtube: {
-        key: 'keyboard cat'
+        key: "keyboard cat"
     }
 }
 

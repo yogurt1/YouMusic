@@ -1,4 +1,4 @@
-import ApolloClient from 'apollo-client'
+import ApolloClient from "apollo-client"
 
 export default function configureApolloClient(networkInterface) {
     const opts = {
@@ -11,7 +11,7 @@ export default function configureApolloClient(networkInterface) {
             return null
         },
         reduxRootSelector(state) {
-            return state.get('apollo')
+            return state.get("apollo")
         }
     }
     

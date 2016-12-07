@@ -1,4 +1,4 @@
-import DataLoader from 'dataloader'
+import DataLoader from "dataloader"
 const pickIds = todos => todos.map(t => t.id)
 
 const todos = [

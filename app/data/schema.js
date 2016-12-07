@@ -1,12 +1,12 @@
 import {
     GraphQLSchema,
     GraphQLObjectType
-} from 'graphql'
-import fields from './fields'
+} from "graphql"
+import fields from "./fields"
 
 const QueryType = new GraphQLObjectType({
     fields,
-    name: 'Query'
+    name: "Query"
 })
 
 const schema = new GraphQLSchema({

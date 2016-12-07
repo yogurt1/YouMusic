@@ -41,7 +41,7 @@ export const createReducer = initialState => new function() {
             return this
         }
 
-        if (typeof(handler) === 'string') {
+        if (typeof(handler) === "string") {
             cases[type] = cases[handler]
         } else {
             cases[type] = handler

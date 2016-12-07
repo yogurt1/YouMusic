@@ -2,8 +2,8 @@ import {
     GraphQLInt,
     GraphQLString,
     GraphQLObjectType
-} from 'graphql'
-import todoLoader from './loader'
+} from "graphql"
+import todoLoader from "./loader"
 
 export const TodoType = new GraphQLObjectType({
     name: "Todo",

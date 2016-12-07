@@ -7,12 +7,11 @@ global.Promise = require('bluebird')
 global.DEV = global.__DEV__ = process.env.NODE_ENV !== 'production'
 
 const http = require('http')
-const chokidar = require('chokidar')
 const {default: config} = require('./app/config')
 
 const app = () => require('./app/server').default
 app.config = config
-app.watch = () => chokidar.watch('./app').on('change', () => {
+app.watch = () => require('chokidar').watch('./app').on('change', () => {
     const re = /[\/\\]app[\/\\]/
     for (const id in require.cache) {
         if (re.test(id)) {
@@ -32,6 +31,7 @@ if (!module.parent) {
 
     if (DEV) {
         app.watch()
+        console.log('Development mode!')
         server
             .removeAllListeners('request')
             .on('request', (req, res) => app().callback()(req, res))

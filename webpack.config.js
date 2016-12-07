@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const isProduction = (
     "build" === process.env.npm_lifecycle_event ||
-    "prodution" === process.env.NODE_ENV
+    "production" === process.env.NODE_ENV
 )
 
 const devtool = isProduction ? 'source-map' : 'eval'
@@ -85,9 +85,7 @@ if (isProduction) {
     const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
     config.plugins.push(
         new webpack.optimize.AggressiveMergingPlugin(),
-        new BabiliPlugin({test: /\.jsx?/}),
-        new BundleAnalyzerPlugin()
-        // new webpack.Uoptimize.glifyJsPlugin()
+        new BabiliPlugin({test: /\.jsx?/})
     )
 } else {
     config.plugins.unshift(

@@ -1,6 +1,6 @@
-import {fromJS} from 'immutable'
-import {createReducer} from '../util'
-import {SET_TOKEN} from '../actions/auth'
+import {fromJS} from "immutable"
+import {createReducer} from "../util"
+import {SET_TOKEN} from "../actions/auth"
 
 const initialState = fromJS({
     token: null
@@ -8,4 +8,4 @@ const initialState = fromJS({
 
 export default createReducer(initialState)
     .case(SET_TOKEN, (state, action) => state
-        .set('token', action.payload.token))
+        .set("token", action.payload.token))

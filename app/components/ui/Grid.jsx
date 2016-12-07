@@ -42,15 +42,16 @@ const offsets = {
 
 const breakpoints = new function() {
     const labels = {
-        mobile: "400px",
-        phablet: "550px",
-        tablet: "750px",
-        desktop: "100px",
-        desktophd: "1200px"
+        mobile: 400,
+        phablet: 550,
+        tablet: 750,
+        desktop: 100,
+        desktophd: 1200
     }
     for (const label in labels) {
         this[label] = `min-width: ${labels[label]}`
     }
+    // this.get = label => labels[label] + 'px'
     return this
 }
 

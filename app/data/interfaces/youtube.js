@@ -1,4 +1,4 @@
-import {addQueryMerging} from 'apollo-client'
+import {addQueryMerging} from "apollo-client"
 
 @addQueryMerging
 export default class YouTubeInterface {
@@ -9,7 +9,7 @@ export default class YouTubeInterface {
             errors: [
                 {
                     code: 0,
-                    msg: 'errorMsg'
+                    msg: "errorMsg"
                 }
             ]
         }

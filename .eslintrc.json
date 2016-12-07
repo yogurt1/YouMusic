@@ -1,21 +1,40 @@
 {
-  "parser": "babel-eslint",
-  "env": {
-    "browser": true
-  },
-  "settings": {
-    "ecmascript": 8,
-    "jsx": true
-  },
-  "plugins": [
-    "react",
-    "graphql"
-  ],
-  "rules": {
-    "strict": 0,
-    "quotes": 0,
-    "no-unused-vars": 0,
-    "camelcase": 0,
-    "no-underscore-dangle": 0
-  }
+    "env": {
+        "jasmine": true,
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "parser": "babel-eslint",
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "no-unused-vars": 0,
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ]
+    }
 }

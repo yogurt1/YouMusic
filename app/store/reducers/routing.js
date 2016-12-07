@@ -1,6 +1,6 @@
-import {fromJS} from 'immutable'
-import {LOCATION_CHANGE} from 'react-router-redux'
-import {createReducer} from '../util'
+import {fromJS} from "immutable"
+import {LOCATION_CHANGE} from "react-router-redux"
+import {createReducer} from "../util"
 
 const initialState = fromJS({
     locationBeforeTransitions: null
@@ -8,4 +8,4 @@ const initialState = fromJS({
 
 export default createReducer(initialState)
     .case(LOCATION_CHANGE, (state, action) => state
-        .set('locationBeforeTransitions', action.payload))
+        .set("locationBeforeTransitions", action.payload))

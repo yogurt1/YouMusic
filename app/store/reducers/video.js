@@ -1,6 +1,6 @@
-import {fromJS} from 'immutable'
-import {createReducer} from '../util'
-import {SET_VIDEOID} from 'app/store/actions/video'
+import {fromJS} from "immutable"
+import {createReducer} from "../util"
+import {SET_VIDEOID} from "app/store/actions/video"
 
 const mockVideoId = () => "SXiSVQZLje8"
 const initialState = fromJS({
@@ -9,4 +9,4 @@ const initialState = fromJS({
 
 export default createReducer(initialState)
     .case(SET_VIDEOID, (state, action) => state
-        .set('videoId', action.payload.videoId))
+        .set("videoId", action.payload.videoId))
