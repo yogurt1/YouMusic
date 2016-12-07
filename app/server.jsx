@@ -1,3 +1,4 @@
+import './lib/injectGlobalStyles'
 import 'isomorphic-fetch'
 import Koa from 'koa'
 import React from 'react'
