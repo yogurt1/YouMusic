@@ -53,9 +53,8 @@ app.use(mount('/graphql', compose(
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
 app.use(async ctx => {
     ctx.type = 'html'
-    if (isDevServer) return ctx.body = renderToStaticMarkup(
-        <Html />
-    )
+    if (isDevServer) return ctx.body = "<!doctype html" +
+        renderToStaticMarkup(<Html />)
 
     const locale = "en" // await getLocale(ctx)
     const location = ctx.request.url
@@ -118,7 +117,7 @@ app.use(async ctx => {
         styles: styleSheet.rules().map(r => r.cssText).join('')
     }
 
-    ctx.body = renderToString(
+    ctx.body = "<!doctype html>" + renderToString(
         <Html {...htmlProps} />
     )
 })

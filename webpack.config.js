@@ -5,7 +5,7 @@ const isProduction = (
     "prodution" === process.env.NODE_ENV
 )
 
-const devtool = isProduction ? 'source-map' : 'inline-source-map'
+const devtool = isProduction ? 'source-map' : 'eval'
 const config = module.exports = {
     devtool,
     entry: {

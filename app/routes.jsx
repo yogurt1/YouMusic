@@ -1,7 +1,7 @@
 import React from 'react'
 import {createRoutes, Route, IndexRoute} from 'react-router'
-import Layout from './components/Layout'
-import Home from './components/Home'
+import Layout from './components/ui/Layout'
+import Home from './components/pages/Home'
 
 const factory = msg => () => <h1>{msg}</h1>
 const [HelloWorld, NoMatch] = [
