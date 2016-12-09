@@ -6,3 +6,7 @@ export const setConfigKey = (key, val) => ({
         key, val
     }
 })
+
+export const actions = {
+    setConfigKey
+}

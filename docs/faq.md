@@ -15,6 +15,7 @@
 + Cache bursting
 + Code split
 + Intl/i18n
++ TypeScript
 + Electron
 + ReactNative
 

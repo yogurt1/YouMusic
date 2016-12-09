@@ -8,6 +8,7 @@ import VideoIdForm from '../forms/VideoIdForm'
 import {setToken} from 'app/store/actions/auth'
 import {setVideoId} from 'app/store/actions/video'
 import {pickState, bindActions} from 'app/store/util'
+import FA from '../ui/FontAwesome'
 
 const MessageBlock = styled.span`
     color: red;
@@ -52,6 +53,7 @@ export default class HomePage extends React.Component {
                 <Container>
                     <Row>
                         <Column>
+                            <FA icon="angle-up" />
                             <MessageBlock>
                                 Is player ready? {isPlayerReady ? "Yes" : "No"}
                             </MessageBlock>

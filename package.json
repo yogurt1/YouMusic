@@ -79,6 +79,7 @@
     "graphql-tag": "^1.1.2",
     "graphql-tools": "^0.8.3",
     "immutable": "^3.8.1",
+    "json-loader": "^0.5.4",
     "koa": "2",
     "koa-bodyparser": "next",
     "koa-compress": "next",

@@ -6,3 +6,7 @@ export const setVideoId = videoId => ({
         videoId
     }
 })
+
+export const actions = {
+    setVideoId
+}
