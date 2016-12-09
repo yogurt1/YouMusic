@@ -68,7 +68,7 @@ const clearfix = `
 export const Container = styled.div`
     position: relative;
     width: 100%;
-    max-width: 960px;
+    max-width: ${p => p.wide ? '99%' : '960px'};
     margin: 0 auto;
     padding: 0 20px;
     box-sizing: border-box;
@@ -83,7 +83,6 @@ export const Container = styled.div`
     }
 
     ${clearfix}
-    ${p => !p.wide ? '' : 'max-width:99% !important;'}
 `
 
 export const Clearfix = styled.div`${clearfix}`
@@ -109,6 +108,7 @@ export const Column = styled.div`
 
     ${p => p.clearfix ? clearfix : ''}
 `
+export const Col = Column // shorthand
 
 export const Flex = styled.div`
     display: flex;

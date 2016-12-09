@@ -107,6 +107,7 @@
     "redux-immutable": "^3.0.8",
     "redux-thunk": "^2.1.0",
     "rx": "^4.1.0",
+    "semantic-ui-react": "^0.62.0",
     "source-map-support": "^0.4.6",
     "styled-components": "^1.1.2",
     "whatwg-fetch": "^2.0.1"

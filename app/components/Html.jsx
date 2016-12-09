@@ -7,7 +7,8 @@ const vendorScripts = [
 ]
 
 const vendorStyles = [
-    "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
+    "//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
 ]
 
 export default function Html({state, styles, children}) {

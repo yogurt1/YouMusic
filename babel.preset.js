@@ -8,11 +8,9 @@ Object.defineProperty(preset, "buildPreset", {
 module.exports = preset
 
 function buildPreset(opts = {}) {
-    const {env = "node"} = opts;
-
+    const {env = "browser"} = opts;
     const browser = env === "browser"
     const node = env === "node"
-
     const isProduction = process.env.NODE_ENV === 'production'
 
     const presets = [
@@ -20,6 +18,7 @@ function buildPreset(opts = {}) {
             modules: false,
             loose: true,
             targets: browser ? {
+                "firefox": 45,
                 "chrome": 55
             } : {
                 node: "current"

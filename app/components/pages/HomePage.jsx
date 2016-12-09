@@ -44,7 +44,7 @@ export default class HomePage extends React.Component {
             width: '100%',
             height: '100%',
             playerVars: {
-                autoplay: 1
+                autoplay: 0
             }
         }
 
@@ -53,11 +53,9 @@ export default class HomePage extends React.Component {
                 <Container>
                     <Row>
                         <Column>
-                            <FA icon="angle-up" />
-                            <MessageBlock>
-                                Is player ready? {isPlayerReady ? "Yes" : "No"}
-                            </MessageBlock>
-                            </Column><Column>
+                            <FA icon="pause" />
+                        </Column>
+                        <Column>
                             <VideoIdForm onSubmit={this.handleSubmit} /></Column>
                     </Row>
                     <YouTube

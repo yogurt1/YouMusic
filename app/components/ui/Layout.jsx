@@ -1,13 +1,19 @@
 import React from 'react'
-import {Container, Columns} from './Grid'
+import {Container, Row, Column} from './Grid'
 
 export default class Layout extends React.PureComponent {
     render() {
         return (
             <div>
                 <Container wide>
-                    <h1>Layout</h1>
-                    <hr />
+                    <Row>
+                        <Column>
+                            <h1>youmusic</h1>
+                        </Column>
+                        <Column>
+                            <span>simple youtube player</span>
+                        </Column>
+                    </Row>
                 </Container>
                 {this.props.children}
             </div>

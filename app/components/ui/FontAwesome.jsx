@@ -4,10 +4,6 @@ import icons from "./icons.json"
 
 const defaults = {
     size: 14,
-    lineHeight: 1,
-    borderColor: "#eee",
-    inverse: "#fff",
-    liWidth: "calc(30em) / 14)",
     icon: "\f103"
 }
 
@@ -26,31 +22,26 @@ const getAnimation = p => {
         default: return ''
     }
 }
-const getIcon = p => icons[camelCase(p.children || p.icon)]
+const getIcon = p => icons[camelCase(p.icon)]
 const getSize = p => p.size
 
 const FontAwesome = styled.span`
-    font-family: FontAwesome;
-    font: normal normal normal ${getSize} FontAwesome;
-    text-rendering: auto;
     display: inline-block;
+    font: normal normal ${getSize} FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    ${getAnimation}
 
     &:before {
-        content: ${getIcon}
+        content: "${getIcon}"
     }
 `
 FontAwesome.defaultProps = {
     icon: defaults.icon,
-    size: defaults.size
+    size: defaults.size,
+    "aria-hidden": true
 }
 
 export default FontAwesome
-export const toInject = `
-    @font-face {
-        font-family: "FontAwesome";
-        src:
-    }
-`
+
