@@ -1,58 +1,19 @@
-import './lib/injectGlobalStyles'
-import 'isomorphic-fetch'
-import Koa from 'koa'
+import '../lib/injectGlobalStyles'
 import React from 'react'
-import Html from './components/Html'
-import graphqlSchema from './data/schema'
-import bodyParser from 'koa-bodyparser'
-import serveStatic from 'koa-static'
-import mount from 'koa-mount'
-import compress from 'koa-compress'
+import Html from 'app/components/Html'
 import {match, RouterContext, createMemoryHistory} from 'react-router'
 import {ApolloProvider} from 'react-apollo'
 import {renderToString, renderToStaticMarkup} from 'react-dom/server'
 import {getDataFromTree} from 'react-apollo/server'
 import {createNetworkInterface} from 'apollo-client'
-import {graphqlKoa, graphiqlKoa} from 'graphql-server-koa'
 import {syncHistoryWithStore} from 'react-router-redux'
-import configureStore from './store'
-import configureApolloClient from './data'
-import routes from './routes'
 import styleSheet from 'styled-components/lib/models/StyleSheet'
-import config from './config'
-
-const compose = (...mws) => (ctx, next) => {
-    const dispatch = async i => {
-        const mw = mws[i] || next
-        return mw(ctx, () => dispatch(i + 1))
-    }
-    return dispatch(0)
-}
-const app = new Koa()
-
-if (DEV) {
-    const logger = require('koa-logger')
-    app.use(logger())
-    app.use(mount('/graphiql', graphiqlKoa({endpointURL: '/graphql'})))
-}
-
-app.use(compose(
-    compress(),
-    serveStatic('./static')
-))
-
-app.use(mount('/graphql', compose(
-    bodyParser(),
-    graphqlKoa(ctx => ({
-        schema: graphqlSchema,
-        rootValue: {
-            ctx
-        }
-    }))
-)))
-
+import routes from 'app/routes'
+import configureStore from 'app/store'
+import configureApolloClient from 'app/store/apollo'
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
-app.use(async ctx => {
+
+export default async function renderer(ctx) {
     ctx.type = 'html'
     if (isDevServer) return ctx.body = "<!doctype html" +
         renderToStaticMarkup(<Html />)
@@ -121,9 +82,4 @@ app.use(async ctx => {
     ctx.body = "<!doctype html>" + renderToString(
         <Html {...htmlProps} />
     )
-})
-
-app.on('error', err => {
-    console.error(err)
-})
-export default app
+}

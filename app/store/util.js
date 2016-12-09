@@ -1,4 +1,21 @@
+export const memoize = fn => {
+    const cache = new WeakMap()
+
+    return Iterable => {
+        let cached = cache.get(Iterable)
+
+        if (cached) {
+            return cached
+        }
+
+        const result = fn(Iterable)
+        cache.set(Iterable, fn(Iterable))
+        return result
+    }
+}
+
 const getProp = (o, p) => o[p] || o.get(p)
+// return function for memoization
 export const pickState = tree => state => {
     const picked = {}
 

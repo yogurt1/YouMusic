@@ -7,10 +7,10 @@ import todoLoader from "./loader"
 
 export const TodoType = new GraphQLObjectType({
     name: "Todo",
-    fields: () => ({
+    fields: {
         id: {type: GraphQLString},
         text: {type: GraphQLString}
-    })
+    }
 })
 
 export default {

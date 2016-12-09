@@ -8,8 +8,8 @@ import {ApolloProvider} from 'react-apollo'
 import {createNetworkInterface} from 'apollo-client'
 import {syncHistoryWithStore} from 'react-router-redux'
 import styleSheet from 'styled-components/lib/models/StyleSheet'
-import configureApolloClient from './data'
 import configureStore from './store'
+import configureApolloClient from './store/apollo'
 import routes from './routes'
 
 const networkInterface = createNetworkInterface({

@@ -106,6 +106,8 @@ export const Column = styled.div`
             margin-left: 0;
         }
     }
+
+    ${p => p.clearfix ? clearfix : ''}
 `
 
 export const Flex = styled.div`

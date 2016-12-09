@@ -24,9 +24,10 @@ export default function configureStore(history, client) {
         ...reducersRegistry
     })
 
-    const store = createStore(reducer, preloadedState, compose(
+    const finalCreateStore = compose(
         applyMiddleware(...middlewares)
-    ))
+    )(createStore)
+    const store = finalCreateStore(reducer, preloadedState)
 
     if (module.hot) module.hot.accept("./reducers", () => {
         const {default: nextReducersRegistry} = require("./reducers")

@@ -6,6 +6,8 @@ const initialState = fromJS({
     token: null
 })
 
-export default createReducer(initialState)
-    .case(SET_TOKEN, (state, action) => state
-        .set("token", action.payload.token))
+const reducer = createReducer(initialState)
+reducer.case(SET_TOKEN, (state, action) => state
+    .set("token", action.payload.token))
+
+export default reducer
