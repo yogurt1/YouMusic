@@ -53,7 +53,7 @@ export default class HomePage extends React.Component {
                     <Row>
                         <Column>
                             <MessageBlock>
-                                Player ready? {isPlayerReady ? "Yes" : "No"}
+                                Is player ready? {isPlayerReady ? "Yes" : "No"}
                             </MessageBlock>
                             </Column><Column>
                             <VideoIdForm onSubmit={this.handleSubmit} /></Column>

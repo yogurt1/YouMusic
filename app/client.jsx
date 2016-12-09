@@ -3,7 +3,7 @@ import 'whatwg-fetch'
 import React from 'react'
 import {render} from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
-import {Router, browserHistory} from 'react-router'
+import {match, RouterContext, browserHistory} from 'react-router'
 import {ApolloProvider} from 'react-apollo'
 import {createNetworkInterface} from 'apollo-client'
 import {syncHistoryWithStore} from 'react-router-redux'
@@ -22,19 +22,33 @@ const history = syncHistoryWithStore(browserHistory, store, {
         return state.get('routing').toJS()
     }
 })
+const target = document.querySelector('#app')
 
-render((
-    <AppContainer>
-        <ApolloProvider
-            client={client}
-            store={store}>
-            <Router
-                key={Math.random()}
-                routes={routes}
-                history={history} />
-        </ApolloProvider>
-    </AppContainer>
-), document.querySelector('#app'))
+match({history, routes}, (err, _, renderProps) => {
+    const component = (
+        <AppContainer>
+            <ApolloProvider
+                client={client}
+                store={store}>
+                <RouterContext {...renderProps} />
+            </ApolloProvider>
+        </AppContainer>
+    )
+    render(component, target)
+})
+
+// render((
+//     <AppContainer>
+//         <ApolloProvider
+//             client={client}
+//             store={store}>
+//             <Router
+//                 key={Math.random()}
+//                 routes={routes}
+//                 history={history} />
+//         </ApolloProvider>
+//     </AppContainer>
+// ), document.querySelector('#app'))
 
 if (module.hot) module.hot.accept(() => {
     // styleSheet.flush()
