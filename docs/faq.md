@@ -7,13 +7,18 @@
 `yarn start`
 
 ###### Features
-+ HMR and Time-travel
++ Dockerfile
++ HMR and Time-travel both on server and client
 + Server-side render
++ Critical CSS inlined to HTML due SSR
 + CSS-in-JS via `styled-components`
++ Fonts and sprites in CSS
++ Semantic-UI, TinyMCE, YouTube
 
 ###### TODO
 + Cache bursting
 + Code split
++ ServiceWorker and Offline-first
 + Intl/i18n
 + TypeScript
 + Electron
@@ -22,15 +27,19 @@
 ###### Stack
 + ES6+
 + React
-    + React-router
+    + React-router (synchronized to Redux)
 + Redux
     + Redux-Form
-    + React-router-redux
+    + Redux-Thunk (async actions)
+    + TinyMCE
+    + Semantic-UI
+    + YouTube API
 + Apollo and GraphQL
 + Styled-components
 + Immutable.js
 + Server-side
     + Koa
+    + Passport
     + GraphiQL (development)
     + Webpack dev server (development)
 

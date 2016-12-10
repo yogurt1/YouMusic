@@ -1,14 +1,21 @@
 const preset = buildPreset()
-Object.defineProperty(preset, "buildPreset", {
+const nextPreset = Object.defineProperty(preset, "buildPreset", {
     configurable: true,
     writable: true,
     enumerable: false,
     value: buildPreset
 })
-module.exports = preset
+
+module.exports = nextPreset
+
+const getEnv = () => process.env.NODE_ENV === "test"
+    ? "test"
+    : "browser"
 
 function buildPreset(opts = {}) {
-    const {env = "browser"} = opts;
+    const env = opts.env || process.env.NODE_ENV === "test"
+        ? "test"
+        : "browser"
     const browser = env === "browser"
     const node = env === "node"
     const isProduction = process.env.NODE_ENV === 'production'
@@ -61,7 +68,11 @@ function buildPreset(opts = {}) {
             "transform-remove-debugger",
             "transform-node-env-inline",
             "transform-inline-environment-variables",
-            "transform-react-inline-elements"
+            "transform-react-inline-elements",
+            ["babel-plugin-styled-components", {
+                ssr: true,
+                displayName: browser
+            }]
         )
     }
 
@@ -69,7 +80,4 @@ function buildPreset(opts = {}) {
         presets: presets.filter(Boolean),
         plugins: plugins.filter(Boolean)
     }
-    // return {plugins: presets.filter(Boolean).concat(
-    //     presets.map(loadPreset)
-    // )}
 }

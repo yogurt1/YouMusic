@@ -14,6 +14,7 @@ export default class Layout extends React.PureComponent {
                             <span>simple youtube player</span>
                         </Column>
                     </Row>
+                    <hr />
                 </Container>
                 {this.props.children}
             </div>

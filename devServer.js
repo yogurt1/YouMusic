@@ -17,9 +17,13 @@ const server = new WDS(compiler, {
                 return next()
             }
 
-            app()
-                .on('error', next)
-                .callback()(req, res)
+            try {
+                app()
+                    .on('error', next)
+                    .callback()(req, res)
+            } catch(err) {
+                next(err)
+            }
         })
     }
 })

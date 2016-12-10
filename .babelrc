@@ -1,7 +1,5 @@
 {
     "presets": [
-        ["./babel.preset.js", {
-            "env": "browser"
-        }]
+        "./babel.preset.js"
     ]
 }

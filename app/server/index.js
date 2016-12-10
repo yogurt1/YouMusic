@@ -1,4 +1,3 @@
-import 'isomorphic-fetch'
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import serveStatic from 'koa-static'

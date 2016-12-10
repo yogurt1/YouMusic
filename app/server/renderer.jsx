@@ -1,4 +1,3 @@
-import '../lib/injectGlobalStyles'
 import React from 'react'
 import Html from 'app/components/Html'
 import {match, RouterContext, createMemoryHistory} from 'react-router'
@@ -8,18 +7,27 @@ import {getDataFromTree} from 'react-apollo/server'
 import {createNetworkInterface} from 'apollo-client'
 import {syncHistoryWithStore} from 'react-router-redux'
 import styleSheet from 'styled-components/lib/models/StyleSheet'
+import {injectGlobal} from 'styled-components'
+// import baseStyles from 'app/lib/baseStyles'
 import routes from 'app/routes'
 import configureStore from 'app/store'
 import configureApolloClient from 'app/store/apollo'
+
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
+const getStyles = () => styleSheet.rules().map(r => r.cssText).join('')
 
 export default async function renderer(ctx) {
-    ctx.type = 'html'
-    if (isDevServer) return ctx.body = "<!doctype html" +
-        renderToStaticMarkup(<Html />)
-
-    const locale = "en" // await getLocale(ctx)
+    ctx.type = "html"
+    // styleSheet.flush()
+    const locale = "en"
     const location = ctx.request.url
+
+    if (isDevServer) {
+        ctx.body = "<!doctype html" + renderToStaticMarkup(
+            <Html />
+        )
+        return
+    }
 
     const networkInterface = createNetworkInterface({
         uri: ctx.request.host,
@@ -75,8 +83,8 @@ export default async function renderer(ctx) {
     const htmlProps = {
         locale,
         children: component,
+        styles: getStyles(),
         state: store.getState(),
-        styles: styleSheet.rules().map(r => r.cssText).join('')
     }
 
     ctx.body = "<!doctype html>" + renderToString(

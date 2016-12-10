@@ -5,7 +5,7 @@ import HomePage from './components/pages/HomePage'
 
 const factory = msg => () => <h1>{msg}</h1>
 const [HelloWorld, NoMatch] = [
-    "Not found :("
+    "Not found"
 ].map(factory)
 
 export default createRoutes(

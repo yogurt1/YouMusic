@@ -64,21 +64,20 @@ const clearfix = `
         clear: both;
     }
 `
-
 export const Container = styled.div`
+    max-width: ${p => p.wide ? '99%' : '960px'};
     position: relative;
     width: 100%;
-    max-width: ${p => p.wide ? '99%' : '960px'};
     margin: 0 auto;
     padding: 0 20px;
     box-sizing: border-box;
 
-    @media (${breakpoints.mobile}) {
+    @media (min-width: 400px) {
         width: 85%;
         padding: 0;
     }
 
-    @media (${breakpoints.phablet}) {
+    @media (min-width: 550px) {
         width: 80%;
     }
 

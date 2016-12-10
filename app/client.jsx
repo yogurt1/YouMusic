@@ -1,4 +1,6 @@
-import './lib/injectGlobalStyles'
+import 'font-awesome/css/font-awesome.min.css'
+import 'semantic-ui-css/semantic.min.css'
+import 'tinymce/tinymce.min.js'
 import 'whatwg-fetch'
 import React from 'react'
 import {render} from 'react-dom'
@@ -23,8 +25,13 @@ const history = syncHistoryWithStore(browserHistory, store, {
     }
 })
 const target = document.querySelector('#app')
+const asyncMatch = (opts) => new Promise((resolve, reject) =>
+        match(opts, (err, ...args) => resolve(args)))
 
-match({history, routes}, (err, _, renderProps) => {
+window.addEventListener('load', async () => {
+    document.querySelector("style.__CRITICAL_CSS__").remove()
+
+    const [_, renderProps] = await asyncMatch({history, routes})
     const component = (
         <AppContainer>
             <ApolloProvider
@@ -37,18 +44,6 @@ match({history, routes}, (err, _, renderProps) => {
     render(component, target)
 })
 
-// render((
-//     <AppContainer>
-//         <ApolloProvider
-//             client={client}
-//             store={store}>
-//             <Router
-//                 key={Math.random()}
-//                 routes={routes}
-//                 history={history} />
-//         </ApolloProvider>
-//     </AppContainer>
-// ), document.querySelector('#app'))
 
 if (module.hot) module.hot.accept(() => {
     // styleSheet.flush()

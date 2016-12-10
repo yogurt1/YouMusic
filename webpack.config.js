@@ -1,5 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
+const ExtractText = require('extract-text-webpack-plugin')
+const ImageminPlugin = require('imagemin-webpack-plugin').default
 const isProduction = (
     "build" === process.env.npm_lifecycle_event ||
     "production" === process.env.NODE_ENV
@@ -10,7 +12,6 @@ const config = module.exports = {
     devtool,
     entry: {
         app: ["./app/client.jsx"]
-        // vendor: []
     },
     output: {
         path: path.resolve("./static"),
@@ -43,7 +44,9 @@ const config = module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: "babel-loader",
-                exclude: /node_modules/
+                exclude: /(node_modules|\/vendor\.js$)/,
+                options: Object.assign({babelrc: false},
+                    require('./babel.preset').buildPreset({env: "browser"}))
             },
             {
                 test: /\.json$/,
@@ -55,19 +58,33 @@ const config = module.exports = {
                 loader: 'graphql-tag/loader'
             },
             {
+                test: /\.css$/,
+                loader: ExtractText.extract({
+                    fallbackLoader: 'style-loader',
+                    loader: 'css-loader'
+                })
+            },
+            {
                 test: /\.(png|svg|woff2?|ttf|eot)/,
-                loader: "url-loader"
+                loader: "url-loader",
+                options: {
+                    limit: 1024000
+                }
             }
         ]
     },
     plugins: [
+        new ExtractText({
+            allChunks: true,
+            disable: !isProduction,
+            filename: "styles.bundle.css"
+        }),
         new webpack.ProvidePlugin({
             "Promise": "bluebird"
         }),
         new webpack.LoaderOptionsPlugin({
-            devtools: isProduction ? 'source-map' : 'inline-source-map',
-            minimize: isProduction
-            // debug: !isProduction
+            minimize: isProduction,
+            debug: !isProduction
         }),
         new webpack.DefinePlugin({
             DEV: !isProduction,
@@ -80,12 +97,15 @@ const config = module.exports = {
     ]
 }
 
+const babiliPreset = {
+
+}
 if (isProduction) {
     const BabiliPlugin = require('babili-webpack-plugin')
-    const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
     config.plugins.push(
         new webpack.optimize.AggressiveMergingPlugin(),
-        new BabiliPlugin({test: /\.jsx?/})
+        new BabiliPlugin({test: /\.jsx?/}),
+        new ImageminPlugin()
     )
 } else {
     config.plugins.unshift(

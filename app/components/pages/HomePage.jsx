@@ -8,13 +8,13 @@ import VideoIdForm from '../forms/VideoIdForm'
 import {setToken} from 'app/store/actions/auth'
 import {setVideoId} from 'app/store/actions/video'
 import {pickState, bindActions} from 'app/store/util'
-import FA from '../ui/FontAwesome'
+import FontAwesome from '../ui/FontAwesome'
+import VideoContainer from "../ui/VideoContainer"
 
 const MessageBlock = styled.span`
     color: red;
     font-size: 36px;
 `
-
 const mapStateToProps = pickState([
     ["video", ["videoId"]],
     ["auth", ["token"]]
@@ -53,17 +53,19 @@ export default class HomePage extends React.Component {
                 <Container>
                     <Row>
                         <Column>
-                            <FA icon="pause" />
+                            <FontAwesome icon="pause" />
                         </Column>
                         <Column>
                             <VideoIdForm onSubmit={this.handleSubmit} /></Column>
                     </Row>
-                    <YouTube
-                        videoId={video.videoId}
-                        opts={opts}
-                        onReady={this.handleYouTubeReady}
-                    />
-                </Container>
+                    <VideoContainer>
+                        <YouTube
+                            videoId={video.videoId}
+                            opts={opts}
+                            onReady={this.handleYouTubeReady}
+                        />
+                    </VideoContainer>
+               </Container>
             </div>
         )
     }
