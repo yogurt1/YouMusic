@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+        <title>YouMusic</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/assets/styles.css">
+        <style>
+            body { background: #eef; }
+            @keyframes blink {
+                0% { opacity: .2; }
+                20% { opacity: 1; }
+                100% { opacity: .2; }
+            }
+
+            .loader {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .loading {
+                font-size: 36pt;
+                font-family: sans-serif;
+                color: #211;
+            }
+
+            .loading > span {
+                font-family: serif;
+                animation: 1.4s blink infinite linear;
+            }
+
+            .loading > span:nth-child(2) { animation-delay: .2s; }
+            .loading > span:nth-child(3) { animation-delay: .4s; }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div class="loader">
+                <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                <span class="loading">Loading<span>.</span><span>.</span><span>.</span></span>
+            </div>
+        </div>
+        <script src="/bundle.js"></script><!-- Development only -->
+        <script src="/assets/bundle.js"></script>
+    </body>
+</html>
