@@ -17,7 +17,8 @@ const config = module.exports = {
         path: path.resolve("./static"),
         publicPath: "/",
         filename: "[name].bundle.js",
-        chunkFilename: "[id].chunk.js"
+        chunkFilename: "[id].chunk.js",
+        devtoolModuleFilenameTemplate: "/[absolute-resource-path]"
     },
     resolve: {
         alias: {

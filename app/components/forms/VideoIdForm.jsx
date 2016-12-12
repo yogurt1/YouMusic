@@ -16,7 +16,7 @@ const validate = values => {
     return errors
 }
 
-@form({validate, form: 'videoId'})
+@form({validate, form: 'video'})
 export default class VideoIdForm extends React.PureComponent {
     renderField({input, label, type, meta}) {
         const {touched, error} = meta

@@ -25,17 +25,14 @@ const getAnimation = p => {
 const getIcon = p => icons[camelCase(p.icon)]
 const getSize = p => p.size
 
-const BaseFontAwesome = styled.span`
+const FontAwesome = styled.span`
     display: inline-block;
     font: normal normal ${getSize} FontAwesome;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-`
-
-
-const FontAwesome = styled(BaseFontAwesome)`
+    ${getAnimation};
     &:before {
         content: "${getIcon}"
     }
@@ -46,13 +43,6 @@ FontAwesome.defaultProps = {
     size: defaults.size,
     "aria-hidden": true
 }
-
 FontAwesome.displayName = "FontAwesome"
 
 export default FontAwesome
-export {BaseFontAwesome}
-export const SimpleFontAwesome = props => (
-    <BaseFontAwesome className={props.icon} />
-)
-
-

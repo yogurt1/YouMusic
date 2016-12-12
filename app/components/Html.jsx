@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import * as baseStyles from 'app/lib/baseStyles'
+import baseStyles, {normalize} from 'app/lib/baseStyles'
 
 const assets = {
     js: ["/app.bundle.js"],
@@ -23,14 +23,14 @@ export default function Html({locale, state, styles, children}) {
                 />
                 {/*<style
                     type="text/css"
-                    dangerouslySetInnerHTML={{__html: baseStyles.normalize}}
+                    dangerouslySetInnerHTML={{__html: normalize}}
                 />*/}
                 {assets.css.map((href, i) => (
                     <link rel="stylesheet" href={href} key={i} />
                 ))}
                 <style
                     type="text/css"
-                    dangerouslySetInnerHTML={{__html: baseStyles.rest}}
+                    dangerouslySetInnerHTML={{__html: baseStyles}}
                 />
                 <style
                     className="__CRITICAL_CSS__"

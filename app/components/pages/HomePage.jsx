@@ -49,14 +49,15 @@ export default class HomePage extends React.Component {
             }
         }
 
-        const icon = isPlayerReady ? "play" : "pause"
         return (
             <div>
                 <Container>
                     <Row>
                         <Column>
                             <MessageBlock>
-                                Is player ready? {' '} <FA icon={icon} />
+                                {isPlayerReady ? "Ready :-)" : (
+                                    <FA spin icon="spinner" />
+                                )}
                             </MessageBlock>
                         </Column>
                         <Column>

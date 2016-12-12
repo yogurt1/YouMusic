@@ -55,6 +55,15 @@ export default async function renderer(ctx) {
         })
     })
 
+    // const actions = [
+    //     setLocale(locale),
+    //     setCsrfToken(csrfToken),
+    //     setAuthData(authData)
+    // ]
+    // for (const action of actions) {
+    //     store.dispatch(action)
+    // }
+
     const {params, components} = renderProps
     ctx.state = {
         ...ctx.state,
@@ -88,14 +97,11 @@ export default async function renderer(ctx) {
         }
     }
 
-
     const htmlProps = {
-        locale,
         children: component,
         styles: getStyles(),
         state: store.getState()
     }
 
-    const html = renderToString(<Html {...htmlProps} />)
-    ctx.body = `<!doctype html>${html}`
+    ctx.body = `<!doctype html>${renderToString(<Html {...htmlProps} />)}`
 }

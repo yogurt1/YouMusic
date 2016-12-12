@@ -1,6 +1,9 @@
 const config = require('./webpack.config')
 const WDS = require('webpack-dev-server')
 const Webpack = require('webpack')
+const {renderToStaticMarkup} = require('react-dom/server')
+const {createElement} = require('react')
+const {RedBoxError} = require('redbox-react')
 const app = require('./server.babel')
 
 const compiler = Webpack(config)
@@ -21,13 +24,15 @@ const server = new WDS(compiler, {
             if (re.test(req.url)) {
                 return next()
             }
+            const onErr = error => res.end(renderToStaticMarkup(
+                createElement(RedBoxError, {error}, null)))
 
             try {
                 app()
-                    .on('error', next)
+                    .on('error', onErr)
                     .callback()(req, res)
             } catch(err) {
-                next(err)
+                onErr(err)
             }
         })
     }
