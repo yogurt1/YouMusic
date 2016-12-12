@@ -1,7 +1,7 @@
 import {createElement, Component} from "react"
 import hoistStatics from "hoist-non-react-statics"
 
-const getIsBrowser () => typeof(window) === "object"
+const getIsBrowser = () => typeof(window) === "object"
 const getDisplayName = c => c.displayName || c.name || "Component"
 const defaultFallback = () => null
 

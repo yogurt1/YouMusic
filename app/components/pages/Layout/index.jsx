@@ -1,6 +1,7 @@
 import React from "react"
+import {Button} from "semantic-ui-react"
 import SidebarLayout from "./sidebar"
-import {Column, OffsetBy, Row, Container} from "app/components/ui/Grid"
+import {Column, Row, Container} from "app/components/ui/Grid"
 import autobind from "autobind-decorator"
 
 export default class Layout extends React.PureComponent {
@@ -22,13 +23,13 @@ export default class Layout extends React.PureComponent {
             <SidebarLayout visible={visible}>
                 <Container wide>
                     <Row>
-                        <Column right>
+                        <Column>
                             <h1>you music</h1>
                         </Column>
-                        <Column>
-                            <button onClick={this.toggleSidebar}>
-                                <h3>toggle sidebar</h3>
-                            </button>
+                        <Column right>
+                            <Button primary onClick={this.toggleSidebar}>
+                                toggle sidebar
+                            </Button>
                         </Column>
                     </Row>
                 </Container>

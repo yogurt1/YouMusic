@@ -8,7 +8,7 @@ import arrayMiddleware from "./middlewares/array"
 import reducersRegistry from "./reducers"
 
 export default function configureStore(history, client) {
-    const preloadedState = process.env.BROWSER && fromJS(
+    const preloadedState = process.browser && fromJS(
         localStorage.getItem("state") ||
         window.__PRELOADED__STATE)
 

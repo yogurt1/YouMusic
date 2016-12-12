@@ -20,23 +20,6 @@ const sizes = {
     [1/2]: 48
 }
 
-const offsets = {
-    1: 8.66666666667,
-    2: 17.3333333333,
-    3: 26,
-    4: 34.6666666667,
-    5: 43.3333333333,
-    6: 52,
-    7: 60.6666666667,
-    8: 69.3333333333,
-    9: 78.0,
-    10: 86.6666666667,
-    11: 95.33333333333,
-    [1/3]: 34.6666666667,
-    [2/3]: 69.33333333333,
-    [1/2]: 52
-}
-
 const breakpoints = new function() {
     const labels = {
         mobile: 400,
@@ -109,12 +92,7 @@ export const Flex = styled.div`
     flex-direction: ${p => p.vertical ? 'column' : 'row'};
 `
 
-export const OffestBy = styled(Column)`
-    margin-left: ${p => offsets[p.by]}%;
-`
-
 // Column.name = "Column"
 // Clearfix.name = "Clearfix"
 // Row.name = "Row"
 // Container.name = "Container"
-
