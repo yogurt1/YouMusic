@@ -7,7 +7,7 @@ const isProduction = (
     "production" === process.env.NODE_ENV
 )
 
-const devtool = isProduction ? 'source-map' : 'cheap-module-inline-source-map'
+const devtool = isProduction ? 'source-map' : '#eval-source-map'
 const config = module.exports = {
     devtool,
     entry: {
@@ -64,7 +64,7 @@ const config = module.exports = {
                 })
             },
             {
-                test: /\.(png|svg|woff2?|ttf|eot)/,
+                test: /\.(jpe?g|webp|bmp|ico|png|svg|woff2?|ttf|eot)/,
                 loader: "url-loader",
                 options: {
                     limit: 1024000
@@ -113,8 +113,6 @@ if (isProduction) {
     )
     config.entry["app"].unshift(
         "react-hot-loader/patch",
-        "webpack-dev-server/client?http://localhost:3000",
-        "webpack/hot/dev-server"
-        // "webpack-hot-middleware/client"
+        "webpack-hot-middleware/client?overlay=true&reload=false"
     )
 }

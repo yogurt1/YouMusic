@@ -29,8 +29,12 @@ if (DEV) {
         graphiqlKoa({endpointURL: "/graphql"})))
 }
 
+if (!DEV) {
+    app.use(compress())
+}
+
 app.use(compose(
-    compress(),
+    mount("/assets", serveStatic("./assets")),
     serveStatic("./static"),
     bodyParser(),
     convert(session({key: "ssid"})),

@@ -3,6 +3,7 @@ import {Button} from "semantic-ui-react"
 import SidebarLayout from "./sidebar"
 import {Column, Row, Container} from "app/components/ui/Grid"
 import autobind from "autobind-decorator"
+import {connect} from "react-redux"
 
 export default class Layout extends React.PureComponent {
     state = {
@@ -17,8 +18,9 @@ export default class Layout extends React.PureComponent {
     }
 
     render() {
-        const {children} = this.props
+        const {children, location} = this.props
         const {isSidebarVisible: visible} = this.state
+
         return (
             <SidebarLayout visible={visible}>
                 <Container wide>

@@ -5,7 +5,7 @@ import 'whatwg-fetch'
 import React from 'react'
 import {render} from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
-import {match, RouterContext, browserHistory} from 'react-router'
+import {Router, match, RouterContext, browserHistory} from 'react-router'
 import {ApolloProvider} from 'react-apollo'
 import {IntlProvider} from 'react-intl'
 import {createNetworkInterface} from 'apollo-client'
@@ -29,7 +29,7 @@ const history = syncHistoryWithStore(browserHistory, store, {
 const target = document.querySelector('#app')
 
 match({routes, history}, (err, _, renderProps) => {
-    const component = (
+    render((
         <AppContainer>
             <ApolloProvider
                 client={client}
@@ -39,12 +39,9 @@ match({routes, history}, (err, _, renderProps) => {
                 </IntlProvider>
             </ApolloProvider>
         </AppContainer>
-    )
-    render(component, target)
-    document.querySelector("style.__CRITICAL_CSS__").remove()
+    ), target)
+    const criticalCss = document.querySelector("style.__CRITICAL_CSS__")
+    if (criticalCss) criticalCss.remove()
 })
 
-
-if (module.hot) module.hot.accept(() => {
-    // styleSheet.flush()
-})
+if (module.hot) module.hot.accept()

@@ -25,10 +25,9 @@ export default async function renderer(ctx) {
     const location = ctx.request.url
 
     if (isDevServer) {
-        ctx.body = "<!doctype html" + renderToStaticMarkup(
+        return ctx.body = "<!doctype html" + renderToStaticMarkup(
             <Html />
         )
-        return
     }
 
     const networkInterface = createNetworkInterface({
