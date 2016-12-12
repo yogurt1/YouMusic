@@ -1,4 +1,4 @@
-import 'font-awesome/css/font-awesome.min.css'
+// import 'font-awesome/css/font-awesome.min.css'
 import 'semantic-ui-css/semantic.min.css'
 import 'tinymce/tinymce.min.js'
 import 'whatwg-fetch'
@@ -7,6 +7,7 @@ import {render} from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
 import {match, RouterContext, browserHistory} from 'react-router'
 import {ApolloProvider} from 'react-apollo'
+import {IntlProvider} from 'react-intl'
 import {createNetworkInterface} from 'apollo-client'
 import {syncHistoryWithStore} from 'react-router-redux'
 import styleSheet from 'styled-components/lib/models/StyleSheet'
@@ -17,6 +18,7 @@ import routes from './routes'
 const networkInterface = createNetworkInterface({
     uri: '/graphql'
 })
+const locale = "en"
 const client = configureApolloClient(networkInterface)
 const store = configureStore(browserHistory, client)
 const history = syncHistoryWithStore(browserHistory, store, {
@@ -25,23 +27,21 @@ const history = syncHistoryWithStore(browserHistory, store, {
     }
 })
 const target = document.querySelector('#app')
-const asyncMatch = (opts) => new Promise((resolve, reject) =>
-        match(opts, (err, ...args) => resolve(args)))
 
-window.addEventListener('load', async () => {
-    document.querySelector("style.__CRITICAL_CSS__").remove()
-
-    const [_, renderProps] = await asyncMatch({history, routes})
+match({routes, history}, (err, _, renderProps) => {
     const component = (
         <AppContainer>
             <ApolloProvider
                 client={client}
                 store={store}>
-                <RouterContext {...renderProps} />
+                <IntlProvider locale={locale}>
+                    <RouterContext {...renderProps} />
+                </IntlProvider>
             </ApolloProvider>
         </AppContainer>
     )
     render(component, target)
+    document.querySelector("style.__CRITICAL_CSS__").remove()
 })
 
 

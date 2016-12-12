@@ -8,14 +8,14 @@ const nextPreset = Object.defineProperty(preset, "buildPreset", {
 
 module.exports = nextPreset
 
-const getEnv = () => process.env.NODE_ENV === "test"
-    ? "test"
-    : "browser"
-
-function buildPreset(opts = {}) {
-    const env = opts.env || process.env.NODE_ENV === "test"
+function getEnv() {
+    return process.env.NODE_ENV === "test"
         ? "test"
         : "browser"
+}
+
+function buildPreset(opts = {}) {
+    const env = opts.env || getEnv()
     const browser = env === "browser"
     const node = env === "node"
     const isProduction = process.env.NODE_ENV === 'production'
@@ -45,7 +45,7 @@ function buildPreset(opts = {}) {
         ["transform-runtime", {
             "helpers": true,
             "polyfill": false,
-            "regenerator": false
+            "regenerator": true
         }],
         ["transform-object-rest-spread", {
             useBuiltIns: true

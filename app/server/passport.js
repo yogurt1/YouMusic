@@ -1,8 +1,8 @@
-import passport from 'koa-passport'
-import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
-import Router from 'koa-router'
-import User from './models/user'
-import config from './config'
+import passport from "koa-passport"
+import {Strategy as GoogleStrategy} from "passport-google-oauth20"
+import Router from "koa-router"
+import User from "./models/user"
+import config from "./config"
 const router = new Router()
 
 // passport.use(new GoogleStrategy(config.passport.google,
@@ -16,23 +16,23 @@ const router = new Router()
 //     }
 // ))
 
-router.get('/', ctx => ctx.body = '<h1>auth router</h1>')
+router.get("/", ctx => ctx.body = "<h1>auth router</h1>")
 
-router.get('/logout', async ctx => {
+router.get("/logout", async ctx => {
     ctx.logout()
     ctx.body = {
-        action: 'logout'
+        action: "logout"
     }
 })
 
-router.get('/google', passport.authenticate('google', {
-    scope: ['profile', 'youtube']
+router.get("/google", passport.authenticate("google", {
+    scope: ["profile", "youtube"]
 }))
 
-router.get('/google/callback',
-    passport.authenticate('google', {failureRedirect: '/login'}),
+router.get("/google/callback",
+    passport.authenticate("google", {failureRedirect: "/login"}),
     async ctx => {
-        ctx.redirect('/')
+        ctx.redirect("/")
     })
 
 export {router}

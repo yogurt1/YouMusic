@@ -1,3 +1,4 @@
+import React from "react"
 import styled, {css, injectGlobal} from 'styled-components'
 import {createElement} from 'react'
 
@@ -51,12 +52,6 @@ const breakpoints = new function() {
     return this
 }
 
-const fullWidth = `
-    width: 100%;
-    box-sizing: border-box;
-`
-const pullRight = `float:right;`
-const pullLeft = `float:left;`
 const clearfix = `
     &:after {
         content: "";
@@ -86,14 +81,14 @@ export const Container = styled.div`
 
 export const Clearfix = styled.div`${clearfix}`
 export const Row = ({size, children}) => createElement(Clearfix, null,
-    children.map((child, key) => createElement(Column, {
+    size ? children : children.map((child, key) => createElement(Column, {
         key,
-        size: size || 12 / children.length
+        size: 12 / children.length
     }, child)))
 
 export const Column = styled.div`
     width: 100%;
-    float: left;
+    float: ${p => p.right ? "right" : "left"};
     box-sizing: border-box;
 
     @media (${breakpoints.phablet}) {
@@ -114,6 +109,12 @@ export const Flex = styled.div`
     flex-direction: ${p => p.vertical ? 'column' : 'row'};
 `
 
-export const OffestBy = styled.div`
-    margin-left: ${p => offsets[p.offset]}%;
+export const OffestBy = styled(Column)`
+    margin-left: ${p => offsets[p.by]}%;
 `
+
+// Column.name = "Column"
+// Clearfix.name = "Clearfix"
+// Row.name = "Row"
+// Container.name = "Container"
+

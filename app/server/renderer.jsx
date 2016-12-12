@@ -2,6 +2,7 @@ import React from 'react'
 import Html from 'app/components/Html'
 import {match, RouterContext, createMemoryHistory} from 'react-router'
 import {ApolloProvider} from 'react-apollo'
+import {IntlProvider} from "react-intl"
 import {renderToString, renderToStaticMarkup} from 'react-dom/server'
 import {getDataFromTree} from 'react-apollo/server'
 import {createNetworkInterface} from 'apollo-client'
@@ -19,6 +20,7 @@ const getStyles = () => styleSheet.rules().map(r => r.cssText).join('')
 export default async function renderer(ctx) {
     ctx.type = "html"
     // styleSheet.flush()
+
     const locale = "en"
     const location = ctx.request.url
 
@@ -36,6 +38,7 @@ export default async function renderer(ctx) {
             headers: ctx.request.headers
         }
     })
+
     const client = configureApolloClient(networkInterface)
     const memoryHistory = createMemoryHistory(location)
     const store = configureStore(memoryHistory, client)
@@ -52,42 +55,47 @@ export default async function renderer(ctx) {
         })
     })
 
-    {
-        const method = ctx.method.toLowerCase()
-        const {params, location, components} = renderProps
-        Object.assign(ctx.state, {store, params, location})
-
-        for (let component of components) {
-            if (!component) continue
-
-            while (component && !component[method]) {
-                component = component.WrappedComponent
-            }
-
-            if (component && component[method]) {
-                await component[method](ctx)
-            }
-        }
+    const {params, components} = renderProps
+    ctx.state = {
+        ...ctx.state,
+        store,
+        params
     }
 
     const component = (
         <ApolloProvider
             client={client}
             store={store}>
-            <RouterContext {...renderProps} />
+            <IntlProvider locale={locale}>
+                <RouterContext {...renderProps} />
+            </IntlProvider>
         </ApolloProvider>
     )
 
     await getDataFromTree(component)
 
+    const method = ctx.method.toLowerCase()
+    for (let component of components) {
+        if (!component) continue
+
+        while (component.WrappedComponent) {
+            component = component.WrappedComponent
+        }
+
+        const action = component[method]
+        if (typeof(action) === "function") {
+            await action(ctx)
+        }
+    }
+
+
     const htmlProps = {
         locale,
         children: component,
         styles: getStyles(),
-        state: store.getState(),
+        state: store.getState()
     }
 
-    ctx.body = "<!doctype html>" + renderToString(
-        <Html {...htmlProps} />
-    )
+    const html = renderToString(<Html {...htmlProps} />)
+    ctx.body = `<!doctype html>${html}`
 }

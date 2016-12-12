@@ -1,6 +1,6 @@
 import React from 'react'
 import {createRoutes, Route, IndexRoute} from 'react-router'
-import Layout from './components/ui/Layout'
+import Layout from './components/Layout'
 import HomePage from './components/pages/HomePage'
 
 const factory = msg => () => <h1>{msg}</h1>

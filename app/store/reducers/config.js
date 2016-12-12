@@ -1,6 +1,6 @@
-import {Map} from 'immutable'
-import {createReducer} from '../util'
-import {SET_CONFIG_KEY} from '../actions/config'
+import {Map} from "immutable"
+import {createReducer} from "../util"
+import {SET_CONFIG_KEY} from "../actions/config"
 
 const initialState = new Map()
 const reducer = createReducer(initialState)

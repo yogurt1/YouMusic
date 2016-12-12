@@ -1,7 +1,7 @@
-import React from 'react'
-import hoistStatic from 'hoist-non-react-statics'
+import React from "react"
+import hoistStatic from "hoist-non-react-statics"
 
-const getComponents = components => typeof(components) === 'function'
+const getComponents = components => typeof(components) === "function"
     ? components()
     : Promise.all(components)
 

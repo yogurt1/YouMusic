@@ -44,9 +44,7 @@ const config = module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: "babel-loader",
-                exclude: /(node_modules|\/vendor\.js$)/,
-                options: Object.assign({babelrc: false},
-                    require('./babel.preset').buildPreset({env: "browser"}))
+                exclude: /(node_modules|\/vendor\.js$)/
             },
             {
                 test: /\.json$/,
@@ -60,8 +58,8 @@ const config = module.exports = {
             {
                 test: /\.css$/,
                 loader: ExtractText.extract({
-                    fallbackLoader: 'style-loader',
-                    loader: 'css-loader'
+                    fallbackLoader: 'style-loader?-singleton&insertAt=top',
+                    loader: 'css-loader?-mimize&-autorepfixer&-sourceMap'
                 })
             },
             {
@@ -76,15 +74,14 @@ const config = module.exports = {
     plugins: [
         new ExtractText({
             allChunks: true,
-            disable: !isProduction,
+            disable: !isProduction, // !isProduction,
             filename: "styles.bundle.css"
         }),
         new webpack.ProvidePlugin({
             "Promise": "bluebird"
         }),
         new webpack.LoaderOptionsPlugin({
-            minimize: isProduction,
-            debug: !isProduction
+            minimize: isProduction
         }),
         new webpack.DefinePlugin({
             DEV: !isProduction,

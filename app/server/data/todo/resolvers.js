@@ -10,7 +10,7 @@ const todos = [
 ]
 
 const compare = key => val => obj => obj[key] === val
-const compareTodoById = compare('id')
+const compareTodoById = compare("id")
 
 export default {
     Query: {
