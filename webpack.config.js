@@ -14,7 +14,7 @@ const config = module.exports = {
     },
     output: {
         path: path.resolve("./assets"),
-        publicPath: "/asses/",
+        publicPath: "asses/",
         filename: "[name].js",
         devtoolModuleFilenameTemplate: "/[absolute-resource-path]"
     },
