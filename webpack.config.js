@@ -102,7 +102,7 @@ if (isProduction) {
     const BabiliPlugin = require('babili-webpack-plugin')
     config.plugins.push(
         new webpack.optimize.AggressiveMergingPlugin(),
-        new BabiliPlugin({test: /\.jsx?/}),
+        //new BabiliPlugin({test: /\.jsx?/}),
         new ImageminPlugin()
     )
 } else {

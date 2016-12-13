@@ -15,7 +15,7 @@ import configureStore from 'app/store'
 import configureApolloClient from 'app/store/apollo'
 
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
-const getStyles = () => styleSheet.rules().map(r => r.cssText).join('')
+const getStyles = () => styleSheet.rules().map(r => r.cssText).join("")
 
 export default async function renderer(ctx) {
     ctx.type = "html"

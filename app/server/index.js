@@ -10,6 +10,9 @@ import schema from "./data"
 import config from "./config"
 import passport, {router as passportRouter} from "./passport"
 import renderer from "./renderer"
+import {RedBoxError} from "redbox-react"
+import {createElement} from "react"
+import {renderToStaticMarkup} from "react-dom/server"
 
 const compose = (...mws) => (ctx, next) => {
     const dispatch = async i => {
@@ -21,6 +24,7 @@ const compose = (...mws) => (ctx, next) => {
 
 const app = new Koa()
 app.keys = [config.app.secret]
+app.silent = !DEV
 
 if (DEV) {
     const logger = require("koa-logger")
@@ -33,9 +37,12 @@ if (!DEV) {
     app.use(compress())
 }
 
+const staticOpts = {
+    maxage: DEV ? 0 : "365d"
+}
 app.use(compose(
-    mount("/assets", serveStatic("./assets")),
-    serveStatic("./static"),
+    mount("/assets", serveStatic("./assets", staticOpts)),
+    serveStatic("./static", staticOpts),
     bodyParser(),
     convert(session({key: "ssid"})),
     convert(passport.initialize()),
@@ -55,6 +62,15 @@ app.use(mount("/graphql", graphqlKoa(ctx => {
     }
 })))
 
+app.use(async (ctx, next) => {
+    try {
+        await next()
+    } catch(error) {
+        error.status = error.statusCode || error.status || 500
+        ctx.body = renderToStaticMarkup(createElement(
+            RedBoxError, {error}))
+    }
+})
 app.use(renderer)
 
 app.on("error", err => {

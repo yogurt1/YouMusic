@@ -9,8 +9,7 @@ const assets = {
 
 export default function Html({locale, state, styles, children}) {
     Helmet.rewind()
-    const script = 'window.__PRELOADED_STATE__ = '
-        + state ? JSON.stringify(state) : void 0
+    const script = `window.__PRELOADED__STATE__ = ${state ? JSON.stringify(state) : void 0}`
 
     return (
         <html>

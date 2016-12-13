@@ -1,4 +1,4 @@
-import {fromJS} from "immutable"
+import {Map, fromJS} from "immutable"
 import {composeWithDevTools as compose} from "redux-devtools-extension/developmentOnly"
 import {applyMiddleware, createStore} from "redux"
 import {combineReducers} from "redux-immutable"
@@ -7,10 +7,10 @@ import {routerMiddleware} from "react-router-redux"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry from "./reducers"
 
+const getPersistedState = () => JSON.parse(localStorage.getItem("state")) || window.__PRELOADED_STATE__
 export default function configureStore(history, client) {
-    const preloadedState = process.browser && fromJS(
-        localStorage.getItem("state") ||
-        window.__PRELOADED__STATE)
+    const preloadedState = process.browser &&
+        fromJS(getPersistedState())
 
     const middlewares = [
         client.middleware(),
@@ -27,7 +27,8 @@ export default function configureStore(history, client) {
     const finalCreateStore = compose(
         applyMiddleware(...middlewares)
     )(createStore)
-    const store = finalCreateStore(reducer, preloadedState)
+    const store = finalCreateStore(reducer,
+        preloadedState || void(0))
 
     if (module.hot) module.hot.accept("./reducers", () => {
         const {default: nextReducersRegistry} = require("./reducers")

@@ -21,15 +21,17 @@ function buildPreset(opts = {}) {
     const isProduction = process.env.NODE_ENV === 'production'
 
     const presets = [
-        ["env", {
-            modules: false,
-            loose: true,
-            targets: browser ? {
-                "firefox": 45,
-                "chrome": 55
-            } : {
-                node: "current"
-            }
+        // ["env", {
+        //     modules: false,
+        //     loose: true,
+        //     targets: browser ? {
+        //         "firefox": 45
+        //     } : {
+        //         node: "current"
+        //     }
+        // }],
+        browser && ["es2015", {
+            modules: false
         }],
         "react"
     ]
