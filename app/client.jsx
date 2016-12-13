@@ -44,4 +44,9 @@ match({routes, history}, (err, _, renderProps) => {
     if (criticalCss) criticalCss.remove()
 })
 
+if (DEV) {
+    const {whyDidYouUpdate} = require("why-did-you-update")
+    whyDidYouUpdate(React)
+}
+
 if (module.hot) module.hot.accept()

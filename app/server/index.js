@@ -33,18 +33,16 @@ if (DEV) {
         graphiqlKoa({endpointURL: "/graphql"})))
 }
 
-if (!DEV) {
-    app.use(compress())
-}
-
 const staticOpts = {
     maxage: DEV ? 0 : "365d"
 }
+
 app.use(compose(
+    compress(),
     mount("/assets", serveStatic("./assets", staticOpts)),
     serveStatic("./static", staticOpts),
     bodyParser(),
-    convert(session({key: "ssid"})),
+    convert(session(config.app.session)),
     convert(passport.initialize()),
     convert(passport.session())
 ))
@@ -71,6 +69,7 @@ app.use(async (ctx, next) => {
             RedBoxError, {error}))
     }
 })
+
 app.use(renderer)
 
 app.on("error", err => {

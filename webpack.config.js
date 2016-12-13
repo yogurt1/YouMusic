@@ -45,7 +45,8 @@ const config = module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: "babel-loader",
-                exclude: /(node_modules|\/vendor\.js$)/
+                exclude: /(node_modules|\/vendor\.js$)/,
+                options: require("./babel.preset").setup("browser")
             },
             {
                 test: /\.json$/,
@@ -95,14 +96,42 @@ const config = module.exports = {
     ]
 }
 
-const babiliPreset = {
-
-}
 if (isProduction) {
+    const {babili} = require('./babel.preset')
     const BabiliPlugin = require('babili-webpack-plugin')
     config.plugins.push(
         new webpack.optimize.AggressiveMergingPlugin(),
-        //new BabiliPlugin({test: /\.jsx?/}),
+        new BabiliPlugin({
+            preset: babili(),
+            test: /\.jsx?/
+        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         dead_code: true,
+        //         drop_debugger: true,
+        //         sequences: true,
+        //         unsafe: true,
+        //         conditionals: true,
+        //         comparisons: true,
+        //         properties: true,
+        //         booleans: true,
+        //         evaluate: true,
+        //         loops: true,
+        //         unused: true,
+        //         hoist_funs: true,
+        //         hoist_vars: true,
+        //         if_return: true,
+        //         join_vars: true,
+        //         cascade: true,
+        //         negate_iife: true,
+        //         pure_getters: true,
+        //         drop_console: true,
+        //         screw_ie8: true
+        //     },
+        //     mangle: {
+        //         screw_ie8: true
+        //     }
+        // }),
         new ImageminPlugin()
     )
 } else {
