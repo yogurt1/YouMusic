@@ -101,10 +101,11 @@ if (isProduction) {
     const BabiliPlugin = require('babili-webpack-plugin')
     config.plugins.push(
         new webpack.optimize.AggressiveMergingPlugin(),
+        new ImageminPlugin(),
         new BabiliPlugin({
-            preset: babili(),
+            // preset: babili(),
             test: /\.jsx?/
-        }),
+        })
         // new webpack.optimize.UglifyJsPlugin({
         //     compress: {
         //         dead_code: true,
@@ -132,7 +133,6 @@ if (isProduction) {
         //         screw_ie8: true
         //     }
         // }),
-        new ImageminPlugin()
     )
 } else {
     config.plugins.unshift(

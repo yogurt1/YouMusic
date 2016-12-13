@@ -1,4 +1,4 @@
-// import 'font-awesome/css/font-awesome.min.css'
+import 'font-awesome/css/font-awesome.min.css'
 import 'semantic-ui-css/semantic.min.css'
 import 'tinymce/tinymce.min.js'
 import 'whatwg-fetch'
@@ -28,6 +28,11 @@ const history = syncHistoryWithStore(browserHistory, store, {
 })
 const target = document.querySelector('#app')
 
+window.addEventListener("load", () => {
+    const criticalCss = document.querySelector("style.__CRITICAL_CSS__")
+    if (criticalCss) criticalCss.remove()
+})
+
 match({routes, history}, (err, _, renderProps) => {
     render((
         <AppContainer>
@@ -40,13 +45,11 @@ match({routes, history}, (err, _, renderProps) => {
             </ApolloProvider>
         </AppContainer>
     ), target)
-    const criticalCss = document.querySelector("style.__CRITICAL_CSS__")
-    if (criticalCss) criticalCss.remove()
 })
 
-if (DEV) {
-    const {whyDidYouUpdate} = require("why-did-you-update")
-    whyDidYouUpdate(React)
-}
+// if (process.env.NODE_ENV !== "production") {
+//     const {whyDidYouUpdate} = require("why-did-you-update")
+//     whyDidYouUpdate(React)
+// }
 
 if (module.hot) module.hot.accept()

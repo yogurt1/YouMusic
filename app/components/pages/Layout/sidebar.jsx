@@ -28,7 +28,7 @@ export default class SidebarLayout extends React.PureComponent {
         const {visible, children} = this.props
         return (
             <div>
-                <Sidebar.Pushable as={Segment}>
+                <Sidebar.Pushable>
                     <Sidebar
                         as={Menu}
                         animation='push'
