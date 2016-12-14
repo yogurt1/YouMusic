@@ -7,7 +7,7 @@ const isProduction = (
     "production" === process.env.NODE_ENV
 )
 
-const devtool = isProduction ? 'source-map' : '#eval-source-map'
+const devtool = isProduction ? 'source-map' : '#eval-source-ma<F12>p'
 const config = module.exports = {
     devtool,
     entry: {
@@ -18,7 +18,8 @@ const config = module.exports = {
         publicPath: "/",
         filename: "[name].bundle.js",
         chunkFilename: "[id].chunk.js",
-        devtoolModuleFilenameTemplate: "/[absolute-resource-path]"
+        devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
+        // devtoolModuleFilenameTemplate: "/[absolute-resource-path]"
     },
     resolve: {
         alias: {

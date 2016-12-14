@@ -1,7 +1,7 @@
 import React from "react"
-import {Button} from "semantic-ui-react"
-import SidebarLayout from "./sidebar"
+import {Button, Divider} from "semantic-ui-react"
 import {Column, Row, Container} from "app/components/ui/Grid"
+import SidebarLayout from "./sidebar"
 import autobind from "autobind-decorator"
 import {connect} from "react-redux"
 
@@ -35,7 +35,7 @@ export default class Layout extends React.PureComponent {
                         </Column>
                     </Row>
                 </Container>
-                <hr />
+                <Divider horizontal />
                 {children}
             </SidebarLayout>
         )

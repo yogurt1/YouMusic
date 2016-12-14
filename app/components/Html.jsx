@@ -1,18 +1,20 @@
-import React from 'react'
-import Helmet from 'react-helmet'
-import baseStyles, {normalize} from 'app/lib/baseStyles'
+import React from "react"
+import Helmet from "react-helmet"
+import baseStyles from "app/lib/baseStyles"
+// import assets from "../../assets.json"
 
 const assets = {
-    js: ["/app.bundle.js"],
-    css: ["/styles.bundle.css"],
+    js: "/app.bundle.js",
+    css: "/styles.bundle.css",
 }
 
 export default function Html({locale, state, styles, children}) {
-    Helmet.rewind()
-    const script = `window.__PRELOADED__STATE__ = ${state ? JSON.stringify(state) : void 0}`
+    const head = Helmet.rewind()
+    const attrs = head.htmlAttributes.toComponent()
+    const script = `window.__PRELOADED__STATE__ = ${JSON.stringify(state)}`
 
     return (
-        <html>
+        <html {...attrs}>
             <head>
                 <title>YouMusic</title>
                 <meta charSet="utf-8" />
@@ -20,31 +22,26 @@ export default function Html({locale, state, styles, children}) {
                     name="viewport"
                     content="width=device-width, initial-scale=1"
                 />
-                {/*<style
-                    type="text/css"
-                    dangerouslySetInnerHTML={{__html: normalize}}
-                />*/}
-                {assets.css.map((href, i) => (
-                    <link rel="stylesheet" href={href} key={i} />
-                ))}
+                <link
+                    rel="stylesheet"
+                    href={assets.css} />
                 <style
-                    type="text/css"
                     dangerouslySetInnerHTML={{__html: baseStyles}}
                 />
                 <style
                     className="__CRITICAL_CSS__"
-                    type="text/css"
                     dangerouslySetInnerHTML={{__html: styles}}
                 />
+                {head.title.toComponent()}
+                {head.meta.toComponent()}
+                {head.link.toComponent()}
             </head>
             <body>
                 <div id="app">
                     {children}
                 </div>
                 <script dangerouslySetInnerHTML={{__html: script}} />
-                {assets.js.map((src, i) => (
-                    <script defer src={src} key={i} />
-                ))}
+                <script src={assets.js} />
             </body>
         </html>
     )

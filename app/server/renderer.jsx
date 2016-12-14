@@ -9,13 +9,17 @@ import {createNetworkInterface} from 'apollo-client'
 import {syncHistoryWithStore} from 'react-router-redux'
 import styleSheet from 'styled-components/lib/models/StyleSheet'
 import {injectGlobal} from 'styled-components'
-// import baseStyles from 'app/lib/baseStyles'
 import routes from 'app/routes'
 import configureStore from 'app/store'
 import configureApolloClient from 'app/store/apollo'
 
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
 const getStyles = () => styleSheet.rules().map(r => r.cssText).join("")
+const matchAsync = opts => new Promise((resolve, reject) =>
+        match(opts, (err, ...rest) => {
+            if (err) return reject(err)
+            return resolve(rest)
+        }))
 
 export default async function renderer(ctx) {
     ctx.type = "html"
@@ -47,21 +51,13 @@ export default async function renderer(ctx) {
         }
     })
 
-    const [redir, renderProps] = await new Promise((resolve, reject) => {
-        match({location, routes, history}, (err, ...args) => {
-            if (err) return reject(err)
-            resolve(args)
-        })
-    })
 
-    // const actions = [
-    //     setLocale(locale),
-    //     setCsrfToken(csrfToken),
-    //     setAuthData(authData)
-    // ]
-    // for (const action of actions) {
-    //     store.dispatch(action)
-    // }
+    const [redir, renderProps] = await matchAsync({location, routes, history})
+
+    const actions = []
+    for (const action of actions) {
+        store.dispatch(action)
+    }
 
     const {params, components} = renderProps
     ctx.state = {
@@ -80,21 +76,27 @@ export default async function renderer(ctx) {
         </ApolloProvider>
     )
 
-    await getDataFromTree(component)
+    { // Preserve local scoped variables
+        const actions = []
+        const method = ctx.method.toLowerCase()
 
-    const method = ctx.method.toLowerCase()
-    for (let component of components) {
-        if (!component) continue
+        for (let component of components) {
+            if (!component) continue
 
-        while (component.WrappedComponent) {
-            component = component.WrappedComponent
+            while (component.WrappedComponent) {
+                component = component.WrappedComponent
+            }
+
+            const action = component[method]
+            if (typeof(action) === "function") {
+                actions.push(action(ctx))
+            }
         }
 
-        const action = component[method]
-        if (typeof(action) === "function") {
-            await action(ctx)
-        }
+        await Promise.all(actions)
     }
+
+    await getDataFromTree(component)
 
     const htmlProps = {
         children: component,

@@ -1,16 +1,16 @@
-import React from 'react'
-import styled from 'styled-components'
-import autobind from 'autobind-decorator'
-import {connect} from 'react-redux'
-import {FormattedMessage} from 'react-intl'
-import {Container, Row, Column} from 'app/components/ui/Grid'
-import YouTube from 'react-youtube'
-import VideoIdForm from '../forms/VideoIdForm'
-import {setToken} from 'app/store/actions/auth'
-import {setVideoId} from 'app/store/actions/video'
-import {pickState, bindActions} from 'app/store/util'
-import FA from '../ui/FontAwesome'
-import VideoContainer from "../ui/VideoContainer"
+import React from "react"
+import styled from "styled-components"
+import autobind from "autobind-decorator"
+import {connect} from "react-redux"
+import {FormattedMessage} from "react-intl"
+import YouTube from "react-youtube"
+import {Container, Row, Column} from "app/components/ui/Grid"
+import VideoIdForm from "app/components/forms/VideoIdForm"
+import FA from "app/components/ui/FontAwesome"
+import VideoContainer from "app/components/ui/VideoContainer"
+import {setToken} from "app/store/actions/auth"
+import {setVideoId} from "app/store/actions/video"
+import {pickState, bindActions} from "app/store/util"
 
 const MessageBlock = styled.span`
     color: ligthgreen;
@@ -53,16 +53,12 @@ export default class HomePage extends React.Component {
             <div>
                 <Container>
                     <Row>
-                        <Column>
-                            <MessageBlock>
-                                {isPlayerReady ? "Ready :-)" : (
-                                    <FA spin icon="spinner" />
-                                )}
-                            </MessageBlock>
-                        </Column>
-                        <Column>
-                            <VideoIdForm onSubmit={this.handleSubmit} />
-                        </Column>
+                        <MessageBlock>
+                            {isPlayerReady ? "Ready :-)" : (
+                                <FA spin icon="spinner" />
+                            )}
+                        </MessageBlock>
+                        <VideoIdForm onSubmit={this.handleSubmit} />
                     </Row>
                     <VideoContainer>
                         <YouTube

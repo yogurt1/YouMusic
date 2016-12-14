@@ -1,5 +1,7 @@
 const config = {
     app: {
+        name: process.env.APP_NAME || "YouMusic",
+        logLevel: DEV ? "debug" : "warn",
         port: process.env.PORT || 3000,
         session: {
             secret: process.env.SECRET || "keyboard cat",
@@ -9,10 +11,12 @@ const config = {
             }
         }
     },
+    db: null,
+    redis: null,
     passport: {
         google: {
-            clientID: process.env.GOOGLE_CLIENT_ID || "",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackUrl: "/auth/google/callback"
         }
     }
