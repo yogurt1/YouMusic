@@ -28,24 +28,27 @@ const history = syncHistoryWithStore(browserHistory, store, {
 })
 const target = document.querySelector('#app')
 
-window.addEventListener("load", () => {
-    const criticalCss = document.querySelector("style.__CRITICAL_CSS__")
-    if (criticalCss) criticalCss.remove()
+window.addEventListener("load", async () => {
+    [
+        "style.__CRITICAL_CSS__",
+        "div#__LOADER__"
+    ].forEach(s => document.querySelector(s).remove())
+
+    match({routes, history}, (err, _, renderProps) => {
+        render((
+            <AppContainer>
+                <ApolloProvider
+                    client={client}
+                    store={store}>
+                    <IntlProvider locale={locale}>
+                        <RouterContext {...renderProps} />
+                    </IntlProvider>
+                </ApolloProvider>
+            </AppContainer>
+        ), target)
+    })
 })
 
-match({routes, history}, (err, _, renderProps) => {
-    render((
-        <AppContainer>
-            <ApolloProvider
-                client={client}
-                store={store}>
-                <IntlProvider locale={locale}>
-                    <RouterContext {...renderProps} />
-                </IntlProvider>
-            </ApolloProvider>
-        </AppContainer>
-    ), target)
-})
 
 // if (process.env.NODE_ENV !== "production") {
 //     const {whyDidYouUpdate} = require("why-did-you-update")

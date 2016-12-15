@@ -9,6 +9,9 @@ const isProduction = (
 
 const devtool = isProduction ? 'source-map' : '#eval-source-ma<F12>p'
 const config = module.exports = {
+    performance: {
+        hints: isProduction && "warning"
+    },
     devtool,
     entry: {
         app: ["./app/client.jsx"]
@@ -50,10 +53,6 @@ const config = module.exports = {
                 options: require("./babel.preset").setup("browser")
             },
             {
-                test: /\.json$/,
-                loader: "json-loader"
-            },
-            {
                 test: /\.(graphql|gql)$/,
                 exclude: /node_modules/,
                 loader: 'graphql-tag/loader'
@@ -69,7 +68,7 @@ const config = module.exports = {
                 test: /\.(jpe?g|webp|bmp|ico|png|svg|woff2?|ttf|eot)/,
                 loader: "url-loader",
                 options: {
-                    limit: 1024000
+                    limit: 10240
                 }
             }
         ]

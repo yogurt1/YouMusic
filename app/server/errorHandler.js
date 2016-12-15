@@ -38,7 +38,8 @@ const renderHtml = content => `
 export default app => {
     app.use(mount("/__server__hmr", async ctx => {
         ctx.set("Cache-Control", "no-cache")
-        ctx.set("Content-Type", "text/event-stream")
+        // ctx.set("Content-Type", "text/event-stream")
+        ctx.type = "text/event-stream"
         const id = subscribers.push(ctx) - 1
 
         ctx.req.on("close", () => {
