@@ -3,8 +3,8 @@ const Webpack = require('webpack')
 const {renderToStaticMarkup} = require('react-dom/server')
 const {createElement} = require('react')
 const {RedBoxError} = require('redbox-react')
-const hotMiddleware = require('webpack-hot-middleware')
-const devMiddleware = require("webpack-dev-middleware")
+const HotMiddleware = require('webpack-hot-middleware')
+const DevMiddleware = require("webpack-dev-middleware")
 const devServer = require("express")()
 const app = require('./server.babel')
 
@@ -34,9 +34,16 @@ devServer.get("/__server_hmr", (req, res) => {
     })
 })
 
+const devMiddleware = DevMiddleware(compiler, config.devServer)
+
 devServer
-    .use(devMiddleware(compiler, config.devServer))
-    .use(hotMiddleware(compiler))
+    .use(devMiddleware)
+    .use(HotMiddleware(compiler))
+
+devServer.get("/__invalidate", (req, res) => {
+    devMiddleware.invalidate()
+    res.status(200).end()
+})
 
 devServer.use((req, res, next) => {
     const onError = err => {

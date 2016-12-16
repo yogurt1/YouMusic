@@ -42,8 +42,8 @@ export default class HomePage extends React.Component {
         const {isPlayerReady} = this.state
         const {auth, video} = this.props
         const opts = {
-            width: '100%',
-            height: '100%',
+            width: "100%",
+            height: "100%",
             playerVars: {
                 autoplay: 0
             }

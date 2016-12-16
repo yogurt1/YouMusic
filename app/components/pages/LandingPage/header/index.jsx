@@ -1,8 +1,10 @@
 import React from "react"
 import styled, {css} from "styled-components"
 import {Link} from "react-router"
+import Media from "react-media"
 import {Row, Clearfix, Flex} from "app/components/ui/Grid"
-import Section from "./section"
+import Section from "../section"
+import MenuWithItems from "./menu"
 
 const topBarText = css`
     font-size: 11pt;
@@ -16,32 +18,24 @@ const TopBar = styled(Clearfix)`
 
 const Logo = styled.span`
     ${topBarText}
-    display: block;
+    display: inline-block;
     float: left;
-    width: 30px;
+    width: 100px;
+    position: relative;
+    margin-left: 30px;
 
     &:before {
-        content: "";
-        display: block;
         position: absolute;
-        margin-left: 0 auto;
+        float: left;
+        display: inline-block;
+        content: "";
         background-size: cover;
         background-image: url(/assets/react.svg);
-        backgrond-position: -10px;
-        width: 10px;
-        height: 10px;
+        width: 30px;
+        height: 30px;
+        margin-left: -40px;
+        margin-top: -5px;
     }
-`
-
-const Menu = styled(Flex)`
-    float: right;
-    justify-content: baseline;
-`
-
-const MenuLink = styled(Link)`
-    padding: 5px;
-    display: block;
-    ${topBarText}
 `
 
 const links = [
@@ -65,11 +59,11 @@ export default class HeaderSection extends React.Component {
             <Section>
                 <TopBar>
                     <Logo>MIRACL</Logo>
-                    <Menu>
-                        {links.map((link, key) => (
-                            <MenuLink key={key} to={link.to}>{link.name}</MenuLink>
-                        ))}
-                    </Menu>
+                    <Media query={{minWidth: "764px"}}>
+                        {m => (
+                            <MenuWithItems links={links} />
+                        )}
+                    </Media>
                 </TopBar>
             </Section>
         )

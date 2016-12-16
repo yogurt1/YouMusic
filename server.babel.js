@@ -15,13 +15,9 @@ const app = () => require('./app/server').default
 app.config = config
 app.watch = done => require('chokidar').watch('./app')
     .on('change', () => {
-        const re = /[\/\\]app[\/\\]/
-
-            for (const id in require.cache) {
-            if (re.test(id)) {
-                delete require.cache[id]
-            }
-        }
+        Object.keys(require.cache)
+            .filter(id => /[\/\\]app[\/\\]/.test(id))
+            .forEach(id => delete require.cache[id])
 
         if (typeof(done) === "function") {
             done()
@@ -30,7 +26,7 @@ app.watch = done => require('chokidar').watch('./app')
 
 module.exports = app
 
-if (!module.parent || require.main.filename === __filename) {
+if (!module.parent) {
     const {port: PORT} = config.app
     const listener = app().callback()
     const server = http.createServer()

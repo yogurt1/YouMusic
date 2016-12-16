@@ -1,5 +1,5 @@
-import styled, {css, keyframes} from 'styled-components'
-import {camelCase} from 'lodash'
+import styled, {css, keyframes} from "styled-components"
+import {camelCase} from "lodash"
 import icons from "./icons.json"
 
 const defaults = {
@@ -17,9 +17,9 @@ const spin = keyframes`
 `
 const getAnimation = p => {
     switch(true) {
-        case p.spin: return `animation: ${spin} 1s infinite linear`
-        case p.pulse: return `animation: ${spin} 2s infinite steps(8)`
-        default: return ''
+    case p.spin: return `animation: ${spin} 1s infinite linear`
+    case p.pulse: return `animation: ${spin} 2s infinite steps(8)`
+    default: return ""
     }
 }
 const getIcon = p => icons[camelCase(p.icon)]

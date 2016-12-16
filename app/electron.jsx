@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, crashReporter} = require('electron')
+const {app, BrowserWindow, Menu, crashReporter} = require("electron")
 const config = {
     window: {
         width: 1024,
@@ -7,22 +7,22 @@ const config = {
 }
 
 crashReporter.start({
-    productName: 'YouMusic',
-    companyName: 'n/a',
-    submitURL: 'https://github.com/yogurt1/YouMusic/issues',
+    productName: "YouMusic",
+    companyName: "n/a",
+    submitURL: "https://github.com/yogurt1/YouMusic/issues",
     autoSubmit: false
 })
 
 let mainWindow = null
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit()
 })
 
-app.on('ready', () => {
+app.on("ready", () => {
     mainWindow = new BrowserWindow(config.window)
 
-    mainWindow.on('closed', () => {
+    mainWindow.on("closed", () => {
         mainWindow = null
     })
 

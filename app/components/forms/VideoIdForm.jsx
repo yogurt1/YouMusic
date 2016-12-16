@@ -1,6 +1,6 @@
-import React from 'react'
-import styled from 'styled-components'
-import {Field, reduxForm as form} from 'redux-form/immutable'
+import React from "react"
+import styled from "styled-components"
+import {Field, reduxForm as form} from "redux-form/immutable"
 import {Form, Input, Label, Button} from "semantic-ui-react"
 
 const ErrorBlock = styled.span`
@@ -10,14 +10,14 @@ const ErrorBlock = styled.span`
 const validate = values => {
     const errors = {}
 
-    if (!values.get('videoId')) {
+    if (!values.get("videoId")) {
         errors.videoId = "Required"
     }
 
     return errors
 }
 
-@form({validate, form: 'video'})
+@form({validate, form: "video"})
 export default class VideoIdForm extends React.PureComponent {
     renderField({input, label, type, meta}) {
         const {touched, error} = meta

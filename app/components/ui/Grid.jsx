@@ -1,5 +1,5 @@
 import React, {createElement} from "react"
-import styled, {css, injectGlobal} from 'styled-components'
+import styled, {css, injectGlobal} from "styled-components"
 
 const sizes = {
     1: 4.66666666667,
@@ -32,7 +32,7 @@ const clearfix = `
     }
 `
 export const Container = styled.div`
-    max-width: ${p => p.wide ? '99%' : '960px'};
+    max-width: ${p => p.wide ? "99%" : "960px"};
     position: relative;
     width: 100%;
     margin: 0 auto;
@@ -63,7 +63,7 @@ export const Column = styled.div`
     box-sizing: border-box;
 
     @media (min-width: 550px) {
-        margin-left: ${p => p.size === 12 ? 0 : '4%'};
+        margin-left: ${p => p.size === 12 ? 0 : "4%"};
         width: ${p => sizes[p.size]}%;
 
         &:first-child {
@@ -74,7 +74,7 @@ export const Column = styled.div`
 
 export const Clearfix = styled.div`${clearfix}`
 export const Row = ({children}) => createElement(Clearfix, {
-    children: !!children.find(child =>
+    children: children.find(child =>
             (child.type === Column && child.props.size))
         ? children
         : children.map((child, key) => createElement(Column, {
@@ -87,7 +87,7 @@ export const Row = ({children}) => createElement(Clearfix, {
 export const Col = Column
 export const Flex = styled.div`
     display: flex;
-    flex-direction: ${p => p.vertical ? 'column' : 'row'};
+    flex-direction: ${p => p.vertical ? "column" : "row"};
 `
 
 export const getColumnBySize = size => props => <Column size={size} {...props} />

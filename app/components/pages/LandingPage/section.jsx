@@ -8,4 +8,4 @@ height: 100%;
     color: #fff;
 `
 
-export default Section;
+export default Section

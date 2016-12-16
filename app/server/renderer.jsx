@@ -1,17 +1,17 @@
-import React from 'react'
-import Html from 'app/components/Html'
-import {match, RouterContext, createMemoryHistory} from 'react-router'
-import {ApolloProvider} from 'react-apollo'
+import React from "react"
+import Html from "app/components/Html"
+import {match, RouterContext, createMemoryHistory} from "react-router"
+import {ApolloProvider} from "react-apollo"
 import {IntlProvider} from "react-intl"
-import {renderToString, renderToStaticMarkup} from 'react-dom/server'
-import {getDataFromTree} from 'react-apollo/server'
-import {createNetworkInterface} from 'apollo-client'
-import {syncHistoryWithStore} from 'react-router-redux'
-import styleSheet from 'styled-components/lib/models/StyleSheet'
-import {injectGlobal} from 'styled-components'
-import routes from 'app/routes'
-import configureStore from 'app/store'
-import configureApolloClient from 'app/store/apollo'
+import {renderToString, renderToStaticMarkup} from "react-dom/server"
+import {getDataFromTree} from "react-apollo/server"
+import {createNetworkInterface} from "apollo-client"
+import {syncHistoryWithStore} from "react-router-redux"
+import styleSheet from "styled-components/lib/models/StyleSheet"
+import {injectGlobal} from "styled-components"
+import routes from "app/routes"
+import configureStore from "app/store"
+import configureApolloClient from "app/store/apollo"
 
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
 const getStyles = () => styleSheet.rules().map(r => r.cssText).join("")
@@ -37,7 +37,7 @@ export default async function renderer(ctx) {
     const networkInterface = createNetworkInterface({
         uri: ctx.request.host,
         opts: {
-            credentials: 'same-origin',
+            credentials: "same-origin",
             headers: ctx.request.headers
         }
     })
@@ -47,7 +47,7 @@ export default async function renderer(ctx) {
     const store = configureStore(memoryHistory, client)
     const history = syncHistoryWithStore(memoryHistory, store, {
         selectLocationState(state) {
-            return state.get('routing').toJS()
+            return state.get("routing").toJS()
         }
     })
 

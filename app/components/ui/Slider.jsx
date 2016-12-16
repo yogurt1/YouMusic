@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components"
 
 const Slider = styled.div`
     width: ${p => p.width};

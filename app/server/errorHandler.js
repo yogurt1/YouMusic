@@ -28,7 +28,7 @@ const renderHtml = content => `
                     }, 300)
                     return;
                 case "error":
-                    div.innerHTML = content;
+                    div.innerHTML = action.content;
                     return;
             }
         }

@@ -1,5 +1,5 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react"
+import styled from "styled-components"
 
 const ErrorBlock = styled.span`
     background: red;
@@ -12,7 +12,7 @@ export default class NoMatchPage extends React.PureComponent {
         const {error} = this.props
         return (
             <div>
-                <h1>Got error</h1>
+                <h1>No match (From RR and NoMatchPage)</h1>
                 <ErrorBlock>{error}</ErrorBlock>
             </div>
         )

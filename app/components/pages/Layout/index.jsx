@@ -5,7 +5,7 @@ import SidebarLayout from "./sidebar"
 import autobind from "autobind-decorator"
 import {connect} from "react-redux"
 
-export default class Layout extends React.PureComponent {
+export default class Layout extends React.Component {
     state = {
         isSidebarVisible: false
     }

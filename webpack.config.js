@@ -99,13 +99,15 @@ const config = module.exports = {
 if (isProduction) {
     const {babili} = require('./babel.preset')
     const BabiliPlugin = require('babili-webpack-plugin')
+    const CompressionPlugin = require("compression-webpack-plugin")
     config.plugins.push(
         new webpack.optimize.AggressiveMergingPlugin(),
         new ImageminPlugin(),
         new BabiliPlugin({
             // preset: babili(),
             test: /\.jsx?/
-        })
+        }),
+        new CompressionPlugin()
         // new webpack.optimize.UglifyJsPlugin({
         //     compress: {
         //         dead_code: true,

@@ -43,8 +43,8 @@ const Loader = styled.div`
         border-radius: 100%;
         transition: all .2s ease-out;
     }
-`
 
+`
 export default function Html({locale, state, styles, children}) {
     const head = Helmet.rewind()
     const attrs = head.htmlAttributes.toComponent()
