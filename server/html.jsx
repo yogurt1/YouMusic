@@ -86,6 +86,11 @@ export default function Html({locale, state, styles, children}) {
                         <span />
                     </Loader>
                 </div>
+                <noscript>
+                    <style dangerouslySetInnerHTML={{__html: `
+                        #__LOADER__ { display: none; }
+                    `}} />
+                </noscript>
                 <div id="app">
                     {children}
                 </div>
