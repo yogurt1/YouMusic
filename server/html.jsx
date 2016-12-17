@@ -5,8 +5,8 @@ import styled, {keyframes} from "styled-components"
 // import assets from "../../assets.json"
 
 const assets = {
-    js: "/app.bundle.js",
-    css: "/styles.bundle.css"
+    js: "/assets/app.bundle.js",
+    css: "/assets/styles.bundle.css"
 }
 
 const spin = keyframes`

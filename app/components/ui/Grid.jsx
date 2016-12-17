@@ -51,10 +51,11 @@ export const Container = styled.div`
     ${clearfix}
 `
 export const fullWidth = "width:100%;max-width:100%;"
-export const ContainerWide = styled(Container)`
+export const Section = styled(Container)`
     ${fullWidth}
     @media (min-width: 400px) { ${fullWidth} }
     @media (min-width: 550px) { ${fullWidth} }
+     ${p => p.height ? `height: ${p.height};` : ""};
 `
 
 export const Column = styled.div`

@@ -1,5 +1,5 @@
 import React from "react"
-import Html from "app/components/Html"
+import Html from "./html"
 import {match, RouterContext, createMemoryHistory} from "react-router"
 import {ApolloProvider} from "react-apollo"
 import {IntlProvider} from "react-intl"
@@ -34,12 +34,12 @@ export default async function renderer(ctx) {
         )
     }
 
+    // const cached = ctx.cashed(2 * 60 * 60)
+
     const networkInterface = createNetworkInterface({
         uri: ctx.request.host,
-        opts: {
-            credentials: "same-origin",
-            headers: ctx.request.headers
-        }
+        credentials: "same-origin",
+        headers: ctx.request.headers
     })
 
     const client = configureApolloClient(networkInterface)

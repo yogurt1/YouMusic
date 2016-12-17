@@ -4,12 +4,15 @@ import serveStatic from "koa-static"
 import mount from "koa-mount"
 import session from "koa-generic-session"
 import compress from "koa-compress"
+import conditional from "koa-conditional-get"
+import etag from "koa-etag"
 import convert from "koa-convert"
 import {graphqlKoa, graphiqlKoa} from "graphql-server-koa"
 import schema from "./data"
 import config from "./config"
 import passport, {router as passportRouter} from "./passport"
 import renderer from "./renderer"
+import cache from "./cache"
 import {koaBunyan} from "./bunyan"
 
 const compose = (...mws) => (ctx, next) => {
@@ -32,20 +35,17 @@ if (DEV) {
     app.use(mount("/graphiql",
         graphiqlKoa({endpointURL: "/graphql"})))
     errorHandler(app)
+} else {
+    app.use(cache())
 }
-
-const staticOpts = {
-    maxage: DEV ? 0 : "365d"
-}
-
-const assetsMiddleware = serveStatic("./assets", Object.assign({
-    root: "./assets"
-}, staticOpts))
 
 app.use(compose(
+    conditional(),
+    etag(),
     compress(),
-    mount("/assets", assetsMiddleware),
-    serveStatic("./static", staticOpts),
+    serveStatic("./static", {
+        maxage: DEV ? 0 : 365 * 24 * 60 * 60
+    }),
     bodyParser(),
     convert(session(config.app.session)),
     convert(passport.initialize()),

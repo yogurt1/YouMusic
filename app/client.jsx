@@ -27,19 +27,18 @@ const history = syncHistoryWithStore(browserHistory, store, {
     }
 })
 const target = document.querySelector("#app")
-window._HISTORY_ = history
 
-match({routes, history}, (err, _, renderProps) => render((
-    <AppContainer>
-        <ApolloProvider
-            client={client}
-            store={store}>
-            <IntlProvider locale={locale}>
-                <Router {...renderProps} />
-            </IntlProvider>
-        </ApolloProvider>
-    </AppContainer>
-), target))
+match({routes, history},
+    (err, _, renderProps) => render(
+        <AppContainer>
+            <ApolloProvider
+                client={client}
+                store={store}>
+                <IntlProvider locale={locale}>
+                    <Router {...renderProps} />
+                </IntlProvider>
+            </ApolloProvider>
+        </AppContainer>, target))
 
 window.onload = () => [
     "style.__CRITICAL_CSS__",
@@ -47,9 +46,11 @@ window.onload = () => [
 ].forEach(s => document.querySelector(s).remove())
 
 
-// if (process.env.NODE_ENV !== "production") {
-//     const {whyDidYouUpdate} = require("why-did-you-update")
-//     whyDidYouUpdate(React)
-// }
+if (process.env.NODE_ENV !== "production") {
+    // const {whyDidYouUpdate} = require("why-did-you-update")
+    // whyDidYouUpdate(React)
+    window.__APOLLO_CLIENT__ = client
+    // require("offline-plugin/runtime").install()
+}
 
 if (module.hot) module.hot.accept()

@@ -30,7 +30,7 @@ export default ({links}) => (
     <MenuWrapper>
         <Media query={{maxWidth: "764px"}}>
             {m => m ? (
-                <DropDownMenu links={links} />
+                <DropdownMenu links={links} />
             ) : (
                 <Flex>
                     {links.map((link, key) => (

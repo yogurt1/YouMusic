@@ -1,7 +1,7 @@
 yarn-error.log
 npm-debug.log
 node_modules
-static/*
+static/assets/*
 .env
 landing
 tmp

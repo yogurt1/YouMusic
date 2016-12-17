@@ -1,4 +1,4 @@
-{
+const config = module.exports = {
     "env": {
         "jasmine": true,
         "browser": true,
@@ -16,7 +16,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "graphql"
     ],
     "rules": {
         "no-unused-vars": 0,

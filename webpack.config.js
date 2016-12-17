@@ -10,15 +10,15 @@ const isProduction = (
 const devtool = isProduction ? 'source-map' : '#eval-source-ma<F12>p'
 const config = module.exports = {
     performance: {
-        hints: isProduction && "warning"
+        hints: isProduction
     },
     devtool,
     entry: {
         app: ["./app/client.jsx"]
     },
     output: {
-        path: path.resolve("./static"),
-        publicPath: "/",
+        path: path.resolve("./static/assets"),
+        publicPath: "/assets/",
         filename: "[name].bundle.js",
         chunkFilename: "[id].chunk.js",
         devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
@@ -33,7 +33,7 @@ const config = module.exports = {
     },
     devServer: {
         stats: "errors-only",
-        publicPath: "/",
+        publicPath: "/assets/",
         noInfo: true,
         inline: true,
         hot: true,

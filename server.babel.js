@@ -9,14 +9,14 @@ global.APP_ENV = process.env.APP_ENV || "local"
 if (DEV) require('dotenv/config')
 
 const http = require('http')
-const {default: config} = require('./app/server/config')
+const {default: config} = require('./server/config')
 
-const app = () => require('./app/server').default
+const app = () => require('./server').default
 app.config = config
-app.watch = done => require('chokidar').watch('./app')
+app.watch = done => require('chokidar').watch('./server')
     .on('change', () => {
         Object.keys(require.cache)
-            .filter(id => /[\/\\]app[\/\\]/.test(id))
+            .filter(id => /[\/\\]server[\/\\]/.test(id))
             .forEach(id => delete require.cache[id])
 
         if (typeof(done) === "function") {
