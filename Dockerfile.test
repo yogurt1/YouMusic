@@ -1,0 +1,9 @@
+FROM yogurt1/node-yarn-onbuild
+MAINTAINER <yogurt1> stalinswag1@gmail.com
+LABEL isFun="yes"
+
+ENV APP_ENV "TEST"
+ENV CI 1
+
+EXPOSE 3000
+

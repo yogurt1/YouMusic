@@ -1,7 +1,32 @@
 {
+    "presets": [
+        ["env", {
+            "modules": false,
+            "targets": {
+                "chrome": 50,
+                "firefox": 45,
+                "ios": 9,
+                "safari": 10
+            }
+        }]
+    ],
+    "plugins": [
+        "transform-runtime"
+    ],
     "env": {
-        "test": {
-            "presets": ["./babel.preset"]
+        "development": {
+            "plugins": [
+                "react-hot-loader/babel"
+            ]
+        },
+        "production": {
+            "presets": [
+                "react-optimize"
+            ],
+            "plugins": [
+                "transform-react-inline-elements"
+            ]
         }
     }
+
 }

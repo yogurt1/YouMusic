@@ -1,35 +1,33 @@
-const path = require('path')
-const webpack = require('webpack')
-const ExtractText = require('extract-text-webpack-plugin')
-const ImageminPlugin = require('imagemin-webpack-plugin').default
-const isProduction = (
+const path = require("path")
+const webpack = require("webpack")
+const ExtractText = require("extract-text-webpack-plugin")
+const {CheckerPlugin, TsConfigPathsPlugin} = require("awesome-typescript-loader")
+const isProduction = !!(
     "build" === process.env.npm_lifecycle_event ||
     "production" === process.env.NODE_ENV
 )
 
-const devtool = isProduction ? 'source-map' : '#eval-source-ma<F12>p'
+const devtool = isProduction ? "source-map" : "#eval-source-map"
 const config = module.exports = {
-    performance: {
-        hints: isProduction
-    },
     devtool,
+    performance: { hints: false },
     entry: {
-        app: ["./app/client.jsx"]
+        app: ["./app/client.tsx"]
     },
     output: {
         path: path.resolve("./static/assets"),
         publicPath: "/assets/",
         filename: "[name].bundle.js",
         chunkFilename: "[id].chunk.js",
-        devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
-        // devtoolModuleFilenameTemplate: "/[absolute-resource-path]"
+        // devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
+        devtoolModuleFilenameTemplate: "/[resourcePath]"
     },
     resolve: {
+        extensions: [".tsx", ".ts", ".js", ".json"],
         alias: {
             "app": path.resolve("./app"),
             "styled-components$": "styled-components/lib/index.js"
-        },
-        extensions: [".js", ".jsx", ".json"]
+        }
     },
     devServer: {
         stats: "errors-only",
@@ -47,21 +45,20 @@ const config = module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
-                loader: "babel-loader",
-                exclude: /(node_modules|\/vendor\.js$)/,
-                options: require("./babel.preset").setup("browser")
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader",
+                exclude: /(node_modules|\/vendor\.js$)/
             },
             {
                 test: /\.(graphql|gql)$/,
                 exclude: /node_modules/,
-                loader: 'graphql-tag/loader'
+                loader: "graphql-tag/loader"
             },
             {
                 test: /\.css$/,
                 loader: ExtractText.extract({
-                    fallbackLoader: 'style-loader?-singleton&insertAt=top',
-                    loader: 'css-loader?-mimize&-autorepfixer&-sourceMap'
+                    fallbackLoader: "style-loader?-singleton&insertAt=top",
+                    loader: "css-loader?-mimize&-autorepfixer&-sourceMap"
                 })
             },
             {
@@ -74,9 +71,11 @@ const config = module.exports = {
         ]
     },
     plugins: [
+        // new CheckerPlugin(),
+        new TsConfigPathsPlugin(),
         new ExtractText({
             allChunks: true,
-            disable: !isProduction, // !isProduction,
+            disable: !isProduction,
             filename: "styles.bundle.css"
         }),
         new webpack.ProvidePlugin({
@@ -90,51 +89,55 @@ const config = module.exports = {
             __DEV__: !isProduction,
             "typeof window": JSON.stringify("object"),
             "process.env": {
-                "NODE_ENV": JSON.stringify(isProduction ? 'production' : 'development')
+                "NODE_ENV": JSON.stringify(process.env.NODE_ENV)
             }
         })
     ]
 }
 
 if (isProduction) {
-    const {babili} = require('./babel.preset')
-    const BabiliPlugin = require('babili-webpack-plugin')
+    const OptimizeJsPlugin = require("optimize-js-plugin")
     const CompressionPlugin = require("compression-webpack-plugin")
+    const LodashPlugin = require("lodash-webpack-plugin")
+    const ImageminPlugin = require("imagemin-webpack-plugin").default
+
+    // config.entry["vendor"] = "./app/vendor.js"
     config.plugins.push(
-        new webpack.optimize.AggressiveMergingPlugin(),
-        new ImageminPlugin(),
-        new BabiliPlugin({
-            // preset: babili(),
-            test: /\.jsx?/
-        }),
-        new CompressionPlugin()
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         dead_code: true,
-        //         drop_debugger: true,
-        //         sequences: true,
-        //         unsafe: true,
-        //         conditionals: true,
-        //         comparisons: true,
-        //         properties: true,
-        //         booleans: true,
-        //         evaluate: true,
-        //         loops: true,
-        //         unused: true,
-        //         hoist_funs: true,
-        //         hoist_vars: true,
-        //         if_return: true,
-        //         join_vars: true,
-        //         cascade: true,
-        //         negate_iife: true,
-        //         pure_getters: true,
-        //         drop_console: true,
-        //         screw_ie8: true
-        //     },
-        //     mangle: {
-        //         screw_ie8: true
-        //     }
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: "vendor"
         // }),
+        new webpack.optimize.AggressiveMergingPlugin(),
+        new LodashPlugin(),
+        new ImageminPlugin(),
+        new OptimizeJsPlugin(),
+        new CompressionPlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                dead_code: true,
+                drop_debugger: true,
+                sequences: true,
+                unsafe: true,
+                conditionals: true,
+                comparisons: true,
+                properties: true,
+                booleans: true,
+                evaluate: true,
+                loops: true,
+                unused: true,
+                hoist_funs: true,
+                hoist_vars: true,
+                if_return: true,
+                join_vars: true,
+                cascade: true,
+                negate_iife: true,
+                pure_getters: true,
+                drop_console: true,
+                screw_ie8: true
+            },
+            mangle: {
+                screw_ie8: true
+            }
+        })
     )
 } else {
     config.plugins.unshift(
@@ -144,6 +147,6 @@ if (isProduction) {
     )
     config.entry["app"].unshift(
         "react-hot-loader/patch",
-        "webpack-hot-middleware/client?overlay=true&reload=false"
+        "webpack-hot-middleware/client?overlay=true&reload=false&noInfo=true"
     )
 }

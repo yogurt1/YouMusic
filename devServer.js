@@ -1,90 +1,121 @@
-const config = require('./webpack.config')
-const Webpack = require('webpack')
-const {renderToStaticMarkup} = require('react-dom/server')
-const {createElement} = require('react')
-const {RedBoxError} = require('redbox-react')
-const HotMiddleware = require('webpack-hot-middleware')
-const DevMiddleware = require("webpack-dev-middleware")
-const devServer = require("express")()
-const app = require('./server.babel')
+const {renderToStaticMarkup} = require("react-dom/server")
+const {createElement} = require("react")
+const {RedBoxError} = require("redbox-react")
 
-const compiler = Webpack(config)
 const subscribers = []
+const subscribeEndpoint = "/__server_hmr"
 const publish = action => subscribers.forEach(s =>
         s.write(`data: ${JSON.stringify(action)}\n\n`))
+
 const renderRedBox = error => renderToStaticMarkup(
     createElement(RedBoxError, {error}))
 
-app.watch(() => {
-    try {
-        app()
-        publish({type: "update"})
-    } catch(err) {
-        publish({type: "error", content: renderRedBox(err)})
-    }
-})
+const subscribe = (req, res) => {
+    res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache"
+    })
 
-devServer.get("/__server_hmr", (req, res) => {
-    res.set("Content-Type", "text/event-stream")
-    res.set("Cache-Control", "no-cache")
     const id = subscribers.push(res) - 1
 
     req.on("close", () => {
         subscribers.splice(id, 1)
     })
-})
+}
 
-const devMiddleware = DevMiddleware(compiler, config.devServer)
+const types = {
+    ERROR: "ERROR",
+    UPDATE: "UPDATE"
+}
 
-devServer
-    .use(devMiddleware)
-    .use(HotMiddleware(compiler))
-
-devServer.get("/__invalidate", (req, res) => {
-    devMiddleware.invalidate()
-    res.status(200).end()
-})
-
-devServer.use((req, res, next) => {
-    const onError = err => {
-        res.set("Content-Type", "text/html")
-        res.end(`
-            <span id="notification"></span>
-            <div id="err">${renderRedBox(err)}</div>
-            <script>
-                var es = new EventSource("__server_hmr");
-                es.onmessage = function(msg) {
-                    var action = JSON.parse(msg.data);
-                    switch(action.type) {
-                        case "update":
-                            es.close();
-                            var n = document.getElementById("notification");
-                            n.innerHTML = "<h1>Reloading...</h1>"
-                            setTimeout(function() {
-                                window.location.reload()
-                            }, 300)
-                            return;
-                        window.location.reload();
-                        case "error":
-                            var div = document.getElementById("err");
-                            div.innerHTML = content;
-                            return;
-                    }
-                }
-            </script>
-        `)
+const tmpl = err => `
+<span id="notification"></span>
+<div id="err">${renderRedBox(err)}</div>
+<script>
+    var n = document.getElementById("notification");
+    var div = document.getElementById("err");
+    var es = new EventSource("${subscribeEndpoint}");
+    es.onmessage = function(msg) {
+        var action = JSON.parse(msg.data);
+        switch(action.type) {
+            case "${types.UPDATE}":
+                es.close();
+                n.innerHTML = "<h1>Reloading...</h1>"
+                setTimeout(function() {
+                    window.location.reload()
+                }, 300)
+                break;
+            case "${types.ERROR}":
+                div.innerHTML = content;
+                break;
+        }
     }
+</script>
+`
 
-    try {
-        const nextApp = app()
-        publish({type: "update"})
-        nextApp.onerror = onError
-        nextApp.callback()(req, res)
-    } catch(err) {
-        onError(err)
-    }
-})
+const onError = (req, res) => err => {
+    res.set("Content-Type", "text/html")
+    res.end(tmpl(err))
+}
 
-const PORT = process.env.PORT || 3000
-devServer.listen(PORT,
-    () => console.log(`WDS listening on port ${PORT}`))
+const run = () => {
+    const HotMiddleware = require("webpack-hot-middleware")
+    const DevMiddleware = require("webpack-dev-middleware")
+    const config = require("./webpack.config")
+    const webpack = require("webpack")
+    const compiler = webpack(config)
+    const devServer = require("express")()
+    const app = require("./server.node")
+    const devMiddleware = DevMiddleware(compiler, config.devServer)
+
+    app.watch(() => {
+        try {
+            app()
+            publish({type: types.ERROR})
+        } catch(err) {
+            publish({type: types.UPDATE,
+                content: renderRedBox(err)})
+        }
+    })
+
+    devServer
+        .get(subscribeEndpoint, subscribe)
+        .use(devMiddleware)
+        .use(HotMiddleware(compiler))
+
+    devServer.get("/__invalidate", (req, res) => {
+        devMiddleware.invalidate()
+        res.status(200).end()
+    })
+
+    devServer.all("*", (req, res, next) => {
+        const onerror = onError(req, res)
+
+        try {
+            const nextApp = app()
+            publish({type: types.UPDATE})
+            nextApp.onerror = onerror
+            nextApp.callback()(req, res)
+        } catch(err) {
+            onerror(err)
+        }
+    })
+
+    const port = process.env.PORT || 3000
+    devServer.listen(port, () =>
+        console.log(`WDS listening on port ${port}`))
+}
+
+if (!module.parent) run()
+
+module.exports = {
+    types,
+    onError,
+    renderRedBox,
+    run,
+    tmpl,
+    subscribers,
+    subscribeEndpoint,
+    subscribe,
+    publish
+}
