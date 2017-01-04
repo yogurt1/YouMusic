@@ -1,7 +1,9 @@
+import {getDevEnv} from "app/lib/util"
+
 const config = {
     app: {
         name: process.env.APP_NAME || "YouMusic",
-        logLevel: DEV ? "debug" : "warn",
+        logLevel: getDevEnv() ? "debug" : "warn",
         port: process.env.PORT || 3000,
         session: {
             secret: process.env.SECRET || "keyboard cat",

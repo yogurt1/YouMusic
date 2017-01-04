@@ -21,8 +21,6 @@
         "useCache": true
     },
     "filesGlob": [
-        "**/*.ts",
-        "**/*.tsx",
         "!node_modules/**"
     ],
     "exclude": [

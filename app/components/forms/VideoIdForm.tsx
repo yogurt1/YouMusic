@@ -1,14 +1,17 @@
-import React from "react"
+import * as React from "react"
 import styled from "styled-components"
 import {Field, reduxForm as form} from "redux-form/immutable"
-import {Form, Input, Label, Button} from "semantic-ui-react"
+import {DataShape, FormProps} from "redux-form"
+import {Form, FormGroup, Input, Button} from "reactstrap"
 
 const ErrorBlock = styled.span`
     border: 1px solid red;
 `
 
 const validate = values => {
-    const errors = {}
+    const errors: {
+        videoId?: string
+    } = {}
 
     if (!values.get("videoId")) {
         errors.videoId = "Required"
@@ -17,12 +20,19 @@ const validate = values => {
     return errors
 }
 
+export interface FormData {
+    videoId: string
+}
+
+export interface Props {
+}
+
 @form({validate, form: "video"})
-export default class VideoIdForm extends React.PureComponent {
+export default class VideoIdForm extends React.PureComponent<FormProps<FormData, Props, null>, null> {
     renderField({input, label, type, meta}) {
         const {touched, error} = meta
         return (
-            <Form.Field>
+            <FormGroup>
                 <Input
                     {...input}
                     type={type}
@@ -30,7 +40,7 @@ export default class VideoIdForm extends React.PureComponent {
                     placeholder="Video ID"
                 />
                 {touched && error && <ErrorBlock>{error}</ErrorBlock>}
-            </Form.Field>
+            </FormGroup>
         )
     }
 

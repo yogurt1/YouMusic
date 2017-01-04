@@ -3,7 +3,7 @@ import ApolloClient from "apollo-client"
 export default function configureApolloClient(networkInterface) {
     const opts = {
         networkInterface,
-        ssrMode: !process.browser,
+        ssrMode: !(<any>process).browser,
         dataIdFromObject(res) {
             if (res.id && res.__typename) {
                 return res.__typename + res.id

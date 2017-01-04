@@ -1,11 +1,14 @@
+import {Reducer} from "redux"
 import {Map} from "immutable"
-import {createReducer} from "../util"
 import {SET_CONFIG_KEY} from "../actions/config"
+import {createReducer} from "../util"
 
-const initialState = new Map()
-const reducer = createReducer(initialState)
+export type ConfigState = Map<string, any>
+export const initialState: ConfigState = Map<string, any>()
+
+const reducer = createReducer<ConfigState>(initialState)
 
 reducer.case(SET_CONFIG_KEY, (state, action) => state
-    .set(action.payload.key, action.payload.value))
+             .set(action.payload[0], action.payload[1]))
 
 export default reducer

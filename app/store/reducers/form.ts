@@ -1,15 +1,19 @@
-import {reducer as formReducer} from "redux-form/immutable"
-import {createReducer} from "../util"
+import {Reducer} from "redux"
+import {reducer as formReducer, FormState, FormReducer} from "redux-form/immutable"
 import {AUTH_FAILURE} from "../actions/auth"
 
-const loginReducer = createReducer()
+export {FormState}
 
-loginReducer.case(AUTH_FAILURE, (state, action) => state
-    .setIn(["fields", "password"], void 0)
-    .setIn(["values", "password"], void 0))
+export const loginReducer: Reducer<FormState> = (state, action) => {
+    switch(action.type) {
+        case AUTH_FAILURE: return state
+            .setIn(["fields", "pasword"], void(0))
+            .setIn(["values", "password"], void(0))
+        default: return state
+    }
+}
 
-
-const reducer = formReducer.plugin({
+const reducer: FormReducer = formReducer.plugin({
     login: loginReducer
 })
 

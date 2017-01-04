@@ -1,3 +1,27 @@
+export const xor = (a, b) => !!(a ^ b)
+export const noop = () => null
+export const getDisplayName = c => c.displayName || c.name || "Component"
+export const dom = sel => {
+    const el = document.querySelector(sel)
+    return cb => el ? cb(el) : void(null)
+}
+
+export const getIsBrowser = () => xor((<any>process).browser, (typeof(window) === "object"))
+export const getDevEnv = () => process.env.NODE_ENV !== "production"
+export const getProdEnv = () => process.env.NODE_ENV === "production"
+export const getTestEnv = () => process.env.NODE_ENV === "test"
+export const getNotDevEnv = () => !getDevEnv()
+export const getNotProdEnv = () => !getProdEnv()
+export const getNotTestEnv = () => !getTestEnv()
+
+export const isBrowser = getIsBrowser()
+export const isDevEnv = getDevEnv()
+export const isProdEnv = getProdEnv()
+export const isTestEnv = getTestEnv()
+export const isNotDevEnv = getNotDevEnv()
+export const isNotProdEnv = getNotProdEnv()
+export const isNotTestEnv = getNotTestEnv()
+
 // Stupid FP shit, don't use it
 export const or = or => expr => expr || or
 export const orTrue = expr => or(true)

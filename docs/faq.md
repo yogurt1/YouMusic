@@ -10,17 +10,16 @@
 + Dockerfile
 + HMR and Time-travel both on server and client
 + Server-side render
-+ Critical CSS inlined to HTML due SSR
++ Critical CSS
++ TypeScript
 + CSS-in-JS via `styled-components`
-+ Fonts and sprites in CSS
-+ Semantic-UI, TinyMCE, YouTube
++ Bootstrap 4 and Reactstrap, TinyMCE, YouTube
 
 ###### TODO
 + Cache bursting
 + Code split
 + ServiceWorker and Offline-first
 + Intl/i18n
-+ TypeScript
 + Electron
 + ReactNative
 

@@ -1,5 +1,6 @@
 declare const DEV: string
 
+import * as fs from "fs"
 import * as Koa from "koa"
 import * as bodyParser from "koa-bodyparser"
 import * as serveStatic from "koa-static"
@@ -13,9 +14,9 @@ import {graphqlKoa, graphiqlKoa} from "graphql-server-koa"
 import schema from "./data"
 import config from "./config"
 import passport, {router as passportRouter} from "./passport"
-import renderer from "./renderer"
 import cache from "./cache"
 // import {koaBunyan} from "./bunyan"
+import renderer from "./renderer"
 
 const compose = (...mws: Koa.Middleware[]) => (ctx, next) => {
     const dispatch = async i => {
@@ -38,20 +39,9 @@ if (DEV) {
     app.use(mount("/graphiql",
         graphiqlKoa({endpointURL: "/graphql"})))
 
-    // app.use(mount(devServer.subscribeEndpoint, (ctx, _) =>
-        // devServer.subscribe(ctx.req, ctx.res)))
-
     app.use((ctx, next) => next()
-        .then(() =>
-            devServer.publish({ type: devServer.types.UPDATE }))
+        .then(() => devServer.publish({ type: devServer.types.UPDATE }))
         .catch(err => {
-            const content = devServer.tmpl(err)
-
-            devServer.publish({
-                type: devServer.types.ERROR,
-                content
-            })
-
             ctx.type = "html"
             ctx.body = devServer.tmpl(err)
         }))
@@ -63,7 +53,7 @@ if (DEV) {
 app.use(compose(
     conditional(),
     etag(),
-    // compress(),
+    compress(),
     serveStatic("./static", {
         maxage: DEV ? 0 : 365 * 24 * 60 * 60
     }),
@@ -88,7 +78,11 @@ app.use(mount("/graphql", graphqlKoa(ctx => {
 
 app.use(renderer)
 
-// Suppress error logging
+// app.use((ctx, next) => {
+//     ctx.type = "html"
+//     ctx.body = fs.createReadStream("./app/index.html")
+// })
+
 app.on("error", err => null)
 
 export default app

@@ -8,7 +8,7 @@ import {State} from "app/store"
 
 const assets = {
     css: "/assets/styles.bundle.css",
-    js: ["vendor", "app"]
+    js: ["app"]
         .map(n => `/assets/${n}.bundle.js`)
 }
 
@@ -62,10 +62,10 @@ export default function Html({locale, state, styles, children}: HtmlProps) {
     const serializedState = JSON.stringify(state)
     const script = `
         window.__PRELOADED__STATE__ = ${serializedState};
-        document.getElementById("__BUNDLE_CSS__")
-            .rel = "stylesheet";
+        document.getElementById("__BUNDLE_CSS__").rel = "stylesheet";
     `
 
+    // <link as="style"... />
     return (
         <html {...attrs}>
             <head>
@@ -80,7 +80,7 @@ export default function Html({locale, state, styles, children}: HtmlProps) {
                     rel="preload"
                     as="style"
                     href={assets.css}
-                />
+                    />
                 <style
                     dangerouslySetInnerHTML={{__html: baseStyles}}
                 />
@@ -98,12 +98,44 @@ export default function Html({locale, state, styles, children}: HtmlProps) {
                         <span />
                     </Loader>
                 </div>
+
                 <noscript>
+                    <a href="" style={{
+                        display: "block",
+                        position: "absolute",
+                        color: "white",
+                        textDecoration: "none",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0,0,0,.75)",
+                        overflow: "hidden",
+                        zIndex: 9999
+                    }}>
+                        <div style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            overflow: "hidden"
+                        }}>
+                            <h1 style={{
+                                textAlign: "center"
+                            }}>
+                                Enable JavaScript
+                                <br />
+                                (click to reload)
+                            </h1>
+                        </div>
+                    </a>
                     <style dangerouslySetInnerHTML={{__html: `
-                        #__LOADER__ { display: none; }
+                        #__LOADER__ { display:none; }
                     `}} />
-                    <h1><a href="#">Enable JavaScript</a></h1>
                 </noscript>
+
                 <div id="app">
                     {children}
                 </div>

@@ -41,6 +41,7 @@ const config = module.exports = {
         global: true,
         net: "mock",
         dns: "mock"
+        // child_process: "mock"
     },
     module: {
         rules: [
@@ -71,8 +72,12 @@ const config = module.exports = {
         ]
     },
     plugins: [
-        // new CheckerPlugin(),
-        new TsConfigPathsPlugin(),
+        new CheckerPlugin(),
+        new TsConfigPathsPlugin({
+            tsconfig: "tsconfig.json",
+            configFilename: "tsconfig.json",
+            compiler: "typescript"
+        }),
         new ExtractText({
             allChunks: true,
             disable: !isProduction,
@@ -100,6 +105,7 @@ if (isProduction) {
     const CompressionPlugin = require("compression-webpack-plugin")
     const LodashPlugin = require("lodash-webpack-plugin")
     const ImageminPlugin = require("imagemin-webpack-plugin").default
+    const BabiliPlugin = require("babili-webpack-plugin")
 
     // config.entry["vendor"] = "./app/vendor.js"
     config.plugins.push(
@@ -111,33 +117,34 @@ if (isProduction) {
         new ImageminPlugin(),
         new OptimizeJsPlugin(),
         new CompressionPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                dead_code: true,
-                drop_debugger: true,
-                sequences: true,
-                unsafe: true,
-                conditionals: true,
-                comparisons: true,
-                properties: true,
-                booleans: true,
-                evaluate: true,
-                loops: true,
-                unused: true,
-                hoist_funs: true,
-                hoist_vars: true,
-                if_return: true,
-                join_vars: true,
-                cascade: true,
-                negate_iife: true,
-                pure_getters: true,
-                drop_console: true,
-                screw_ie8: true
-            },
-            mangle: {
-                screw_ie8: true
-            }
-        })
+        new BabiliPlugin()
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         dead_code: true,
+        //         drop_debugger: true,
+        //         sequences: true,
+        //         unsafe: true,
+        //         conditionals: true,
+        //         comparisons: true,
+        //         properties: true,
+        //         booleans: true,
+        //         evaluate: true,
+        //         loops: true,
+        //         unused: true,
+        //         hoist_funs: true,
+        //         hoist_vars: true,
+        //         if_return: true,
+        //         join_vars: true,
+        //         cascade: true,
+        //         negate_iife: true,
+        //         pure_getters: true,
+        //         drop_console: true,
+        //         screw_ie8: true
+        //     },
+        //     mangle: {
+        //         screw_ie8: true
+        //     }
+        // })
     )
 } else {
     config.plugins.unshift(
@@ -146,7 +153,7 @@ if (isProduction) {
         new webpack.HotModuleReplacementPlugin()
     )
     config.entry["app"].unshift(
-        "react-hot-loader/patch",
-        "webpack-hot-middleware/client?overlay=true&reload=false&noInfo=true"
+        "webpack-hot-middleware/client?overlay=true&reload=false&noInfo=true",
+        "react-hot-loader/patch"
     )
 }

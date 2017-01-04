@@ -10,7 +10,7 @@ export default class HomePage extends React.Component<Props, null> {
     render() {
         return (
             <div>
-                <ControlsPanel />
+                <h1>Wut</h1>
             </div>
         )
     }

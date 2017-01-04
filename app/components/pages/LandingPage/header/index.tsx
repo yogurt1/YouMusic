@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 import styled, {css} from "styled-components"
 import {Link} from "react-router"
 import Media from "react-media"
@@ -6,6 +6,7 @@ import {Button} from "semantic-ui-react"
 import {Clearfix, Flex, Section} from "app/components/ui/Grid"
 import GhostButton, {ghostButton} from "app/components/ui/GhostButton"
 import MenuWithItems from "./menu"
+import {getIsBrowser} from "app/lib/util"
 
 const topBarText = css`
     font-size: 11pt;
@@ -96,7 +97,7 @@ const HeaderButton = styled(Link)`
 
 export default class Header extends React.Component<null, null> {
     handleJoinClick() {
-        if (process.browser) {
+        if (getIsBrowser()) {
             alert("Try!")
         }
     }

@@ -44,33 +44,48 @@ export const pickState = tree => state => {
 export const bindActions = actions => dispatch =>
     bindActionCreators(actions, dispatch)
 
-export const createAction = <T>(type: string) =>
-    (payload: T) =>
-        <Action<T>>({type, payload})
 
-        export function createReducer<S>(initialState: S): Reducer<S> {
-    const cases = new Map()
 
-    const reducer: Reducer<S> = (state = initialState, action: Action<S>) => {
-        const handler = cases[action.type]
-        return !handler ? state : handler(state, action)
+export function createAction <T>(type: string) {
+    return (payload: T) => <Action<T>>({
+        type,
+        payload
+    })
+}
+
+export function createTypes(...types: string[]): any {
+    // TODO: return type { [key: string]: string }
+    const ac = {}
+    types.forEach(t => ac[t] = t)
+    return ac
+}
+
+export function createReducer<S>(initialState: S, finalHandler?: Reducer<S>) {
+    const cases = new Map<string, Reducer<S>>()
+    const reducer: Reducer<S> = (state = initialState, action) => {
+        const handler = cases.get(action.type)
+        const nextState = !handler ? state : handler(state, action)
+        return typeof(finalHandler) === "function"
+            ? finalHandler(nextState, action) : nextState
     }
 
     Object.setPrototypeOf(reducer, {
-        ["case"](type: string | string[], handler: string | Reducer<S>): Reducer<S> {
-            if (Array.isArray(type)) {
-                const _case = this["case"]
-                type.forEach(t => _case(t, handler))
-                return reducer
-            }
+        get(type) {
+            return cases.get(type)
+        },
 
-            cases.set(type, typeof(handler) !== "string"
-                ? handler : cases.get(handler))
+        setFinalHandler(nextFinalHandler) {
+            finalHandler = nextFinalHandler
+        },
 
-            return reducer
+        link(type, to) {
+            cases.set(type, cases.get(to))
+        },
+
+        ["case"](type, handler) {
+            cases.set(type, handler)
         }
     })
 
-    return reducer
+    return reducer as any
 }
-

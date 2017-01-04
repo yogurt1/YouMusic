@@ -1,14 +1,18 @@
-import {fromJS} from "immutable"
+import {Reducer} from "redux"
+import {Map} from "immutable"
 import {LOCATION_CHANGE} from "react-router-redux"
-import {createReducer} from "../util"
 
-const initialState = fromJS({
+export type RoutingState = Map<string, any>
+export const initialState = Map<string, any>({
     locationBeforeTransitions: null
 })
 
-const reducer = createReducer(initialState)
-
-reducer.case(LOCATION_CHANGE, (state, action) => state
-    .set("locationBeforeTransitions", action.payload))
+const reducer: Reducer<RoutingState> = (state = initialState, action) => {
+    switch(action.type) {
+        case LOCATION_CHANGE: return state
+            .set("locationBeforeTransitions", action.payload)
+        default: return state
+    }
+}
 
 export default reducer

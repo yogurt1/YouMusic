@@ -1,22 +1,18 @@
-import {Map} from "immutable"
-import transit from "transit"
+import {Map, fromJS} from "immutable"
 import {composeWithDevTools} from "redux-devtools-extension/developmentOnly"
 import {applyMiddleware, createStore} from "redux"
 import {combineReducers} from "redux-immutable"
 import thunkMiddleware from "redux-thunk"
 import {routerMiddleware} from "react-router-redux"
 import arrayMiddleware from "./middlewares/array"
-import reducersRegistry from "./reducers"
+import reducersRegistry, {State} from "./reducers"
 
-export interface State {
-    routing: any,
-    form: any,
-    [key: string]: any
-}
+export {State}
 
-const preloadedState = !(<any>process).browser ? void(0) :
-    transit.fromJSON(
-        localStorage.getItem("state") ||
+const {browser} = process as any
+const preloadedState: State | void = !browser ? void(0) :
+    fromJS(JSON.parse(
+        localStorage.getItem("state")) ||
             window["__PRELOADED_STATE__"])
 
 export default function configureStore(history, client) {
@@ -38,7 +34,8 @@ export default function configureStore(history, client) {
     const store = createStore(reducer,
         preloadedState, enhancer)
 
-    if ((<any>module).hot) (<any>module).hot.accept("./reducers", () => {
+    const {hot} = module as any
+    if (hot) hot.accept("./reducers", () => {
         const {default: nextReducersRegistry} = require("./reducers")
         const nextReducer = combineReducers(nextReducersRegistry)
         store.replaceReducer(nextReducer)

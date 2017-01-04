@@ -1,7 +1,6 @@
 import styled, {css, keyframes} from "styled-components"
 import {camelCase} from "lodash"
 const icons = require("./icons.json")
-console.log(icons)
 
 const defaults = {
     size: 14,

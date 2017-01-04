@@ -3,7 +3,6 @@ export const sanitize = `
 `
 
 export default `
-    ${sanitize}
     body {
         font-size: 1.5em;
         line-height: 1.6;

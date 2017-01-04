@@ -1,11 +1,16 @@
-export default function arrayMiddleware({dispatch}) {
-    return next => action => {
-        if (!Array.isArray(action)) {
-            return next(action)
-        }
+import {Middleware, Action} from "redux"
 
-        for (const a of action) {
-            dispatch(a)
-        }
+export type ArrayAction = Action[]
+
+const arrayMiddleware: Middleware = ({dispatch}) => next => action => {
+    if (!Array.isArray(action)) {
+        return next(action)
     }
+
+    for (const a of action) {
+        dispatch(a)
+    }
+
 }
+
+export default arrayMiddleware

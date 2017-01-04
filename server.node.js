@@ -12,6 +12,7 @@ Object.assign(tsconfig, {
 })
 
 require("app-module-path/cwd")
+// require("systemmjs")
 require("source-map-support/register")
 require("ts-node").register(tsconfig)
 
@@ -25,15 +26,15 @@ require.extensions[".gql"] = (module, filename) => {
     }
 }
 
-global.System = {
-    import(m) {
-        try {
-            return Promise.resolve(require(m))
-        } catch(err) {
-            return Promise.reject(m)
-        }
-    }
-}
+// global.System = {
+//     import(m) {
+//         try {
+//             return Promise.resolve(require(m))
+//         } catch(err) {
+//             return Promise.reject(m)
+//         }
+//     }
+// }
 
 const http = require("http")
 const config = require("./server/config").default
@@ -64,6 +65,11 @@ if (!module.parent) {
             console.log(`Koa listening on port ${port}`)
         })
 
+    process.on("SIGTERM", code => {
+        server.close()
+        process.exit(code)
+    })
+
     if (DEV) {
         console.log("Development mode!")
 
@@ -93,9 +99,9 @@ if (!module.parent) {
                 const onerror = devServer.onError(req, res)
                 try {
                     const nextApp = app()
-                    devServer.publish({type: devServer.types.UPDATE})
                     nextApp.onerror = onerror
                     nextApp.callback()(req, res)
+                    devServer.publish({type: devServer.types.UPDATE})
                 } catch(err) {
                     onerror(err)
                 }
@@ -103,9 +109,5 @@ if (!module.parent) {
     }
 }
 
-process.on("SIGTERM", code => {
-    server.close()
-    process.exit(code)
-})
 
 module.exports = app

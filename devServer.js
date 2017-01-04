@@ -18,6 +18,8 @@ const subscribe = (req, res) => {
 
     const id = subscribers.push(res) - 1
 
+    publish({ type: "INIT" })
+
     req.on("close", () => {
         subscribers.splice(id, 1)
     })
@@ -30,10 +32,10 @@ const types = {
 
 const tmpl = err => `
 <span id="notification"></span>
-<div id="err">${renderRedBox(err)}</div>
+<div id="error">${renderRedBox(err)}</div>
 <script>
     var n = document.getElementById("notification");
-    var div = document.getElementById("err");
+    var div = document.getElementById("error");
     var es = new EventSource("${subscribeEndpoint}");
     es.onmessage = function(msg) {
         var action = JSON.parse(msg.data);
@@ -41,20 +43,20 @@ const tmpl = err => `
             case "${types.UPDATE}":
                 es.close();
                 n.innerHTML = "<h1>Reloading...</h1>"
-                setTimeout(function() {
+                return setTimeout(function() {
                     window.location.reload()
                 }, 300)
-                break;
             case "${types.ERROR}":
-                div.innerHTML = content;
-                break;
+                return div.innerHTML = content;
         }
     }
 </script>
 `
 
 const onError = (req, res) => err => {
-    res.set("Content-Type", "text/html")
+    res.writeHead(200, {
+        "Content-Type": "text/html"
+    })
     res.end(tmpl(err))
 }
 
@@ -71,9 +73,9 @@ const run = () => {
     app.watch(() => {
         try {
             app()
-            publish({type: types.ERROR})
+            // publish({type: types.UPDATE})
         } catch(err) {
-            publish({type: types.UPDATE,
+            publish({type: types.ERROR,
                 content: renderRedBox(err)})
         }
     })
@@ -89,15 +91,22 @@ const run = () => {
     })
 
     devServer.all("*", (req, res, next) => {
-        const onerror = onError(req, res)
+        let isError = false
+        const onerror = err => {
+            isError = true
+            onError(req, res)
+        }
 
         try {
             const nextApp = app()
-            publish({type: types.UPDATE})
             nextApp.onerror = onerror
             nextApp.callback()(req, res)
         } catch(err) {
             onerror(err)
+        } finally {
+            if (!isError) {
+                publish({ type: types.UPDATE })
+            }
         }
     })
 

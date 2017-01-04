@@ -17,5 +17,6 @@ const resolvers = [
 
 export default makeExecutableSchema({
     typeDefs: [Schema, ...schemas],
-    resolvers: merge(Resolvers, ...resolvers)
+    resolvers: Object.assign(Resolvers, ...resolvers)
+    // resolvers: merge(Resolvers, ...resolvers)
 })

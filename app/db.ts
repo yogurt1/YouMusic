@@ -1,19 +1,19 @@
-// TODO: Db :-)
-import RxDB from "rxdb"
+// // TODO: Db :-)
+// import RxDB from "rxdb"
 
-const configureNodeBackend = () => {
+// const configureNodeBackend = () => {
 
-}
+// }
 
-const configureBrowserBackend = () => {
-}
+// const configureBrowserBackend = () => {
+// }
 
-export default function configureDatabase() {
-    const backend = process.browser
-        ? configureBrowserBackend()
-        : configureNodeBackend()
+// export default function configureDatabase() {
+//     const backend = process.browser
+//         ? configureBrowserBackend()
+//         : configureNodeBackend()
 
-    const db = RxDB.create("youmusicDB", backend)
+//     const db = RxDB.create("youmusicDB", backend)
 
-    return db
-}
+//     return db
+// }

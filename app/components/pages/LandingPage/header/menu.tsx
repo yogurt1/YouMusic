@@ -14,17 +14,18 @@ const MenuItem = styled(Link)`
     text-decoration: none;
 `
 
-const DropdownMenu: React.StyledComponent = ({links}) => (
-    <Dropdown text="More" basic>
-        <Dropdown.Menu as="div">
-            {links.map((link, key) => (
-                <Dropdown.Item as={Link} key={key} to={link.to}>
-                    {link.name}
-                </Dropdown.Item>
-            ))}
-        </Dropdown.Menu>
-    </Dropdown>
-)
+const DropdownMenu = () => null
+// const DropdownMenu: React.StyledComponent = ({links}) => (
+//     <Dropdown text="More" basic>
+//         <Dropdown.Menu as="div">
+//             {links.map((link, key) => (
+//                 <Dropdown.Item as={Link} key={key} to={link.to}>
+//                     {link.name}
+//                 </Dropdown.Item>
+//             ))}
+//         </Dropdown.Menu>
+//     </Dropdown>
+// )
 
 export interface Props {
     links: Array<any>
