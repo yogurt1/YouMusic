@@ -17,29 +17,45 @@ const TopBar = styled.div`
     background-color: white;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
     transition: all .3s ease-in-out;
+    padding: 7px;
 `
 
-const MenuButton = styled.button`
-    position: absolute;
-    cursor: pointer;
+const Button = styled.button`
     color: #212121;
     background: none;
     border: none;
     outline: none;
     text-rendering: auto;
     text-align: center;
-    font-size: 36px;
-    left: 4px;
-
+    // font-size: 36px;
     cursor: pointer;
-    color: black;
     transition: all .3s ease-in-out;
     transform-origin: center;
 
     &:hover,
     &:focus {
+        border: none;
+        outline: none;
         color: inherit;
     }
+`
+
+const MenuButton = styled(Button)`
+    margin-left: 4px;
+    margin-right: 5px;
+`
+
+const SearchButton = styled(Button)`
+    float: right;
+`
+
+const MenuText = styled.p`
+    position: relative;
+    display: inline-block;
+    font-weight: 500;
+    font-size: 24px;
+    text-align: center;
+    // vertical-align: middle;
 `
 
 const common = css`
@@ -50,22 +66,25 @@ const Page = styled.div`
     ${common}
     position: absolute;
     box-sizing: border-box;
-    padding-top: 56px;
-    margin-top: -56px;
     width: 100vw;
     background-color: #eef;
     color: black;
+    overflow: hidden;
 `
 
 const Content = styled.div`
     ${common}
     padding-top: 56px;
-    transition: all .3s ease;
+    transition:
+        background-color .3s linear,
+        transfrom .5s;
+    transition-delay: .3s;
 
     ${p => p.open && css`
         width: calc(100% - 240px);
         overflow: hidden;
         transform: translate3d(240px, 0, 0);
+        background-color: rgba(0, 0, 0, .05);
     `}
 `
 
@@ -74,7 +93,7 @@ const Sidebar = styled.div`
     position: absolute;
     padding-top: 56px;
     width: 240px;
-    transition: transform .3s ease;
+    transition: transform .5s;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.45);
     background-color: #ffe;
 
@@ -130,49 +149,68 @@ const menuItems = [
     }
 ]
 
-
-
 export interface Props {
     location: string
 }
 
 export interface State {
-    isSidebarVisible?: boolean
+    open?: boolean
+    search?: boolean
 }
 
 export default class Layout extends React.PureComponent<Props, State> {
     state = {
-        isSidebarVisible: false
+        open: false,
+        search: false
     }
 
     @autobind
-    toggleSidebar() {
+    private toggleSidebar() {
         this.setState({
-            isSidebarVisible: !this.state.isSidebarVisible
+            open: !this.state.open
         })
     }
 
     @autobind
-    handleBlur() {
-        if (this.state.isSidebarVisible) {
+    private handleSearch() {
+        this.setState({
+            search: true
+        })
+    }
+
+    @autobind
+    private handleBlur() {
+        if (this.state.open) {
             this.toggleSidebar()
         }
     }
 
     render() {
         const {children, location} = this.props
-        const {isSidebarVisible} = this.state
+        const {open, search} = this.state
 
         return (
-            <Page>
+            <Page open={open}>
                 <TopBar>
                     <MenuButton
-                        open={isSidebarVisible}
+                        open={open}
                         onClick={this.toggleSidebar}>
                         <FontAwesome icon="bars" />
                     </MenuButton>
+                    <MenuText>MENU</MenuText>
+                    <div style={{
+                        float: "right",
+                        display: search ? "inline-block" : "none"
+                    }}>WTF</div>
+                    <SearchButton
+                        style={{
+                            display: search ? "none" : "inline-block"
+                        }}
+                        onClick={this.handleSearch}>
+                        <FontAwesome icon="search" />
+                    </SearchButton>
                 </TopBar>
-                <Sidebar open={isSidebarVisible}>
+                <Sidebar open={open}>
                     <AppMenu>
                         {menuItems.map((item, i) => (
                             <AppMenuItem key={i}>
@@ -186,7 +224,7 @@ export default class Layout extends React.PureComponent<Props, State> {
                         ))}
                     </AppMenu>
                 </Sidebar>
-                <Content open={isSidebarVisible}>
+                <Content onClick={this.handleBlur} open={open}>
                     {children}
                 </Content>
             </Page>

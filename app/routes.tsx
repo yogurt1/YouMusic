@@ -3,6 +3,7 @@ import {createRoutes, Route, IndexRoute} from "react-router"
 import Layout from "./components/layout"
 import HomePage from "./components/pages/HomePage"
 import NoMatchPage from "./components/pages/NoMatchPage"
+import TestPage from "./components/pages/TestPage"
 import {isDevEnv} from "app/lib/util"
 
 declare var System: any
@@ -45,6 +46,7 @@ const VideoPage: React.StatelessComponent<VideoPageProps> = ({params}) => (
 
 export default createRoutes(
     <Route>
+        <Route path="/test" component={TestPage} />
         {/*<Route path="/promo" getComponent={getLandingPage} />*/}
         <Route path="/" component={Layout}>
             <IndexRoute component={HomePage} />

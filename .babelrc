@@ -1,5 +1,4 @@
 {
-    "exclude": "",
     "presets": [
         ["env", {
             "modules": false,

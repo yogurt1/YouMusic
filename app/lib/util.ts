@@ -1,3 +1,6 @@
+export const arrayBuilder = <T>(...fns: Array<(i: number) => T | any>): Array<T> =>
+    fns.map((fn, i) => fn(i))
+
 export const xor = (a, b) => !!(a ^ b)
 export const noop = () => null
 export const getDisplayName = c => c.displayName || c.name || "Component"

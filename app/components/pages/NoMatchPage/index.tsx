@@ -1,27 +1,13 @@
 import * as React from "react"
 import styled from "styled-components"
-import {Button, Header} from "semantic-ui-react"
 import {InjectedRouter, withRouter} from "react-router"
+import {Button} from "reactstrap"
 
 const ErrorPage = styled.div`
-    position: absolute;
-
-`
-
-const ErrorBlock = styled.span`
-    background: red;
-    font-weight: 600;
-    font-size: 40px;
-`
-
-const ErrorMessage = styled.span`
-    font-size: 40px;
-
-`
-
-const GoBackButton = styled.button`
-    outline: none;
-
+    height: 100vh;
+    widht: 100vw;
+    background-color: #eef;
+    color: black;
 `
 
 export interface Props {
@@ -37,12 +23,7 @@ export default class NoMatchPage extends React.PureComponent<Props, null> {
         const {errorMessage = "Not found"} = this.props
         return (
             <ErrorPage>
-                <ErrorBlock>
-                    <ErrorMessage>{errorMessage}</ErrorMessage>
-                    <GoBackButton onClick={this.handleClick}>
-                        Go back
-                    </GoBackButton>
-                </ErrorBlock>
+                <Button onClick={this.handleClick}>Go back</Button>
             </ErrorPage>
         )
     }
