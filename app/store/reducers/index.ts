@@ -2,8 +2,8 @@ import {Reducer} from "redux"
 import routingReducer, {RoutingState} from "./routing"
 import formReducer, {FormState} from "./form"
 import authReducer, {AuthState} from "./auth"
-import videoReducer, {VideoState} from "./video"
-import configReducer, {ConfigState} from "./config"
+import {reducer as configReducer, State as ConfigState} from "../ducks/config"
+import {reducer as videoReducer, State as VideoState} from "../ducks/video"
 
 export interface State {
     routing: RoutingState
@@ -25,8 +25,8 @@ export interface ReducersRegistry {
 const reducersRegistry: ReducersRegistry = {
     routing: routingReducer,
     form: formReducer,
-    config: configReducer,
     auth: authReducer,
+    config: configReducer,
     video: videoReducer
 }
 

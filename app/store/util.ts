@@ -53,10 +53,9 @@ export function createAction <T>(type: string) {
     })
 }
 
-export function createTypes(...types: string[]): any {
-    // TODO: return type { [key: string]: string }
+export function createTypes(prefix: string, ...types: string[]): any {
     const ac = {}
-    types.forEach(t => ac[t] = t)
+    types.forEach(type => ac[type] = `${prefix}/${type}`)
     return ac
 }
 

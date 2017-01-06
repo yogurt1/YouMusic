@@ -1,5 +1,6 @@
 import {Action} from "flux-standard-action"
 import {Map} from "immutable"
+import {Reducer} from "redux"
 import {createReducer, createAction, createTypes} from "../util"
 
 export const types = createTypes(
@@ -16,7 +17,10 @@ export const actions = {
 export type State = Map<string, string>
 export const initialState: State = Map<string, string>()
 
-export const reducer = createReducer(initialState)
-    .case(types.SET_CONFIG_KEY,
-          (s, { payload: [k, v] }) => s.set(k, v))
-
+export const reducer: Reducer<State> = (state = initialState, action) => {
+    switch (action.type) {
+        case types.SET_CONFIG_KEY: return state
+            .set(action.payload[0], action.payload[1])
+        default: return state
+    }
+}

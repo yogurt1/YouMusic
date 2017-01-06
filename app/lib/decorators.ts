@@ -3,8 +3,9 @@ import {createElement, Component} from "react"
 import hoistStatics from "hoist-non-react-statics"
 import * as util from "./util"
 
-export const browserOnly = fallback => component =>
-    util.getIsBrowser() ? component : (fallback || util.noop)
+export const browserOnly = fallback => !util.isBrowser
+    ? (_ => fallback || (_ => null))
+    : (component => component)
 
 // export const lazyLoad = createPromises => WrappedComponent => {
 //     class LazyLoad extends Component {
