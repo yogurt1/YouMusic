@@ -14,9 +14,13 @@ export const actions= {
 }
 
 
+const fake = {
+    videoId: () => "n3osLacrd_c"
+}
+
 export type State = Map<string, string>
 export const initialState: State = Map({
-    videoId: "fake"
+    videoId: fake.videoId()
 })
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
