@@ -129,6 +129,10 @@
   version "4.14.46"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.46.tgz#5216f7bef8e0b1abd904383fb2e0254a43c222d4"
 
+"@types/lodash@^4.14.47":
+  version "4.14.47"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.47.tgz#4f780d1de593baae2171998b24b4282c5a1f8698"
+
 "@types/lru-cache@^2.5.32":
   version "2.5.32"
   resolved "https://registry.yarnpkg.com/@types/lru-cache/-/lru-cache-2.5.32.tgz#5991590d5af4140e55eaa9a62e09dc7f7e9af615"
@@ -6751,10 +6755,6 @@ reduce-function-call@^1.0.1:
   resolved "https://registry.yarnpkg.com/reduce-function-call/-/reduce-function-call-1.0.2.tgz#5a200bf92e0e37751752fe45b0ab330fd4b6be99"
   dependencies:
     balanced-match "^0.4.2"
-
-redux-devtools-extension@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-1.0.0.tgz#f8bf7a2a093b648054a3814d6d120ad8bc8beaa9"
 
 redux-form@^6.2.1:
   version "6.4.3"

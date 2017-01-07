@@ -1,5 +1,4 @@
 import {makeExecutableSchema} from "graphql-tools"
-import {merge} from "lodash"
 import Schema from "./schema"
 import Resolvers from "./resolvers"
 import {
@@ -18,5 +17,4 @@ const resolvers = [
 export default makeExecutableSchema({
     typeDefs: [Schema, ...schemas],
     resolvers: Object.assign(Resolvers, ...resolvers)
-    // resolvers: merge(Resolvers, ...resolvers)
 })

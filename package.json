@@ -56,6 +56,7 @@
     "@types/koa-passport": "^2.0.3",
     "@types/koa-router": "^7.0.21",
     "@types/koa-static": "^2.0.22",
+    "@types/lodash": "^4.14.47",
     "@types/lru-cache": "^2.5.32",
     "@types/node": "^6.0.55",
     "@types/react": "^0.14.55",
