@@ -9,7 +9,8 @@ export const dom = sel => {
     return cb => el ? cb(el) : void(null)
 }
 
-export const getIsBrowser = () => xor((<any>process).browser, (typeof(window) === "object"))
+export const getIsBrowser = () => (<any>process).browser ||
+    typeof(window) === "object"
 export const getDevEnv = () => process.env.NODE_ENV !== "production"
 export const getProdEnv = () => process.env.NODE_ENV === "production"
 export const getTestEnv = () => process.env.NODE_ENV === "test"

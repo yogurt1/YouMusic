@@ -2,7 +2,7 @@ import * as React from "react"
 import styled from "styled-components"
 import {Link} from "react-router"
 import Media from "react-media"
-import {Dropdown} from "semantic-ui-react"
+import {Dropdown} from "reactstrap"
 import {Flex} from "app/components/ui/Grid"
 
 const MenuWrapper = styled.div`float:right;`

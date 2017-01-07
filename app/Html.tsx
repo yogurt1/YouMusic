@@ -8,8 +8,7 @@ import {State} from "app/store"
 
 const assets = {
     css: "/assets/styles.bundle.css",
-    js: ["app"]
-        .map(n => `/assets/${n}.bundle.js`)
+    js: "/assets/app.bundle.js"
 }
 
 const spin = keyframes`
@@ -140,9 +139,7 @@ export default function Html({locale, state, styles, children}: HtmlProps) {
                     {children}
                 </div>
                 <script dangerouslySetInnerHTML={{__html: script}} />
-                {assets.js.map((s, i) => (
-                    <script src={s} key={i+1} />
-                ))}
+                <script src={assets.js} />
             </body>
         </html>
     )

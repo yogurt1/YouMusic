@@ -2,6 +2,7 @@ import * as React from "react"
 import styled, {css, keyframes} from "styled-components"
 import {Link} from "react-router"
 import FontAwesome from "app/components/ui/FontAwesome"
+import ClickOutside from "app/lib/ClickOutside"
 import {autobind} from "core-decorators"
 import {connect} from "react-redux"
 
@@ -75,16 +76,13 @@ const Page = styled.div`
 const Content = styled.div`
     ${common}
     padding-top: 56px;
-    transition:
-        background-color .3s linear,
-        transfrom .5s;
-    transition-delay: .3s;
+    transition: background-color .3s;
 
     ${p => p.open && css`
-        width: calc(100% - 240px);
+        /*width: calc(100% - 240px);
         overflow: hidden;
-        transform: translate3d(240px, 0, 0);
-        background-color: rgba(0, 0, 0, .05);
+        transform: translate3d(240px, 0, 0);*/
+        background-color: rgba(0, 0, 0, .15);
     `}
 `
 
@@ -93,7 +91,7 @@ const Sidebar = styled.div`
     position: absolute;
     padding-top: 56px;
     width: 240px;
-    transition: transform .5s;
+    transition: transform .5s ease-out;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.45);
     background-color: #ffe;
 
@@ -179,7 +177,7 @@ export default class Layout extends React.PureComponent<Props, State> {
     }
 
     @autobind
-    private handleBlur() {
+    private handleClickOutside() {
         if (this.state.open) {
             this.toggleSidebar()
         }
@@ -210,21 +208,23 @@ export default class Layout extends React.PureComponent<Props, State> {
                         <FontAwesome icon="search" />
                     </SearchButton>
                 </TopBar>
-                <Sidebar open={open}>
-                    <AppMenu>
-                        {menuItems.map((item, i) => (
-                            <AppMenuItem key={i}>
-                                <AppMenuLink
-                                    activeClassName="active"
-                                    to={item.path}>
-                                    <FontAwesome icon={item.icon} />
-                                    {item.name}
-                                </AppMenuLink>
-                            </AppMenuItem>
-                        ))}
-                    </AppMenu>
-                </Sidebar>
-                <Content onClick={this.handleBlur} open={open}>
+                <ClickOutside onClickOutside={this.handleClickOutside}>
+                    <Sidebar open={open}>
+                        <AppMenu>
+                            {menuItems.map((item, i) => (
+                                <AppMenuItem key={i}>
+                                    <AppMenuLink
+                                        activeClassName="active"
+                                        to={item.path}>
+                                        <FontAwesome icon={item.icon} />
+                                        {item.name}
+                                    </AppMenuLink>
+                                </AppMenuItem>
+                            ))}
+                        </AppMenu>
+                    </Sidebar>
+                </ClickOutside>
+                <Content>
                     {children}
                 </Content>
             </Page>

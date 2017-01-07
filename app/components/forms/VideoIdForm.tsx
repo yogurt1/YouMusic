@@ -1,12 +1,7 @@
 import * as React from "react"
 import styled from "styled-components"
 import {Field, reduxForm as form} from "redux-form/immutable"
-import {DataShape, FormProps} from "redux-form"
-import {Form, FormGroup, Input, Button} from "reactstrap"
-
-const ErrorBlock = styled.span`
-    border: 1px solid red;
-`
+import {Form, FormGroup, Col, Input, Label, Button, FormFeedback} from "reactstrap"
 
 const validate = values => {
     const errors: {
@@ -27,19 +22,21 @@ export interface FormData {
 export interface Props {
 }
 
-@form({validate, form: "video"})
-export default class VideoIdForm extends React.PureComponent<FormProps<FormData, Props, null>, null> {
+@form<FormData, any, any>({ validate, form: "video" })
+export default class VideoIdForm extends React.Component<any, any> {
     renderField({input, label, type, meta}) {
         const {touched, error} = meta
+        const color = error ? "danger" : "success"
         return (
-            <FormGroup>
+            <FormGroup color={color}>
+                <Label>{label}</Label>
+                {' '}
                 <Input
                     {...input}
                     type={type}
-                    error={!!error}
                     placeholder="Video ID"
                 />
-                {touched && error && <ErrorBlock>{error}</ErrorBlock>}
+                {touched && error && <FormFeedback>{error}</FormFeedback>}
             </FormGroup>
         )
     }
@@ -47,7 +44,7 @@ export default class VideoIdForm extends React.PureComponent<FormProps<FormData,
     render() {
         const {handleSubmit, pristine, reset, submitting} = this.props
         return (
-            <Form onSubmit={handleSubmit}>
+            <Form inline onSubmit={handleSubmit}>
                 <Field
                     name="videoId"
                     type="text"
@@ -56,7 +53,6 @@ export default class VideoIdForm extends React.PureComponent<FormProps<FormData,
                 />
                 <Button
                     type="submit"
-                    primary
                     disabled={submitting}>
                     Play
                 </Button>

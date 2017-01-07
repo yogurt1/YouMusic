@@ -1,6 +1,6 @@
 import * as React from "react"
-import Html from "./html"
-import {renderToString, renderToStaticMarkup} from "react-dom/server"
+import * as ReactDOM from "react-dom/server"
+import Html from "app/Html"
 import {match, RouterContext, createMemoryHistory} from "react-router"
 import {ApolloProvider} from "react-apollo"
 import {IntlProvider} from "react-intl"
@@ -14,7 +14,7 @@ import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
 
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
-const render = data => "<!doctype html>" + renderToString(data)
+const render = node => "<!doctype html>" + ReactDOM.renderToString(node)
 const getStyles: () => string = () => styleSheet.rules().map(r => r.cssText).join("")
 
 type MatchAsync = (opts: any) => Promise<Array<any>>
@@ -28,7 +28,10 @@ export default async ctx => {
     ctx.type = "html"
     // styleSheet.flush()
 
-    if (isDevServer) return (ctx.body = render(<Html />))
+    if (isDevServer) {
+        ctx.body = render(<Html />)
+        return
+    }
 
     const locale = "en"
     const location = ctx.request.url

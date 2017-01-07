@@ -7,7 +7,7 @@ const isProduction = !!(
     "production" === process.env.NODE_ENV
 )
 
-const devtool = isProduction ? "source-map" : "#eval-source-map"
+const devtool = isProduction ? "source-map" : "eval-source-map"
 const config = module.exports = {
     devtool,
     performance: { hints: false },
@@ -19,8 +19,8 @@ const config = module.exports = {
         publicPath: "/assets/",
         filename: "[name].bundle.js",
         chunkFilename: "[id].chunk.js",
-        // devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
-        devtoolModuleFilenameTemplate: "/[resourcePath]"
+        devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
+        // devtoolModuleFilenameTemplate: "/[resourcePath]"
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".json"],
@@ -153,7 +153,7 @@ if (isProduction) {
         new webpack.HotModuleReplacementPlugin()
     )
     config.entry["app"].unshift(
-        "webpack-hot-middleware/client?overlay=true&reload=false&noInfo=true",
-        "react-hot-loader/patch"
+        "react-hot-loader/patch",
+        "webpack-hot-middleware/client?overlay=true&reload=false&noInfo=true"
     )
 }

@@ -48,7 +48,6 @@
     "@types/dotenv": "^2.0.19",
     "@types/enzyme": "^2.5.39",
     "@types/flux-standard-action": "^0.5.29",
-    "@types/immutable": "^3.8.7",
     "@types/jest": "^16.0.3",
     "@types/koa": "^2.0.37",
     "@types/koa-bodyparser": "^3.0.22",
@@ -100,7 +99,7 @@
     "stylelint-config-standard": "^15.0.0",
     "stylelint-processor-styled-components": "^0.0.4",
     "url-loader": "^0.5.7",
-    "webpack": "2.2.0-rc.3",
+    "webpack": "beta",
     "webpack-dev-middleware": "latest",
     "webpack-hot-middleware": "latest",
     "why-did-you-update": "^0.0.8"
