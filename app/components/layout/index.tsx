@@ -4,7 +4,8 @@ import {Link} from "react-router"
 import FontAwesome from "app/components/ui/FontAwesome"
 import ClickOutside from "app/lib/ClickOutside"
 import {autobind} from "core-decorators"
-import {connect} from "react-redux"
+import Sidebar from "./sidebar"
+import TopBarSearchForm from "./search"
 
 const TopBar = styled.div`
     position: fixed;
@@ -56,7 +57,6 @@ const MenuText = styled.p`
     font-weight: 500;
     font-size: 24px;
     text-align: center;
-    // vertical-align: middle;
 `
 
 const common = css`
@@ -86,54 +86,6 @@ const Content = styled.div`
     `}
 `
 
-const Sidebar = styled.div`
-    ${common}
-    position: absolute;
-    padding-top: 56px;
-    width: 240px;
-    transition: transform .5s ease-out;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.45);
-    background-color: #ffe;
-
-    ${p => !p.open && css`
-        transform: translate3d(-100%, 0, 0);
-    `}
-`
-
-const AppSidebar = styled.div`
-    padding-top: 56px;
-    background: white;
-    color: black;
-    box-shadow:
-        3px 0 10px 0 rgba(255,255,255,0)
-        inset 0 4px 0 rgba(255,255,255,0);
-`
-const AppMenu = styled.div`
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    jusitfy-content: space-around;
-`
-
-const AppMenuItem = styled.div`
-    text-align: center;
-    padding: 4px;
-`
-
-const AppMenuLink = styled(Link)`
-    display: block;
-    color: black;
-
-    &:hover,
-    &:focus,
-    &.active {
-        color: white;
-        border-radius: 14px;
-        background: rgba(7, 4, 239, 1);
-        font-weight: 500;
-    }
-`
-
 const menuItems = [
     {
         name: "Home",
@@ -157,6 +109,8 @@ export interface State {
 }
 
 export default class Layout extends React.PureComponent<Props, State> {
+    private menuButtonRef: HTMLElement
+
     state = {
         open: false,
         search: false
@@ -170,6 +124,14 @@ export default class Layout extends React.PureComponent<Props, State> {
     }
 
     @autobind
+    private handleMenuButonClick(ev) {
+        if (this.menuButtonRef.contains(ev.target)) {
+            ev.stopPropagation()
+            this.toggleSidebar()
+        }
+    }
+
+    @autobind
     private handleSearch() {
         this.setState({
             search: true
@@ -177,9 +139,11 @@ export default class Layout extends React.PureComponent<Props, State> {
     }
 
     @autobind
-    private handleClickOutside() {
-        if (this.state.open) {
-            this.toggleSidebar()
+    private handleClickOutside(ev) {
+        if (ev.target.contains(this.menuButtonRef)) {
+            if (this.state.open) {
+                this.toggleSidebar()
+            }
         }
     }
 
@@ -190,16 +154,20 @@ export default class Layout extends React.PureComponent<Props, State> {
         return (
             <Page open={open}>
                 <TopBar>
-                    <MenuButton
-                        open={open}
-                        onClick={this.toggleSidebar}>
-                        <FontAwesome icon="bars" />
-                    </MenuButton>
+                    <span ref={ref => this.menuButtonRef = ref}>
+                        <MenuButton
+                            onClick={this.handleMenuButonClick}
+                            open={open}>
+                            <FontAwesome icon="bars" />
+                        </MenuButton>
+                    </span>
                     <MenuText>MENU</MenuText>
                     <div style={{
                         float: "right",
                         display: search ? "inline-block" : "none"
-                    }}>WTF</div>
+                    }}>
+                        <TopBarSearchForm />
+                    </div>
                     <SearchButton
                         style={{
                             display: search ? "none" : "inline-block"
@@ -209,19 +177,7 @@ export default class Layout extends React.PureComponent<Props, State> {
                     </SearchButton>
                 </TopBar>
                 <ClickOutside onClickOutside={this.handleClickOutside}>
-                    <Sidebar open={open}>
-                        <AppMenu>
-                            {menuItems.map((item, i) => (
-                                <AppMenuItem key={i}>
-                                    <AppMenuLink
-                                        activeClassName="active"
-                                        to={item.path}>
-                                        <FontAwesome icon={item.icon} />
-                                        {item.name}
-                                    </AppMenuLink>
-                                </AppMenuItem>
-                            ))}
-                        </AppMenu>
+                    <Sidebar open={open} menuItems={menuItems}>
                     </Sidebar>
                 </ClickOutside>
                 <Content>

@@ -1,5 +1,4 @@
 import {Map, fromJS} from "immutable"
-import {composeWithDevTools} from "redux-devtools-extension/developmentOnly"
 import {
     Store,
     Reducer,
@@ -11,9 +10,11 @@ import {History} from "history"
 import {ApolloClient} from "apollo-client"
 import {combineReducers} from "redux-immutable"
 import thunkMiddleware from "redux-thunk"
+import * as createLogger from "redux-logger"
 import {routerMiddleware} from "react-router-redux"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry, {State} from "./reducers"
+import {composeWithDevTools} from "./util"
 import {isBrowser} from "../lib/util"
 
 export {State}

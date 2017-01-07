@@ -29,14 +29,16 @@ export default class VideoIdForm extends React.Component<any, any> {
         const color = error ? "danger" : "success"
         return (
             <FormGroup color={color}>
-                <Label>{label}</Label>
-                {' '}
+                {/*touched && error && (
+                    <FormFeedback style={{ fontSize: 10}}>
+                        {error}
+                    </FormFeedback>
+                )*/}
                 <Input
                     {...input}
                     type={type}
                     placeholder="Video ID"
                 />
-                {touched && error && <FormFeedback>{error}</FormFeedback>}
             </FormGroup>
         )
     }
@@ -51,9 +53,8 @@ export default class VideoIdForm extends React.Component<any, any> {
                     label="Video ID"
                     component={this.renderField}
                 />
-                <Button
-                    type="submit"
-                    disabled={submitting}>
+                {' '}
+                <Button disabled={submitting}>
                     Play
                 </Button>
             </Form>

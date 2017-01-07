@@ -59,7 +59,6 @@ export default async ctx => {
 
     ctx.state = {
         ...ctx.state,
-        store,
         params: renderProps.params
     }
 
@@ -74,19 +73,25 @@ export default async ctx => {
     )
 
     const method = ctx.method.toLowerCase()
-    const actions = new Set()
+    const actions = []
 
     for (const nextComponent of renderProps.components) {
         if (!nextComponent) continue
 
         const action = nextComponent[method]
+        const allAction = nextComponent["all"]
 
         if (typeof(action) === "function") {
-            await action(ctx)
+            actions.push(action(ctx, store))
+        }
+
+        if (typeof(allAction) === "function") {
+            actions.push(allAction(ctx, store))
         }
     }
 
-    await getDataFromTree(componentTree)
+    await Promise.all(actions)
+    // await getDataFromTree(componentTree)
 
     ctx.body = render(
         <Html

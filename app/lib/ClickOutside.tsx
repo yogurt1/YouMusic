@@ -2,6 +2,7 @@ import * as React from "react"
 import {isBrowser} from "./util"
 
 export interface Props {
+    inside?: HTMLElement
     onClickOutside: React.MouseEventHandler<React.MouseEvent<HTMLElement>>
 }
 
@@ -9,8 +10,17 @@ export default class ClickOutside extends React.Component<Props, null> {
     private containerRef: HTMLElement
 
     private handleClick = ev => {
-        if (!this.containerRef.contains(ev.target)) {
-            this.props.onClickOutside(ev)
+        const {onClickOutside} = this.props
+        const {containerRef} = this
+
+        // if (this.props.inside) {
+        //     if (ev.target.contains(containerRef)) {
+        //         onClickOutside(ev)
+        //     }
+        // }
+
+        if (!containerRef.contains(ev.target)) {
+            onClickOutside(ev)
         }
     }
 
@@ -29,9 +39,9 @@ export default class ClickOutside extends React.Component<Props, null> {
     render() {
         const {children, onClickOutside, ...props} = this.props
         return (
-            <div {...props} ref={ref => this.containerRef = ref}>
+            <span {...props} ref={ref => this.containerRef = ref}>
                 {children}
-            </div>
+            </span>
         )
     }
 }

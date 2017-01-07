@@ -1,6 +1,6 @@
 import * as LRU from "lru-cache"
-import cash from "koa-cash"
-import convert from "koa-convert"
+import * as cash from "koa-cash"
+import * as convert from "koa-convert"
 
 const cache = LRU({
     maxAge: 30000

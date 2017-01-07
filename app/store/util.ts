@@ -2,6 +2,13 @@ import {bindActionCreators, ActionCreator, Reducer, Dispatch} from "redux"
 import {Action, ErrorAction} from "flux-standard-action"
 import {Record} from "immutable"
 import {flatten} from "lodash"
+import {isBrowser, isNotProdEnv} from "app/lib/util"
+import {compose} from "redux"
+
+export const composeWithDevTools = isBrowser && isNotProdEnv &&
+    window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]
+        ? window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]
+        : compose
 
 export const memoize = fn => {
     const cache = new WeakMap()
