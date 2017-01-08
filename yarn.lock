@@ -125,11 +125,7 @@
     "@types/cookies" "*"
     "@types/node" "*"
 
-"@types/lodash@^4.14.34":
-  version "4.14.46"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.46.tgz#5216f7bef8e0b1abd904383fb2e0254a43c222d4"
-
-"@types/lodash@^4.14.47":
+"@types/lodash@^4.14.34", "@types/lodash@^4.14.47":
   version "4.14.47"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.47.tgz#4f780d1de593baae2171998b24b4282c5a1f8698"
 
@@ -6794,6 +6790,10 @@ redux@^3.3.1, redux@^3.6.0:
     lodash-es "^4.2.1"
     loose-envify "^1.1.0"
     symbol-observable "^1.0.2"
+
+reflect-metadata@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.9.tgz#987238dc87a516895fe457f130435ffbd763a4d4"
 
 reflexbox@^2.2.3:
   version "2.2.3"

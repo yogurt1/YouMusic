@@ -164,6 +164,7 @@
     "redux-immutable": "^3.0.8",
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.1.0",
+    "reflect-metadata": "^0.1.9",
     "reflexbox": "^2.2.3",
     "reselect": "^2.5.4",
     "source-map-support": "^0.4.6",

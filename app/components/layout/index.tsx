@@ -140,7 +140,7 @@ export default class Layout extends React.PureComponent<Props, State> {
 
     @autobind
     private handleClickOutside(ev) {
-        if (ev.target.contains(this.menuButtonRef)) {
+        if (!ev.target.contains(this.menuButtonRef)) {
             if (this.state.open) {
                 this.toggleSidebar()
             }
@@ -154,13 +154,12 @@ export default class Layout extends React.PureComponent<Props, State> {
         return (
             <Page open={open}>
                 <TopBar>
-                    <span ref={ref => this.menuButtonRef = ref}>
-                        <MenuButton
-                            onClick={this.handleMenuButonClick}
-                            open={open}>
-                            <FontAwesome icon="bars" />
-                        </MenuButton>
-                    </span>
+                    <MenuButton
+                        innerRef={ref => this.menuButtonRef = ref}
+                        onClick={this.handleMenuButonClick}
+                        open={open}>
+                        <FontAwesome icon="bars" />
+                    </MenuButton>
                     <MenuText>MENU</MenuText>
                     <div style={{
                         float: "right",
@@ -177,8 +176,7 @@ export default class Layout extends React.PureComponent<Props, State> {
                     </SearchButton>
                 </TopBar>
                 <ClickOutside onClickOutside={this.handleClickOutside}>
-                    <Sidebar open={open} menuItems={menuItems}>
-                    </Sidebar>
+                    <Sidebar open={open} menuItems={menuItems} />
                 </ClickOutside>
                 <Content>
                     {children}

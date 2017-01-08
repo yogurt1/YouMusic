@@ -12,7 +12,11 @@
         "baseUrl": ".",
         "paths": {
             "app/*": ["./app/*"]
-        }
+        },
+        "types": [
+            "reflect-metadata",
+            "./globals"
+        ]
     },
     "awesomeTypescriptLoader": {
         "transpileOnly": true,

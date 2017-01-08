@@ -27,7 +27,7 @@ export default class HomePage extends React.Component<any, any> {
         return (
             <div style={{padding:15}}>
                 <YouTube videoId={videoId} />
-                <h1>Video ID: {videoId}</h1>
+                <h4>Video ID: {videoId}</h4>
             </div>
         )
     }
