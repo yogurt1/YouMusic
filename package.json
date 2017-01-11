@@ -12,6 +12,7 @@
     "start": "node server.node",
     "build": "cross-env NODE_ENV=production webpack",
     "build:electron": "cross-env NODE_ENV=production webpack --config webpack.config.electron.js",
+    "build:server": "tsc --config tsconfig.node.json",
     "dev": "node devServer",
     "lint:css": "stylelint \"./app/components/**/*.tsx\"",
     "lint": "tslint app"
@@ -47,6 +48,8 @@
     "@types/redux-form": "^6.3.0",
     "@types/redux-immutable": "^3.0.31",
     "@types/reselect": "^2.0.27",
+    "ts-node": "^2.0.0",
+    "typescript": "^2.1.4",
     "awesome-typescript-loader": "3.0.0-beta.17",
     "axios-mock-adapter": "^1.7.1",
     "babel-core": "^6.21.0",
@@ -149,8 +152,6 @@
     "styled-components": "^1.1.2",
     "tinymce": "^4.5.1",
     "transit": "^0.1.0",
-    "ts-node": "^2.0.0",
-    "typescript": "^2.1.4",
     "youtube-search": "^1.0.7"
   }
 }

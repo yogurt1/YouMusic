@@ -1,5 +1,5 @@
 // import {createServer} from "sockjs"
-// import config from "./config"
+// import * as config from "../config"
 
 // const socket = createServer({sockjs_url: config.app.sockjs_url})
 // const ps = new function PubSub() {

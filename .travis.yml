@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- '6'
+
+before_deploy:
+  - "npm run prepare-deploy"
+
+
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: B+P6qavj/Uw7RuZjLwzEW+pzk/DkQ0Xnxzm3YCfc7rQmh5rLoiKWTDz60JYTC5LFzlUw2FCFu3DzzEWFn+OmOhN40NwgcpqZaevfArL9p9hmy9JPT8RR87YJp2Pvk6W5t0GDEbAg0cObDw5kXAgTioJVMbM/1jCd16oCj0dp78+EVAa4jEsuj6rRxfqwmscOjuc8p7WXfnrDZCLpyUzeSEfnkVnmqKP8RmF1uBtv5AWuaL75nCEcWUshxQTEe1ClO0Jg0Oj7gEQj6xm7i8cZjdIOE5BsJZVP3UZy27P13bB6/XL+EPA9WSVKLUAMkUqYxXCm/cN+NslnIHAdOjcTpNJT/MoxCqWI1dQnud9c6O1W6PGEqi7LyDQaLRmijAbDwfj0cQevQzfeohLVQ78dVZ+Jc5wlnILhQULuLIDy+3NyWpjfUchyIPwv/FTc+jClbr5gU2BeqaDq6XMc9kOdiGka8fDqKoq4rVuZ4gTA9/GlOSqtkSWgP7Ab5UJ/c7Y1qohr6WLBwTc5QNqSMCuhU24hXkXY689Xe+jetmoTkV6lthaHjYUE+EuzTJRXJtOBVDHsDcmHzGZURPRQXh2NRh3m3OyB5sgbXaIitnYBkbwMVbNUoanEH7JKtjH3UkUF/Q9ALm2m3pPLGfJZzNKxZdi19wn9und5zHJsOnIeXsw=
+  app: youmusic-1
+  on:
+    repo: yogurt1/YouMusic

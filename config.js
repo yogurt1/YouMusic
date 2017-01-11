@@ -1,12 +1,19 @@
-import {getDevEnv} from "app/lib/util"
+const isDev = process.env.NODE_ENV !== "production"
+const {
+    NODE_ENV,
+    SECRET,
+    PORT,
+    LOGLEVEL,
+    APP_NAME
+} = process.env
 
 const config = {
     app: {
-        name: process.env.APP_NAME || "YouMusic",
-        logLevel: getDevEnv() ? "debug" : "warn",
-        port: process.env.PORT || 3000,
+        name: APP_NAME || "YouMusic",
+        logLevel: LOGLEVEL || (isDev ? "debug" : "warn"),
+        port: PORT || 3000,
         session: {
-            secret: process.env.SECRET || "keyboard cat",
+            secret: SECRET || "keyboard cat",
             key: "ssid",
             cookie: {
                 maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
@@ -27,4 +34,4 @@ const config = {
     }
 }
 
-export default config
+module.exports = config

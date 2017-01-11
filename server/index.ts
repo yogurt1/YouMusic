@@ -10,13 +10,13 @@ import * as etag from "koa-etag"
 import * as session from "koa-generic-session"
 import * as compress from "koa-compress"
 import * as convert from "koa-convert"
-import {graphqlKoa, graphiqlKoa} from "graphql-server-koa"
+import { graphqlKoa, graphiqlKoa } from "graphql-server-koa"
 import schema from "./data"
-import config from "./config"
-import passport, {router as passportRouter} from "./passport"
+import passport, { router as passportRouter } from "./passport"
 import cache from "./cache"
-// import {koaBunyan} from "./bunyan"
+// import { bunyan } from "./bunyan"
 import renderer from "./renderer"
+import * as config from "../config"
 
 const compose = (...mws: Koa.Middleware[]) => (ctx, next) => {
     const dispatch = async i => {

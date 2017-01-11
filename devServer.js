@@ -1,42 +1,23 @@
-const {renderToStaticMarkup} = require("react-dom/server")
-const {createElement} = require("react")
-const {RedBoxError} = require("redbox-react")
+const { renderToStaticMarkup } = require("react-dom/server")
+const { createElement } = require("react")
+const { RedBoxError } = require("redbox-react")
+const express = require("express")
+const tsconfig = require("./tsconfig.node.json")
+const tsnode = require("ts-node")
+const app = require("./server.node")
+const devServer = express()
 
-const subscribers = []
-const subscribeEndpoint = "/__server_hmr"
-const publish = action => subscribers.forEach(s =>
-        s.write(`data: ${JSON.stringify(action)}\n\n`))
+tsconfig.lazy = true
+tsconfig.fast = true
+tsnode.register(tsconfig)
 
-const renderRedBox = error => renderToStaticMarkup(
-    createElement(RedBoxError, {error}))
-
-const subscribe = (req, res) => {
-    res.writeHead(200, {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache"
-    })
-
-    const id = subscribers.push(res) - 1
-
-    publish({ type: "INIT" })
-
-    req.on("close", () => {
-        subscribers.splice(id, 1)
-    })
-}
-
-const types = {
-    ERROR: "ERROR",
-    UPDATE: "UPDATE"
-}
-
-const tmpl = err => `
+const tmpl = ({ error, types, endpoint }) => `
 <span id="notification"></span>
-<div id="error">${renderRedBox(err)}</div>
+<div id="error">${error}</div>
 <script>
     var n = document.getElementById("notification");
     var div = document.getElementById("error");
-    var es = new EventSource("${subscribeEndpoint}");
+    var es = new EventSource("${endpoint}");
     es.onmessage = function(msg) {
         var action = JSON.parse(msg.data);
         switch(action.type) {
@@ -52,36 +33,113 @@ const tmpl = err => `
     }
 </script>
 `
+const pubsub = new class PubSub {
+    constructor() {
+        this.subscribers = []
+        this.endpoint = "/__server_hmr"
+        this.types = [
+            "INIT",
+            "ERROR",
+            "MESSAGE",
+            "UPDATE"
+        ].reduce((ac, t) => {
+            ac[t] = t
+            return ac
+        }, {})
+    }
 
-const onError = (req, res) => err => {
-    res.writeHead(200, {
-        "Content-Type": "text/html"
-    })
-    res.end(tmpl(err))
+    renderError(error) {
+        const el = createElement(RedBoxError, { error })
+        const html = renderToStaticMarkup(el)
+        return html
+    }
+
+    render(err) {
+        return tmpl({
+            error: this.renderError(err),
+            types: this.types,
+            endpoint: this.endpoint
+        })
+    }
+
+    subscribe({ res }) {
+        const { subscribers, types } = this
+        const id = subscribers.push(res) - 1
+        this.publish({ type: types.INIT })
+
+        return function unsubscribe() {
+            subscribers.splice(id, 1)
+        }
+    }
+
+    publish(action) {
+        const { subscribers } = this
+        const json = JSON.stringify(action)
+        const data = `data: ${json}\n\n`
+
+        for (const subscriber of subscribers) {
+            subscriber.write(data)
+        }
+    }
+
+    onError(req, res) {
+        return err => {
+            res.writeHead(200, {
+                "Content-Type": "text/html"
+            })
+
+            res.end(this.render(err))
+         }
+    }
 }
 
-const run = () => {
-    const HotMiddleware = require("webpack-hot-middleware")
-    const DevMiddleware = require("webpack-dev-middleware")
-    const config = require("./webpack.config")
-    const webpack = require("webpack")
-    const compiler = webpack(config)
-    const devServer = require("express")()
-    const app = require("./server.node")
-    const devMiddleware = DevMiddleware(compiler, config.devServer)
+const watchApp = () => require("chokidar")
+    .watch(["./server","./app"]).on("change", () => {
+        const re = /[\/\\](server|app)[\/\\]/
 
-    app.watch(() => {
+        Object.keys(require.cache)
+            .filter(id => re.test(id))
+            .forEach(id => delete require.cache[id])
+
         try {
             app()
-            // publish({type: types.UPDATE})
+            // publish({ type: pubsub.types.UPDATE })
         } catch(err) {
-            publish({type: types.ERROR,
-                content: renderRedBox(err)})
+            publish({
+                type: types.ERROR,
+                content: pubsub.renderError(err)
+            })
         }
     })
 
+
+devServer.get(pubsub.endpoint, (req, res) => {
+    res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache"
+    })
+
+    const unsubscribe = pubsub.subscribe(req)
+
+    req.on("close", () => {
+        unsubscribe()
+        res.end()
+    })
+})
+
+const USE_WEBPACK = +process.env.WEBPACK === 1
+    || process.env.npm_lifecycle_event === "dev"
+
+if (USE_WEBPACK) {
+    const HotMiddleware = require("webpack-hot-middleware")
+    const DevMiddleware = require("webpack-dev-middleware")
+    const webpackConfig = require("./webpack.config")
+    const webpack = require("webpack")
+    const compiler = webpack(webpackConfig)
+    const devMiddleware = DevMiddleware(compiler,
+        webpackConfig.devServer)
+
     devServer
-        .get(subscribeEndpoint, subscribe)
         .use(devMiddleware)
         .use(HotMiddleware(compiler))
 
@@ -89,42 +147,40 @@ const run = () => {
         devMiddleware.invalidate()
         res.status(200).end()
     })
-
-    devServer.all("*", (req, res, next) => {
-        let isError = false
-        const onerror = err => {
-            isError = true
-            onError(req, res)
-        }
-
-        try {
-            const nextApp = app()
-            nextApp.onerror = onerror
-            nextApp.callback()(req, res)
-        } catch(err) {
-            onerror(err)
-        } finally {
-            if (!isError) {
-                publish({ type: types.UPDATE })
-            }
-        }
-    })
-
-    const port = process.env.PORT || 3000
-    devServer.listen(port, () =>
-        console.log(`WDS listening on port ${port}`))
 }
 
-if (!module.parent) run()
+devServer.all("*", (req, res, next) => {
+    let isError = false
+    const onError = err => {
+        isError = true
+        res.writeHead(200, {
+            "Content-Type": "text/html"
+        })
 
-module.exports = {
-    types,
-    onError,
-    renderRedBox,
-    run,
-    tmpl,
-    subscribers,
-    subscribeEndpoint,
-    subscribe,
-    publish
-}
+        res.end(pubsub.render(err))
+    }
+
+    try {
+        const nextApp = require("./server").default
+        nextApp.onerror = onError
+        nextApp.callback()(req, res)
+    } catch(err) {
+        return onError(err)
+    } finally {
+        if (!isError) {
+            pubsub.publish({ type: pubsub.types.UPDATE })
+        }
+    }
+})
+
+const PORT = process.env.PORT || 3000
+console.log("Development mode")
+
+console.log(USE_WEBPACK
+    ? "Webpack enabled"
+    : "Webpack disabled. To enable try `WEBPACK=1 or `yarn dev`")
+
+devServer.listen(PORT, () =>
+    console.log(`App listening on port ${PORT}`))
+
+module.exports = pubsub

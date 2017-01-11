@@ -1,7 +1,7 @@
-import bunyan from "bunyan"
-import config from "./config"
+import { createLogger } from "bunyan"
+import config from "../config"
 
-const logger = bunyan.createLogger({
+const logger = createLogger({
     name: config.app.name,
     level: config.app.logLevel,
     serializers: bunyan.stdSerializers
