@@ -18,7 +18,7 @@ export const mapStateToProps: MapStateToProps<StateProps, null> = state => ({
 @withTheme
 @reduxify(mapStateToProps)
 export default class HomePage extends React.Component<any, any> {
-    componentDidMount() {
+    componentWillMount() {
         const { dispatch, location } = this.props
         const { videoId } = location.query
 
