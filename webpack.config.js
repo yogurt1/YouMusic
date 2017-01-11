@@ -1,7 +1,11 @@
 const path = require("path")
 const webpack = require("webpack")
 const ExtractText = require("extract-text-webpack-plugin")
-const {CheckerPlugin, TsConfigPathsPlugin} = require("awesome-typescript-loader")
+const {
+    CheckerPlugin,
+    TsConfigPathsPlugin
+} = require("awesome-typescript-loader")
+
 const isProduction = !!(
     "build" === process.env.npm_lifecycle_event ||
     "production" === process.env.NODE_ENV
@@ -19,7 +23,6 @@ const config = module.exports = {
         publicPath: "/assets/",
         filename: "[name].bundle.js",
         chunkFilename: "[id].chunk.js"
-        // devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
         // devtoolModuleFilenameTemplate: "/[resourcePath]"
     },
     resolve: {
@@ -49,7 +52,10 @@ const config = module.exports = {
                 test: /\.tsx?$/,
                 loader: "awesome-typescript-loader",
                 include: path.join(__dirname, "app"),
-                exclude: /(node_modules|\/vendor\.js$)/
+                exclude: /(node_modules|\/vendor\.js$)/,
+                options: {
+                    configFileName: "tsconfig.webpack.json"
+                }
             },
             {
                 test: /\.(graphql|gql)$/,

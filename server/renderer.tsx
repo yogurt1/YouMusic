@@ -13,8 +13,9 @@ import {injectGlobal} from "styled-components"
 import routes from "app/routes"
 import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
-
+import * as config from "../config"
 const theme = require("app/theme.json")
+
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
 const render = node => "<!doctype html>" + ReactDOM.renderToString(node)
 const getStyles: () => string = () => styleSheet.rules().map(r => r.cssText).join("")
@@ -30,7 +31,7 @@ export default async ctx => {
     ctx.type = "html"
     // styleSheet.flush()
 
-    if (isDevServer) {
+    if (config.webpack) {
         ctx.body = render(<Html />)
         return
     }

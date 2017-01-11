@@ -4,7 +4,9 @@ const {
     SECRET,
     PORT,
     LOGLEVEL,
-    APP_NAME
+    APP_NAME,
+    WEBPACK,
+    npm_lifecycle_event
 } = process.env
 
 const config = {
@@ -18,7 +20,9 @@ const config = {
             cookie: {
                 maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
             }
-        }
+        },
+        webpack: npm_lifecycle_event === "dev"
+            && typeof(WEBPACK) === "undefined" ? true : !!+WEBPACK
     },
     db: null,
     redis: null,

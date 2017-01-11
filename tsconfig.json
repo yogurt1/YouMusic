@@ -1,9 +1,10 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
+        "allowJs": false,
         "target": "es6",
         "moduleResolution": "node",
-        "module": "es6",
+        "module": "commonjs",
         "sourceMap": true,
         "jsx": "react",
         "removeComments": true,
@@ -15,11 +16,10 @@
         },
         "types": [
             "jest",
-            "reflect-metadata",
-            "./globals.d.ts"
+            "reflect-metadata"
         ]
     },
-    "awesomeTypescriptLoaderOptions": {
+    "awesomeTypescriptLoader": {
         "transpileOnly": true,
         "usetranspileModule": true,
         "useBabel": true,
@@ -29,6 +29,7 @@
         "!node_modules/**"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "test"
     ]
 }

@@ -1,5 +1,6 @@
 {
     "testEnvironment": "node",
+    "testResultsProcessor": "<rootDir>/node_modules/ts-jest/coverageprocessor.js",
     "unmockedModulePathPatterns": [
         "node_modules/react/",
         "node_modules/enzyme/"
@@ -17,7 +18,7 @@
     ],
     "notify": true,
     "transform": {
-        "^.+\\.(ts|tsx)$": "<rootDir>/jest.preproc.js"
+        "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "\\.(test|spec)\\.(ts|tsx|js)$",
     "moduleFileExtensions": [

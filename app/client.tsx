@@ -12,7 +12,7 @@ import { syncHistoryWithStore } from "react-router-redux"
 import configureStore from "./store"
 import configureApolloClient from "./store/apollo"
 import routes from "./routes"
-import { dom, isDevEnv, isBrowser, isProdEnv } from "./lib/util"
+import { doms, isDevEnv, isBrowser, isProdEnv } from "./lib/util"
 import AuthService from "./services/AuthService"
 
 const theme = require("./theme.json")
@@ -53,7 +53,8 @@ renderApp()
 
 window.onload = () => {
     // remove styled-components, because it be force rehydrated
-    dom(".__CRITICAL_CSS__")(el => el.remove())
+    doms(".__CRITICAL_CSS__",
+         ".__LOADER__")(el => el.remove())
 }
 
 const {hot} = module as any

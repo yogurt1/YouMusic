@@ -2,7 +2,8 @@ const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
 const { RedBoxError } = require("redbox-react")
 const express = require("express")
-const tsconfig = require("./tsconfig.node.json")
+const config = require("./config")
+const tsconfig = require("./tsconfig.json")
 const tsnode = require("ts-node")
 const app = require("./server.node")
 const devServer = express()
@@ -127,10 +128,8 @@ devServer.get(pubsub.endpoint, (req, res) => {
     })
 })
 
-const USE_WEBPACK = +process.env.WEBPACK === 1
-    || process.env.npm_lifecycle_event === "dev"
 
-if (USE_WEBPACK) {
+if (config.webpack) {
     const HotMiddleware = require("webpack-hot-middleware")
     const DevMiddleware = require("webpack-dev-middleware")
     const webpackConfig = require("./webpack.config")
@@ -176,7 +175,7 @@ devServer.all("*", (req, res, next) => {
 const PORT = process.env.PORT || 3000
 console.log("Development mode")
 
-console.log(USE_WEBPACK
+console.log(config.webpack
     ? "Webpack enabled"
     : "Webpack disabled. To enable try `WEBPACK=1 or `yarn dev`")
 

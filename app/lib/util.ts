@@ -5,9 +5,17 @@ export const xor = (a, b) => !!(a ^ b)
 export const noopNull = () => null
 export const noop = () => void(null)
 export const thunk = f => f
-export const dom = selector => {
-    const el = document.querySelector(selector)
-    return done => el ? done(el) : void(null)
+
+export const dom = (selector: string) => {
+    const el: Element = document.querySelector(selector)
+    return (done: Function) => el !== null && done(el)
+}
+
+export const doms = (...selectors: string[]) => {
+    const els = selectors
+        .map(selector => document.querySelector(selector))
+        .filter(el => el !== null)
+    return (done: Function) => els.forEach(el => done(el))
 }
 
 export const getIsBrowser = () => (<any>process).browser ||

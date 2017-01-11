@@ -10,6 +10,7 @@ function onerror() {
 (
     yarn lint &&\
     yarn test &&\
+    yarn test:node &&\
     yarn build &&\
     yarn build:server && \
     docker build -t ${APP_NAME} --build-arg NODE_ENV=${NODE_ENV} .

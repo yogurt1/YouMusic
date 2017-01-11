@@ -1,12 +1,11 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-        "allowJs": true,
         "target": "es6",
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "es6",
         "sourceMap": true,
-        "jsx": "react",
+        "jsx": "preserve",
         "removeComments": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -20,7 +19,7 @@
             "./globals.d.ts"
         ]
     },
-    "awesomeTypescriptLoader": {
+    "awesomeTypescriptLoaderOptions": {
         "transpileOnly": true,
         "usetranspileModule": true,
         "useBabel": true,

@@ -1,52 +1,50 @@
 import * as React from "react"
 import * as Helmet from "react-helmet"
-import styled, {keyframes} from "styled-components"
-import {Record} from "immutable"
-import {flatten} from "lodash"
+import styled, { injectGlobal, keyframes } from "styled-components"
+import { Record } from "immutable"
+import { flatten } from "lodash"
 import baseStyles from "app/lib/baseStyles"
-import {State} from "app/store"
+import { State } from "app/store"
 
-const assets = {
+injectGlobal`
+    .__LOADER__ {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 9999;
+        background-color: rgba(10,10,10,.8);
+
+        & > span {
+            position: absolute;
+            display: block;
+            margin: auto auto;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            animation: ${keyframes`
+                from { transform: rotate(0deg); }
+                to { transform: rotate(359deg); }
+            `} .9s infinite linear;
+            border-left: 6px solid rgba(0, 174, 239, .15);
+            border-right: 6px solid rgba(0, 174, 239, .15);
+            border-bottom: 6px solid rgba(0, 174, 239, .15);
+            border-top: 6px solid rgba(0, 174, 239, .8);
+            border-radius: 100%;
+        }
+    }
+`
+
+export const assets = {
     css: "/assets/styles.bundle.css",
     js: "/assets/app.bundle.js"
 }
-
-const spin = keyframes`
-    from { transform: rotate(0deg); }
-    to { transform: rotate(359deg); }
-`
-
-const Loader = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 9999;
-    background-color: rgba(10,10,10,.8);
-
-    & > span {
-        position: absolute;
-        display: block;
-        margin: auto auto;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 60px;
-        height: 60px;
-        animation: ${spin} .6s infinite linear;
-        border-left: 6px solid rgba(0, 174, 239, .15);
-        border-right: 6px solid rgba(0, 174, 239, .15);
-        border-bottom: 6px solid rgba(0, 174, 239, .15);
-        border-top: 6px solid rgba(0, 174, 239, .8);
-        border-radius: 100%;
-        transition: all .2s ease-out;
-    }
-
-`
 
 export interface HtmlProps {
     state?: State,
@@ -55,7 +53,8 @@ export interface HtmlProps {
     children?: React.ReactElement<any>
 }
 
-export default function Html({locale, state, styles, children}: HtmlProps) {
+export default function Html(props: HtmlProps) {
+    const { locale, state, styles, children } = props
     const head = Helmet.rewind()
     const attrs = head.htmlAttributes.toComponent()
     const serializedState = JSON.stringify(state)
@@ -87,15 +86,14 @@ export default function Html({locale, state, styles, children}: HtmlProps) {
                     className="__CRITICAL_CSS__"
                     dangerouslySetInnerHTML={{__html: styles}}
                 />
+
                 {head.title.toComponent()}
                 {head.meta.toComponent()}
                 {head.link.toComponent()}
             </head>
             <body>
-                <div id="__LOADER__">
-                    <Loader>
-                        <span />
-                    </Loader>
+                <div className="__LOADER__">
+                    <span />
                 </div>
 
                 <noscript>
@@ -131,7 +129,7 @@ export default function Html({locale, state, styles, children}: HtmlProps) {
                         </div>
                     </a>
                     <style dangerouslySetInnerHTML={{__html: `
-                        #__LOADER__ { display:none; }
+                        .__LOADER__ { display:none; }
                     `}} />
                 </noscript>
 
