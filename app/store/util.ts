@@ -1,13 +1,27 @@
-import {bindActionCreators, ActionCreator, Reducer, Dispatch} from "redux"
-import {Action, ErrorAction} from "flux-standard-action"
-import {Record} from "immutable"
-import {flatten} from "lodash"
-import {isBrowser, isNotProdEnv} from "app/lib/util"
-import {compose} from "redux"
+import {
+    bindActionCreators,
+    ActionCreator,
+    Reducer,
+    Dispatch
+} from "redux"
+import { Action, ErrorAction } from "flux-standard-action"
+import { Record } from "immutable"
+import { flatten } from "lodash"
+import { isBrowser, isDevEnv } from "app/lib/util"
+import { compose } from "redux"
+import { connect } from "react-redux"
 
-export const composeWithDevTools = isBrowser && isNotProdEnv &&
-    window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]
-        ? window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]
+export const reduxify = (mapStateToProps, mapDispatchToProps?, mergeProps?, opts?) =>
+    target => (connect(
+        mapStateToProps, mapDispatchToProps, mergeProps, opts)
+        (target) as any)
+
+
+export const DEVTOOLS_COMPOSE_KEY = "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"
+
+export const composeWithDevTools = (isBrowser && isDevEnv) &&
+    window[DEVTOOLS_COMPOSE_KEY]
+        ? window[DEVTOOLS_COMPOSE_KEY]
         : compose
 
 export const memoize = fn => {
@@ -94,4 +108,12 @@ export function createReducer<S>(initialState: S, finalHandler?: Reducer<S>) {
     })
 
     return reducer as any
+}
+
+export function ignoreReducer<R extends Reducer<any>>(reducer: R, types: { [key: string]: string }) {
+    const values = Object.keys(types).map(k => types[k])
+    const cmp = (type: string): boolean => !!values.find(t => t === type)
+
+    return (state, action: { type: string, [key: string]: string }): any =>
+        !cmp(action.type) ? state : reducer(state, action)
 }

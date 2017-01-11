@@ -7,37 +7,14 @@
   "author": "yogurt1 <stalingswag1@gmail.com>",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "jest",
+    "test": "jest --config jest.config.json",
+    "test:node": "jest --config jest.config.node.json",
     "start": "node server.node",
     "build": "cross-env NODE_ENV=production webpack",
+    "build:electron": "cross-env NODE_ENV=production webpack --config webpack.config.electron.js",
     "dev": "node devServer",
     "lint:css": "stylelint \"./app/components/**/*.tsx\"",
     "lint": "tslint app"
-  },
-  "jest": {
-    "unmockedModulePathPatterns": [
-      "node_modules/react/",
-      "node_modules/enzyme/"
-    ],
-    "coverageReporters": [
-      "tap",
-      "lcov",
-      "html"
-    ],
-    "notify": true,
-    "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/test/_preproc_.js"
-    },
-    "testRegex": "\\.spec\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "moduleDirectories": [
-      "node_modules",
-      "<rootDir>"
-    ]
   },
   "devDependencies": {
     "@types/axios": "^0.9.34",
@@ -69,9 +46,9 @@
     "@types/redux": "^3.6.0",
     "@types/redux-form": "^6.3.0",
     "@types/redux-immutable": "^3.0.31",
-    "@types/redux-logger": "^2.6.32",
     "@types/reselect": "^2.0.27",
     "awesome-typescript-loader": "3.0.0-beta.17",
+    "axios-mock-adapter": "^1.7.1",
     "babel-core": "^6.21.0",
     "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-env": "^1.1.4",
@@ -96,6 +73,7 @@
     "optimize-js-plugin": "^0.0.4",
     "react-addons-test-utils": "^15.4.1",
     "react-hot-loader": "next",
+    "react-test-renderer": "^15.4.2",
     "style-loader": "^0.13.1",
     "stylelint": "^7.6.0",
     "stylelint-config-standard": "^15.0.0",
@@ -162,7 +140,7 @@
     "redux": "^3.6.0",
     "redux-form": "^6.2.1",
     "redux-immutable": "^3.0.8",
-    "redux-logger": "^2.7.4",
+    "redux-persist": "^4.0.1",
     "redux-thunk": "^2.1.0",
     "reflect-metadata": "^0.1.9",
     "reflexbox": "^2.2.3",
@@ -172,6 +150,7 @@
     "tinymce": "^4.5.1",
     "transit": "^0.1.0",
     "ts-node": "^2.0.0",
-    "typescript": "^2.1.4"
+    "typescript": "^2.1.4",
+    "youtube-search": "^1.0.7"
   }
 }

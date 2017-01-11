@@ -1,16 +1,16 @@
-import styled from "styled-components"
 import * as React from "react"
+import styled from "styled-components"
 import hoistStatics from "hoist-non-react-statics"
-import * as util from "./util"
+import { isBrowser, noopNull, thunk } from "./util"
+import { getDisplayName } from "recompose"
 
-export const browserOnly = fallback => !util.isBrowser
-    ? (_ => fallback || (_ => null))
-    : (component => component)
+export const browserOnly = fallback => isBrowser ? thunk :
+    () => ( fallback || noopNull )
 
 export const lazyLoad = createPromises => WrappedComponent => hoistStatics(
     class LazyLoad extends React.Component<any, any> {
         static WrappedComponent = WrappedComponent
-        static displayName = `LazyLoad(${util.getDisplayName(WrappedComponent)})`
+        static displayName = `LazyLoad(${getDisplayName(WrappedComponent)})`
 
         state = {
             loaded: null

@@ -18,8 +18,8 @@ const config = module.exports = {
         path: path.resolve("./static/assets"),
         publicPath: "/assets/",
         filename: "[name].bundle.js",
-        chunkFilename: "[id].chunk.js",
-        devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
+        chunkFilename: "[id].chunk.js"
+        // devtoolModuleFilenameTemplate: "w:///[resourcePath]?[hash]"
         // devtoolModuleFilenameTemplate: "/[resourcePath]"
     },
     resolve: {
@@ -48,6 +48,7 @@ const config = module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: "awesome-typescript-loader",
+                include: path.join(__dirname, "app"),
                 exclude: /(node_modules|\/vendor\.js$)/
             },
             {

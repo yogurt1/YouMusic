@@ -13,7 +13,6 @@ export const actions= {
     setVideoId: createAction<string>(types.SET_VIDEOID)
 }
 
-
 const fake = {
     videoId: () => "n3osLacrd_c"
 }

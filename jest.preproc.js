@@ -1,5 +1,5 @@
 const tsc = require('typescript');
-const tsConfig = require('../tsconfig.json');
+const tsConfig = require('./tsconfig.json');
 tsConfig.compilerOptions.module = "commonjs"
 
 module.exports = {
@@ -12,6 +12,7 @@ module.exports = {
         []
       );
     }
+
     return src;
   },
 };

@@ -4,6 +4,7 @@ import Html from "app/Html"
 import {match, RouterContext, createMemoryHistory} from "react-router"
 import {ApolloProvider} from "react-apollo"
 import {IntlProvider} from "react-intl"
+import {ThemeProvider} from "styled-components"
 import {getDataFromTree} from "react-apollo/server"
 import {createNetworkInterface} from "apollo-client"
 import {syncHistoryWithStore} from "react-router-redux"
@@ -13,6 +14,7 @@ import routes from "app/routes"
 import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
 
+const theme = require("app/theme.json")
 const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
 const render = node => "<!doctype html>" + ReactDOM.renderToString(node)
 const getStyles: () => string = () => styleSheet.rules().map(r => r.cssText).join("")
@@ -67,7 +69,9 @@ export default async ctx => {
             client={client}
             store={store}>
             <IntlProvider locale={locale}>
-                <RouterContext {...renderProps} />
+                <ThemeProvider theme={theme}>
+                    <RouterContext {...renderProps} />
+                </ThemeProvider>
             </IntlProvider>
         </ApolloProvider>
     )
@@ -78,15 +82,15 @@ export default async ctx => {
     for (const nextComponent of renderProps.components) {
         if (!nextComponent) continue
 
-        const action = nextComponent[method]
         const allAction = nextComponent["all"]
-
-        if (typeof(action) === "function") {
-            actions.push(action(ctx, store))
-        }
+        const action = nextComponent[method]
 
         if (typeof(allAction) === "function") {
             actions.push(allAction(ctx, store))
+        }
+
+        if (typeof(action) === "function") {
+            actions.push(action(ctx, store))
         }
     }
 

@@ -1,5 +1,3 @@
-/// <reference path="../globals.d.ts" />
-// import "react-hot-loader/patch"
 import "bootstrap/dist/css/bootstrap-flex.min.css"
 import "font-awesome/css/font-awesome.css"
 import "tinymce/tinymce.min.js"

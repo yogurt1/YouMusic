@@ -24,6 +24,7 @@ declare module "react" {
     export type StyledComponent = React.StatelessComponent<any>
 }
 
+declare var _A_: any
 declare var module: any
 declare var System: any
 declare var global: MyWindow | any

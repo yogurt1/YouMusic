@@ -19,7 +19,7 @@
             "./globals.d.ts"
         ]
     },
-    "awesomeTypescriptLoaderOptions": {
+    "awesomeTypescriptLoader": {
         "transpileOnly": true,
         "usetranspileModule": true,
         "useBabel": true,

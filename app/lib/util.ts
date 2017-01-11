@@ -2,11 +2,12 @@ export const arrayBuilder = <T>(...fns: Array<(i: number) => T | any>): Array<T>
     fns.map((fn, i) => fn(i))
 
 export const xor = (a, b) => !!(a ^ b)
-export const noop = () => null
-export const getDisplayName = c => c.displayName || c.name || "Component"
-export const dom = sel => {
-    const el = document.querySelector(sel)
-    return cb => el ? cb(el) : void(null)
+export const noopNull = () => null
+export const noop = () => void(null)
+export const thunk = f => f
+export const dom = selector => {
+    const el = document.querySelector(selector)
+    return done => el ? done(el) : void(null)
 }
 
 export const getIsBrowser = () => (<any>process).browser ||
@@ -17,6 +18,7 @@ export const getTestEnv = () => process.env.NODE_ENV === "test"
 export const getNotDevEnv = () => !getDevEnv()
 export const getNotProdEnv = () => !getProdEnv()
 export const getNotTestEnv = () => !getTestEnv()
+export const getWindow = () => isBrowser ? window : null
 
 export const isBrowser = getIsBrowser()
 export const isDevEnv = getDevEnv()
@@ -25,6 +27,7 @@ export const isTestEnv = getTestEnv()
 export const isNotDevEnv = getNotDevEnv()
 export const isNotProdEnv = getNotProdEnv()
 export const isNotTestEnv = getNotTestEnv()
+
 
 // Stupid FP shit, don't use it
 export const or = or => expr => expr || or
@@ -38,3 +41,5 @@ export const toClass = s => /\[object\s(.*)\]/gm.exec(toString(s))
 export const compose = (...funcs) => (...args) =>
     funcs.reduceRight((composed, next) => next(composed),
         funcs.pop()(...args))
+
+export const flatten = arrays => arrays.reduce((a, b) => a.concat(b))

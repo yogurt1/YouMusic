@@ -1,0 +1,6 @@
+{
+    "youtube": {
+        "API_KEY": "AIzaSyALth0gIfQXqa3qYzJly5Ccj4b5aS8JKXs",
+        "API_URL": "https://www.googleapis.com/youtube/v3"
+    }
+}

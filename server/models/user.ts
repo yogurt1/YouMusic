@@ -1,4 +1,6 @@
-export default class User {
+import Model from "./"
+
+export default class User extends Model {
     static async findOrCreate() {
 
     }

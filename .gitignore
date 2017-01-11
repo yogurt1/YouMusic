@@ -5,3 +5,4 @@ static/assets/*
 .env
 landing
 tmp
+coverage

@@ -1,4 +1,4 @@
-import {Map, fromJS} from "immutable"
+import { Map, fromJS } from "immutable"
 import {
     Store,
     Reducer,
@@ -6,16 +6,15 @@ import {
     applyMiddleware,
     createStore
 } from "redux"
-import {History} from "history"
-import {ApolloClient} from "apollo-client"
-import {combineReducers} from "redux-immutable"
+import { History } from "history"
+import { ApolloClient } from "apollo-client"
+import { combineReducers } from "redux-immutable"
 import thunkMiddleware from "redux-thunk"
-import * as createLogger from "redux-logger"
-import {routerMiddleware} from "react-router-redux"
+import { routerMiddleware } from "react-router-redux"
 import arrayMiddleware from "./middlewares/array"
-import reducersRegistry, {State} from "./reducers"
-import {composeWithDevTools} from "./util"
-import {isBrowser} from "../lib/util"
+import reducersRegistry, { State } from "./reducers"
+import { composeWithDevTools } from "./util"
+import { isBrowser, isDevEnv } from "../lib/util"
 
 export {State}
 export interface EnhancedStore extends Store<State> {
@@ -42,13 +41,14 @@ export default function configureStore(history: History, client: ApolloClient): 
     const finalCreateStore = composeWithDevTools(
         applyMiddleware(...middlewares))(createStore)
 
-    const store: EnhancedStore = finalCreateStore(reducer,
-        preloadedState || void(0))
+    const store: EnhancedStore = finalCreateStore(
+        reducer, preloadedState)
 
     store.injectReducers = nextReducersRegistry => {
-        const _ = Object.assign(reducersRegistry,
+        const finalReducersRegistry = Object.assign(
+            reducersRegistry,
             nextReducersRegistry)
-        const nextReducer = combineReducers(_)
+        const nextReducer = combineReducers(finalReducersRegistry)
         store.replaceReducer(reducer)
     }
 
@@ -57,7 +57,6 @@ export default function configureStore(history: History, client: ApolloClient): 
         const {default: nextReducersRegistry} = require("./reducers")
         store.injectReducers(nextReducersRegistry)
     })
-
 
     return store
 }
