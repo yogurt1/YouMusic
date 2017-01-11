@@ -10,6 +10,9 @@ const {
 } = process.env
 
 const config = {
+    webpack: npm_lifecycle_event === "dev"
+            && typeof(WEBPACK) === "undefined"
+                ? true : !!(+WEBPACK),
     app: {
         name: APP_NAME || "YouMusic",
         logLevel: LOGLEVEL || (isDev ? "debug" : "warn"),
@@ -21,8 +24,6 @@ const config = {
                 maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
             }
         },
-        webpack: npm_lifecycle_event === "dev"
-            && typeof(WEBPACK) === "undefined" ? true : !!+WEBPACK
     },
     db: null,
     redis: null,
