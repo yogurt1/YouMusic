@@ -32,9 +32,12 @@ export default class TopBarSearchForm extends React.Component<any, any> {
         //     .feelingLucky(searchResult)
 
         const [{ videoId }] = searchResult.items
-        // dispatch(videoActions.setVideoId(videoId))
 
-        router.push(`/?videoId=${videoId}`)
+        router.push({
+            pathname: "/",
+            query: { videoId }
+        })
+        dispatch(videoActions.setVideoId(videoId))
     }
 
     componentDidMount() {

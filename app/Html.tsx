@@ -83,7 +83,6 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
                 <link
                     id="__BUNDLE_CSS__"
                     rel="preload"
-                    as="style"
                     href={assets.css}
                     />
                 <style
