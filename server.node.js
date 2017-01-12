@@ -17,16 +17,19 @@ require.extensions[".gql"] = (module, filename) => {
 }
 
 const http = require("http")
+const chalk = require("chalk")
 const config = require("./config")
 const app = () => require("./server").default
 
 if (!module.parent) {
-    const { port } = config.app
+    const { port, host } = config.app
+    const listener = app().callback()
     const server = http.createServer()
-        .on("request", app().callback())
-        .listen(port, () => {
-            console.log(`App listening on port ${port}`)
-        })
+        .on("request", listener)
+        .listen({ port, host }, () =>
+            console.log(chalk.blue.bold(
+                `App listening on ${host || "ALL"}:${port}`
+            )))
 
     process.on("SIGTERM", code => {
         server.close()

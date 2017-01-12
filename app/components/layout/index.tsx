@@ -48,15 +48,28 @@ const MenuButton = styled(Button)`
 `
 
 const SearchButton = styled(Button)`
+    ${p => !p.show && css`
+        display: none;
+    `}
     float: right;
 `
 
-const MenuText = styled.p`
+const SearchFormWrapper = styled.div`
+    float: right;
+    ${p => p.show && css`
+        display: inline-block;
+    `}
+`
+
+const MenuText = styled.span`
     position: relative;
-    display: inline-block;
     font-weight: 500;
     font-size: 24px;
     text-align: center;
+
+    @media (max-width: 900px) {
+        display: none;
+    }
 `
 
 const common = css`
@@ -79,9 +92,6 @@ const Content = styled.div`
     transition: background-color .3s;
 
     ${p => p.open && css`
-        /*width: calc(100% - 240px);
-        overflow: hidden;
-        transform: translate3d(240px, 0, 0);*/
         background-color: rgba(0, 0, 0, .15);
     `}
 `
@@ -118,14 +128,15 @@ export default class Layout extends React.PureComponent<Props, State> {
 
     @autobind
     private toggleSidebar() {
-        this.setState({
-            open: !this.state.open
-        })
+        this.setState((prevState, props) => ({
+            open: !prevState.open
+        }))
     }
 
     @autobind
     private handleMenuButonClick(ev) {
-        if (this.menuButtonRef.contains(ev.target)) {
+        if (this.menuButtonRef.contains(ev.target) &&
+           this.menuButtonRef !== ev.target) {
             ev.stopPropagation()
             this.toggleSidebar()
         }
@@ -133,17 +144,14 @@ export default class Layout extends React.PureComponent<Props, State> {
 
     @autobind
     private handleSearch() {
-        this.setState({
-            search: true
-        })
+        this.setState({ search: true })
     }
 
     @autobind
     private handleClickOutside(ev) {
-        if (!ev.target.contains(this.menuButtonRef)) {
-            if (this.state.open) {
-                this.toggleSidebar()
-            }
+        if (!this.menuButtonRef.contains(ev.target)) {
+            this.setState(prevState => prevState.open &&
+                          ({ open: false }))
         }
     }
 
@@ -154,23 +162,20 @@ export default class Layout extends React.PureComponent<Props, State> {
         return (
             <Page open={open}>
                 <TopBar>
-                    <MenuButton
-                        innerRef={ref => this.menuButtonRef = ref}
+                    <span
                         onClick={this.handleMenuButonClick}
-                        open={open}>
-                        <FontAwesome icon="bars" />
-                    </MenuButton>
-                    <MenuText>MENU</MenuText>
-                    <div style={{
-                        float: "right",
-                        display: search ? "inline-block" : "none"
-                    }}>
+                        ref={ref => this.menuButtonRef = ref}>
+                        <MenuButton
+                            open={open}>
+                            <FontAwesome icon="bars" />
+                        </MenuButton>
+                        <MenuText>MENU</MenuText>
+                    </span>
+                    <SearchFormWrapper show={search}>
                         <TopBarSearchForm />
-                    </div>
+                    </SearchFormWrapper>
                     <SearchButton
-                        style={{
-                            display: search ? "none" : "inline-block"
-                        }}
+                        show={search}
                         onClick={this.handleSearch}>
                         <FontAwesome icon="search" />
                     </SearchButton>

@@ -52,7 +52,7 @@ export default function configureStore(history: History, client: ApolloClient): 
         store.replaceReducer(reducer)
     }
 
-    const {hot} = module as any
+    const { hot } = module as any
     if (hot) hot.accept("./reducers", () => {
         const {default: nextReducersRegistry} = require("./reducers")
         store.injectReducers(nextReducersRegistry)

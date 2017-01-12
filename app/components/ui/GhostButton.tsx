@@ -1,4 +1,4 @@
-import styled, {css} from "styled-components"
+import styled, { css } from "styled-components"
 
 export const ghostButton = css`
     display: inline-block;
@@ -23,5 +23,6 @@ export const ghostButton = css`
 const GhostButton = styled.span`${ghostButton}`
 
 export default GhostButton
+
 export const wrapGhostButton = component =>
     styled(component)`${ghostButton}`

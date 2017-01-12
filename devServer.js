@@ -2,14 +2,13 @@ const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
 const { RedBoxError } = require("redbox-react")
 const express = require("express")
+const chalk = require("chalk")
 const config = require("./config")
 const tsconfig = require("./tsconfig.json")
 const tsnode = require("ts-node")
 const app = require("./server.node")
 const devServer = express()
 
-tsconfig.lazy = true
-tsconfig.fast = true
 tsnode.register(tsconfig)
 
 const tmpl = ({ error, types, endpoint }) => `
@@ -105,7 +104,7 @@ const watchApp = () => require("chokidar")
         try {
             app()
             // publish({ type: pubsub.types.UPDATE })
-        } catch(err) {
+        } catch (err) {
             publish({
                 type: types.ERROR,
                 content: pubsub.renderError(err)
@@ -163,7 +162,7 @@ devServer.all("*", (req, res, next) => {
         const nextApp = require("./server").default
         nextApp.onerror = onError
         nextApp.callback()(req, res)
-    } catch(err) {
+    } catch (err) {
         return onError(err)
     } finally {
         if (!isError) {
@@ -172,14 +171,17 @@ devServer.all("*", (req, res, next) => {
     }
 })
 
-const PORT = process.env.PORT || 3000
-console.log("Development mode")
+const {
+    port,
+    host = "localhost"
+} = config.app
 
-console.log(config.webpack
-    ? "Webpack enabled"
-    : "Webpack disabled. To enable try `WEBPACK=1 or `yarn dev`")
+console.log(chalk.bold.red("Development mode.",
+    chalk.underline(`Webpack ${config.webpack ? "enabled"
+        : "disabled. To enable try `WEBPACK=1 or `yarn dev`"
+    }`)))
 
-devServer.listen(PORT, () =>
-    console.log(`App listening on port ${PORT}`))
+devServer.listen({ port, host }, () =>
+    console.log(chalk.blue(`App listening on ${host}:${port}`)))
 
 module.exports = pubsub

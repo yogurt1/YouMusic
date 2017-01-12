@@ -3,6 +3,7 @@ const {
     NODE_ENV,
     SECRET,
     PORT,
+    HOST,
     LOGLEVEL,
     APP_NAME,
     WEBPACK,
@@ -17,6 +18,7 @@ const config = {
         name: APP_NAME || "YouMusic",
         logLevel: LOGLEVEL || (isDev ? "debug" : "warn"),
         port: PORT || 3000,
+        host: HOST,
         session: {
             secret: SECRET || "keyboard cat",
             key: "ssid",

@@ -36,7 +36,7 @@ if (isDevEnv) {
 }
 
 const renderApp = () => match({ history, routes },
-    (err, _, renderProps) =>ReactDOM.render(
+    (err, _, renderProps) => ReactDOM.render(
         <AppContainer>
             <ApolloProvider
                 client={client}
@@ -57,5 +57,5 @@ window.onload = () => {
          ".__LOADER__")(el => el.remove())
 }
 
-const {hot} = module as any
+const { hot } = module as any
 if (hot) hot.accept()

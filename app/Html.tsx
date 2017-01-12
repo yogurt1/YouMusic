@@ -3,7 +3,6 @@ import * as Helmet from "react-helmet"
 import styled, { injectGlobal, keyframes } from "styled-components"
 import { Record } from "immutable"
 import { flatten } from "lodash"
-import baseStyles from "app/lib/baseStyles"
 import { State } from "app/store"
 
 injectGlobal`
@@ -41,6 +40,16 @@ injectGlobal`
     }
 `
 
+const baseStyles = `
+    body {
+        font-size: 1.5em;
+        line-height: 1.6;
+        font-weight: 300;
+        font-family: Roboto, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #222;
+    }
+`
+
 export const assets = {
     css: "/assets/styles.bundle.css",
     js: "/assets/app.bundle.js"
@@ -49,12 +58,10 @@ export const assets = {
 export interface HtmlProps {
     state?: State,
     locale?: string,
-    styles?: string,
-    children?: React.ReactElement<any>
+    styles?: string
 }
 
-export default function Html(props: HtmlProps) {
-    const { locale, state, styles, children } = props
+const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, children }) => {
     const head = Helmet.rewind()
     const attrs = head.htmlAttributes.toComponent()
     const serializedState = JSON.stringify(state)
@@ -142,3 +149,5 @@ export default function Html(props: HtmlProps) {
         </html>
     )
 }
+
+export default Html

@@ -1,4 +1,6 @@
 {
+    "lazy": true,
+    "fast": true,
     "compileOnSave": false,
     "compilerOptions": {
         "allowJs": false,

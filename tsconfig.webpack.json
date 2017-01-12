@@ -9,14 +9,14 @@
         "removeComments": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "importHelpers": true,
         "baseUrl": ".",
         "paths": {
             "app/*": ["./app/*"]
         },
         "types": [
             "jest",
-            "reflect-metadata",
-            "./globals.d.ts"
+            "reflect-metadata"
         ]
     },
     "awesomeTypescriptLoaderOptions": {

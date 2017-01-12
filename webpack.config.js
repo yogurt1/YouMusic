@@ -54,7 +54,8 @@ const config = module.exports = {
                 include: path.join(__dirname, "app"),
                 exclude: /(node_modules|\/vendor\.js$)/,
                 options: {
-                    configFileName: "tsconfig.webpack.json"
+                    configFileName: "tsconfig.webpack.json",
+                    configFilename: "tsconfig.webpack.json"
                 }
             },
             {
@@ -81,8 +82,9 @@ const config = module.exports = {
     plugins: [
         new CheckerPlugin(),
         new TsConfigPathsPlugin({
-            tsconfig: "tsconfig.json",
-            configFilename: "tsconfig.json",
+            tsconfig: "tsconfig.webpack.json",
+            configFilename: "tsconfig.webpack.json",
+            configFileName: "tsconfig.webpack.json",
             compiler: "typescript"
         }),
         new ExtractText({
@@ -155,12 +157,12 @@ if (isProduction) {
     )
 } else {
     config.plugins.unshift(
-        new webpack.NoErrorsPlugin(),
+        // new webpack.NoEmitOnErrorsPlugin(),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin()
     )
     config.entry["app"].unshift(
         "react-hot-loader/patch",
-        "webpack-hot-middleware/client?overlay=true&reload=false&noInfo=true"
+        "webpack-hot-middleware/client?overlay=true&reload=false&quiet=true"
     )
 }

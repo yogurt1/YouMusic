@@ -23,12 +23,12 @@ export interface SearchResult {
     totalResults: number
 }
 
-interface YouTubeSearchInterface {
+export interface YouTubeSearchInterface {
     byKeyword(keyword: string): Promise<SearchResult>
     getPreviewUrl(videoId: string, previewQuality: PREVIEW_QUALITY): string
 }
 
-const filterVideoItems = (items: any[]): VideoItem[] => items
+export const filterVideoItems = (items: any[]): VideoItem[] => items
     .filter(item => item.id.kind === "youtube#video" &&
         item.snippet.liveBroadcastContent === "none")
     .map(item => {

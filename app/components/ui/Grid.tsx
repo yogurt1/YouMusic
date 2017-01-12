@@ -1,5 +1,5 @@
 import * as React from "react"
-import styled, {css, injectGlobal} from "styled-components"
+import styled, { css, injectGlobal } from "styled-components"
 
 const sizes = {
     1: 4.66666666667,
@@ -74,7 +74,7 @@ export const Column = styled.div`
 `
 
 export const Clearfix = styled.div`${clearfix}`
-export const Row = ({children}) => React.createElement(Clearfix, {
+export const Row = ({ children }) => React.createElement(Clearfix, {
     children: children.find(child =>
             (child.type === Column && child.props.size))
         ? children

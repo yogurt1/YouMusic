@@ -3,4 +3,8 @@
 find app server |\
     grep -e '.js$' -e '.js.map$' |\
     grep -v -e '.json$' |\
-    xargs rm
+    while read line
+    do
+        rm $line
+    done
+

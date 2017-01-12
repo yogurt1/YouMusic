@@ -6,14 +6,14 @@ import NoMatchPage from "./components/pages/NoMatchPage"
 import TestPage from "./components/pages/TestPage"
 import {isDevEnv} from "app/lib/util"
 
-declare var System: any
+declare const System: any
 
 if (typeof(System) === "undefined") {
-    var System: any = {
+    const System = {
         import(path) {
             try {
                 return Promise.resolve(require(path))
-            } catch(err){
+            } catch (err) {
                 return Promise.reject(err)
             }
         }

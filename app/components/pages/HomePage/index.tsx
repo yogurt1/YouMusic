@@ -30,11 +30,11 @@ export default class HomePage extends React.Component<any, any> {
     render() {
         const { videoId, theme } = this.props
         return (
-            <div style={{padding:15}}>
+            <div style={{ padding: 15 }}>
                 <YouTube videoId={videoId} width={800} height={600} />
-                <h4 style={{
-                    color: theme.colors.accent
-                }}>Video ID: {videoId}</h4>
+                <h4 style={{ color: theme.colors.accent }}>
+                    Video ID: {videoId}
+                </h4>
             </div>
         )
     }
