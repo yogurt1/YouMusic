@@ -11,9 +11,16 @@ const isProduction = !!(
     "production" === process.env.NODE_ENV
 )
 
-const devtool = isProduction ? "source-map" : "cheap-module-inline-source-map"
+const tryCatch = (t, c) => {
+    try {
+        return t()
+    } catch (err) {
+        return c(err)
+    }
+}
+
 const config = module.exports = {
-    devtool,
+    devtool: isProduction ? "source-map" : "cheap-module-inline-source-map",
     performance: { hints: false },
     entry: {
         app: ["./app/client.tsx"]
@@ -67,7 +74,7 @@ const config = module.exports = {
                 test: /\.css$/,
                 loader: ExtractText.extract({
                     fallbackLoader: "style-loader?-singleton&insertAt=top",
-                    loader: "css-loader?-mimize&-autorepfixer&-sourceMap"
+                    loader: "css-loader?mimize&autorepfixer&sourceMap"
                 })
             },
             {
@@ -80,6 +87,13 @@ const config = module.exports = {
         ]
     },
     plugins: [
+        new webpack.DllReferencePlugin({
+            contenxt: '.',
+            manifest: tryCatch(
+                () => require('./static/assets/vendor.manifest.json'),
+                () => ({ name: "vendor_dll", content: {} }))
+        }),
+        // new webpack.IgnorePlugin(/^\.\/locale-data$/, /react-intl$/),
         new CheckerPlugin(),
         new TsConfigPathsPlugin({
             tsconfig: "tsconfig.webpack.json",
@@ -93,7 +107,8 @@ const config = module.exports = {
             filename: "styles.bundle.css"
         }),
         new webpack.ProvidePlugin({
-            "Promise": "bluebird"
+            "Promise": "any-promise",
+            "Observable": "any-observable"
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: isProduction
@@ -110,50 +125,34 @@ const config = module.exports = {
 }
 
 if (isProduction) {
-    const OptimizeJsPlugin = require("optimize-js-plugin")
+    // const OptimizeJsPlugin = require("optimize-js-plugin")
     const CompressionPlugin = require("compression-webpack-plugin")
-    const LodashPlugin = require("lodash-webpack-plugin")
     const ImageminPlugin = require("imagemin-webpack-plugin").default
     const BabiliPlugin = require("babili-webpack-plugin")
+    const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
 
     // config.entry["vendor"] = "./app/vendor.js"
     config.plugins.push(
         // new webpack.optimize.CommonsChunkPlugin({
         //     name: "vendor"
         // }),
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false,
+            analyzerMode: "static",
+            generateStatsFile: true,
+            statsOptions: {
+                assets: true,
+                source: false,
+                modules: false,
+                chunks: false,
+                chunkModules: false
+            }
+        }),
         new webpack.optimize.AggressiveMergingPlugin(),
-        new LodashPlugin(),
         new ImageminPlugin(),
-        new OptimizeJsPlugin(),
+        // new OptimizeJsPlugin(),
         new CompressionPlugin(),
         new BabiliPlugin()
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         dead_code: true,
-        //         drop_debugger: true,
-        //         sequences: true,
-        //         unsafe: true,
-        //         conditionals: true,
-        //         comparisons: true,
-        //         properties: true,
-        //         booleans: true,
-        //         evaluate: true,
-        //         loops: true,
-        //         unused: true,
-        //         hoist_funs: true,
-        //         hoist_vars: true,
-        //         if_return: true,
-        //         join_vars: true,
-        //         cascade: true,
-        //         negate_iife: true,
-        //         pure_getters: true,
-        //         drop_console: true,
-        //         screw_ie8: true
-        //     },
-        //     mangle: {
-        //         screw_ie8: true
-        //     }
-        // })
     )
 } else {
     config.plugins.unshift(

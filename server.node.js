@@ -1,11 +1,14 @@
-const gql = require("graphql-tag")
-global.Promise = require("bluebird")
-global.DEV = process.env.NODE_ENV !== "production"
-if (DEV) require("dotenv/config")
-
+require("any-promise/register/bluebird")
+require("any-observable/register/rxjs-all")
 require("app-module-path/cwd")
-require("source-map-support/register")
 
+global.Promise = require("any-promise")
+global.DEV = process.env.NODE_ENV !== "production"
+if (DEV) {
+    require("dotenv/config")
+}
+
+const gql = require("graphql-tag")
 require.extensions[".gql"] = (module, filename) => {
     const content = fs.readFileSync(filename, "utf-8")
     try {

@@ -22,6 +22,8 @@
             ]
         },
         "production": {
+            "minified": true,
+            "comments": false,
             "presets": [
                 "react-optimize"
             ],

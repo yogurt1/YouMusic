@@ -11,6 +11,8 @@ import { isBrowser, isDevEnv } from "app/lib/util"
 import { compose } from "redux"
 import { connect } from "react-redux"
 
+export const NORMALIZE_STATE = "app/NORMALIZE_STATE"
+
 export const reduxify = (mapStateToProps, mapDispatchToProps?, mergeProps?, opts?) =>
     target => (connect(
         mapStateToProps, mapDispatchToProps, mergeProps, opts)

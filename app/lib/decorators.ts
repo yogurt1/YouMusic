@@ -7,35 +7,42 @@ import { getDisplayName } from "recompose"
 export const browserOnly = fallback => isBrowser ? thunk :
     () => ( fallback || noopNull )
 
-export const lazyLoad = createPromises => WrappedComponent => hoistStatics(
-    class LazyLoad extends React.Component<any, any> {
-        static WrappedComponent = WrappedComponent
-        static displayName = `LazyLoad(${getDisplayName(WrappedComponent)})`
+export const lazyLoad = (...importees: Promise<any>[]) =>
+    WrappedComponent => hoistStatics(
+        class LazyLoad extends React.Component<any, { modules: any[] }> {
+            static WrappedComponent = WrappedComponent
+            static displayName = `LazyLoad(${getDisplayName(WrappedComponent)})`
 
-        state = {
-            loaded: null
-        }
+            state = { modules: null }
 
-        shouldComponentUpdate(_, nextState) {
-            return true
-        }
+            shouldComponentUpdate(_, nextState) {
+                return true
+            }
 
-        componentDidMount() {
-            createPromises().then(loaded =>
-                    this.setState({loaded}))
-        }
+            componentDidMount() {
+                Promise.all(importees)
+                    .then(modules =>
+                          this.setState({ modules }))
+            }
 
-        render() {
-            const {loaded} = this.state
-            const {children, ...props} = this.props
-            return !loaded ? null : React.createElement(WrappedComponent, {
-                ...props,
-                loaded,
-            }, children)
-        }
-    }, WrappedComponent)
+            render() {
+                const { modules } = this.state
+                const { children, ...props } = this.props
 
-export const LazyLoad = ({children, promises}) => lazyLoad(promises)(children)
+                if (!modules) {
+                    return null
+                }
+
+                return React.createElement(WrappedComponent, {
+                    modules,
+                    ...props
+                }, children)
+            }
+        }, WrappedComponent)
+
+export const LazyLoad: React.StatelessComponent<{
+    modules: Promise<any>[]
+}> = ({children, modules}) => lazyLoad(...modules)(children)
 
 export const styledDecorator = (styles, from = "div") => {
     const Styled = styled(from)`${styles}`

@@ -1,4 +1,4 @@
-import "./polyfills"
+import "./vendor"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import {AppContainer} from "react-hot-loader"
@@ -29,10 +29,11 @@ const history = syncHistoryWithStore(browserHistory, store, {
 
 
 if (isDevEnv) {
-    // const {whyDidYouUpdate} = require("why-did-you-update")
-    // whyDidYouUpdate(React)
-    // require("offline-plugin/runtime").install()
     window["__APOLLO_CLIENT__"] = client
+    // const { whyDidYouUpdate } = require("why-did-you-update")
+    // whyDidYouUpdate(React, {
+    //     exclude: /^(Connect|Form)/
+    // })
 }
 
 const renderApp = () => match({ history, routes },

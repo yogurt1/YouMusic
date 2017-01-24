@@ -1,3 +1,4 @@
+const app = require('./server.node')
 const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
 const { RedBoxError } = require("redbox-react")
@@ -6,7 +7,6 @@ const chalk = require("chalk")
 const config = require("./config")
 const tsconfig = require("./tsconfig.json")
 const tsnode = require("ts-node")
-const app = require("./server.node")
 const devServer = express()
 
 tsnode.register(tsconfig)

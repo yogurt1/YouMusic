@@ -13,7 +13,7 @@ import thunkMiddleware from "redux-thunk"
 import { routerMiddleware } from "react-router-redux"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry, { State } from "./reducers"
-import { composeWithDevTools } from "./util"
+import { composeWithDevTools, NORMALIZE_STATE } from "./util"
 import { isBrowser, isDevEnv } from "../lib/util"
 
 export {State}
@@ -43,6 +43,9 @@ export default function configureStore(history: History, client: ApolloClient): 
 
     const store: EnhancedStore = finalCreateStore(
         reducer, preloadedState)
+
+    // Fix Immutable types
+    store.dispatch({ type: NORMALIZE_STATE })
 
     store.injectReducers = nextReducersRegistry => {
         const finalReducersRegistry = Object.assign(

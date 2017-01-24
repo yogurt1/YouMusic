@@ -1,7 +1,7 @@
-import {Map} from "immutable"
-import {Action} from "flux-standard-action"
-import {Reducer} from "redux"
-import {createAction, createTypes} from "../util"
+import { Map } from "immutable"
+import { Action } from "flux-standard-action"
+import { Reducer } from "redux"
+import { createAction, createTypes, NORMALIZE_STATE } from "../util"
 
 export const prefix = "video"
 
