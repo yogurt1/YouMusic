@@ -2,6 +2,9 @@ require("any-promise/register/bluebird")
 require("any-observable/register/rxjs-all")
 require("app-module-path/cwd")
 
+global.Promise = require("any-promise")
+global.Observable = require("any-observable")
+
 if (process.env.NODE_ENV !== "production") {
     require("dotenv/config")
 }

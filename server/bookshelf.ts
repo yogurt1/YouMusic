@@ -5,9 +5,8 @@ import * as config from "../config"
 
 export const knex = Knex(config.db.knex)
 export const bookshelf = Bookshelf(knex)
-export { ModelBase as Model }
+export const Model = ModelBase(bookshelf)
 
 bookshelf
     .plugin("register")
-    .plugin(ModelBase.pluggable)
 

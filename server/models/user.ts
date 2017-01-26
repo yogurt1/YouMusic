@@ -1,8 +1,8 @@
 import * as Joi from "joi"
-import * as Model from "bookshelf-modelbase"
+import { Model } from "../bookshelf"
 
 export default class User extends Model {
-    get tableName: string = () => "users"
-
-    validate = {}
+    get tableName(): string {
+        return "users"
+    }
 }
