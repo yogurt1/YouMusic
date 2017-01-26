@@ -170,6 +170,7 @@
     "reactstrap": "^3.9.5",
     "recompose": "^0.21.0",
     "redux": "^3.6.0",
+    "redux-action-buffer": "^1.0.1",
     "redux-form": "^6.2.1",
     "redux-immutable": "^3.0.8",
     "redux-observable": "^0.13.0",

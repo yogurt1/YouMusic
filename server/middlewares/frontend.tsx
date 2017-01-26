@@ -52,7 +52,7 @@ const frontendMiddleware = async ctx => {
 
     const client = configureApolloClient(networkInterface)
     const memoryHistory = createMemoryHistory(location)
-    const store = configureStore(memoryHistory, client)
+    const store = configureStore({ client, history: memoryHistory })
     const history = syncHistoryWithStore(memoryHistory, store, {
         selectLocationState(state) {
             return state.get("routing").toJS()

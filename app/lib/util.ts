@@ -20,6 +20,9 @@ export const doms = (...selectors: string[]) => {
 
 export const getIsBrowser = () => (<any>process).browser ||
     typeof(window) === "object"
+export const getIsElectron = () => getIsBrowser &&
+    window["process"] &&
+    window["process"]["versions"]["electron"]
 export const getDevEnv = () => process.env.NODE_ENV !== "production"
 export const getProdEnv = () => process.env.NODE_ENV === "production"
 export const getTestEnv = () => process.env.NODE_ENV === "test"
@@ -29,6 +32,7 @@ export const getNotTestEnv = () => !getTestEnv()
 export const getWindow = () => isBrowser ? window : null
 
 export const isBrowser = getIsBrowser()
+export const isElectron = getIsElectron()
 export const isDevEnv = getDevEnv()
 export const isProdEnv = getProdEnv()
 export const isTestEnv = getTestEnv()

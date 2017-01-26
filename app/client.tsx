@@ -27,7 +27,7 @@ const target = document.querySelector("#app")
 const locale = "en"
 const networkInterface = createNetworkInterface({uri: "/graphql"})
 const client = configureApolloClient(networkInterface)
-const store = configureStore(browserHistory, client)
+const store = configureStore({ client, history: browserHistory })
 const history = syncHistoryWithStore(browserHistory, store, {
     selectLocationState(state) {
         return state.get("routing").toJS()

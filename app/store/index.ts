@@ -12,6 +12,8 @@ import { combineReducers } from "redux-immutable"
 import thunkMiddleware from "redux-thunk"
 import { routerMiddleware } from "react-router-redux"
 import { autoRehydrate } from "redux-persist"
+import { REHYDRATE } from "redux-persist/constants"
+import createActionBuffer from "redux-action-buffer"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry, { State } from "./reducers"
 import { composeWithDevTools, NORMALIZE_STATE } from "./util"
@@ -19,7 +21,7 @@ import { isBrowser, isDevEnv } from "../lib/util"
 
 export const records = []
 
-export {State}
+export { State }
 
 export interface EnhancedStore extends Store<State> {
     injectReducers(nextReducersRegistry: ReducersMapObject): void
@@ -30,12 +32,16 @@ const preloadedState: State | void = !isBrowser ? void(0) :
         localStorage.getItem("state")) ||
             window["__PRELOADED_STATE__"])
 
-export default function configureStore(history: History, client: ApolloClient): EnhancedStore {
+export default function configureStore({ history, client }: {
+    history: History,
+    client: ApolloClient
+}): EnhancedStore {
     const middlewares = [
         thunkMiddleware,
         arrayMiddleware,
         client.middleware(),
-        routerMiddleware(history)
+        routerMiddleware(history),
+        createActionBuffer(REHYDRATE)
     ]
 
     const apolloReducer = client.reducer() as Reducer<any>
@@ -43,8 +49,9 @@ export default function configureStore(history: History, client: ApolloClient): 
     const reducer = combineReducers(reducersRegistry)
 
     const finalCreateStore = composeWithDevTools(
-        autoRehydrate({ log: isDevEnv }),
-        applyMiddleware(...middlewares))(createStore)
+        applyMiddleware(...middlewares),
+        autoRehydrate({ log: isDevEnv })
+    )(createStore)
 
     const store: EnhancedStore = finalCreateStore(
         reducer, preloadedState)
