@@ -50,9 +50,15 @@ const baseStyles = `
     }
 `
 
+export const ASSET_PREFIX = "/assets"
 export const assets = {
-    css: "/assets/styles.bundle.css",
-    js: "/assets/app.bundle.js"
+    app: {
+        js: `/assets/app.bundle.js`
+    },
+    vendor: {
+        js: `${ASSET_PREFIX}/vendor.dll.js`,
+        css: `${ASSET_PREFIX}/vendor.dll.css`
+    }
 }
 
 export interface HtmlProps {
@@ -67,7 +73,7 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
     const serializedState = JSON.stringify(state)
     const script = `
         window.__PRELOADED__STATE__ = ${serializedState};
-        document.getElementById("__BUNDLE_CSS__").rel = "stylesheet";
+        document.getElementById("__PRELOAD_CSS__").rel = "stylesheet";
     `
 
     // <link as="style"... />
@@ -81,9 +87,9 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
                     content="width=device-width, initial-scale=1"
                 />
                 <link
-                    id="__BUNDLE_CSS__"
+                    id="__PRELOAD_CSS__"
                     rel="preload"
-                    href={assets.css}
+                    href={assets.vendor.css}
                     />
                 <style
                     dangerouslySetInnerHTML={{__html: baseStyles}}
@@ -143,7 +149,8 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
                     {children}
                 </div>
                 <script dangerouslySetInnerHTML={{__html: script}} />
-                <script src={assets.js} />
+                <script defer src={assets.vendor.js} />
+                <script defer src={assets.app.js} />
             </body>
         </html>
     )

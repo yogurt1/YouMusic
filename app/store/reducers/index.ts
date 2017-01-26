@@ -1,9 +1,9 @@
-import {Reducer} from "redux"
-import routingReducer, {RoutingState} from "./routing"
-import formReducer, {FormState} from "./form"
-import authReducer, {AuthState} from "./auth"
-import {reducer as configReducer, State as ConfigState} from "../ducks/config"
-import {reducer as videoReducer, State as VideoState} from "../ducks/video"
+import { Reducer } from "redux"
+import routingReducer, { RoutingState } from "./routing"
+import formReducer, { FormState } from "./form"
+import authReducer, { AuthState } from "./auth"
+import { reducer as configReducer, State as ConfigState } from "../ducks/config"
+import { reducer as videoReducer, State as VideoState } from "../ducks/video"
 
 export interface State {
     routing: RoutingState

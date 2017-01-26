@@ -14,10 +14,10 @@ const compareTodoById = compare("id")
 
 export default {
     Query: {
-        todos() {
+        todos () {
             return todos
         },
-        todo(root, args) {
+        todo (root, args) {
             return todos.find(todo => todo.id === args.id)
         }
     }

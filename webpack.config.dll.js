@@ -16,7 +16,7 @@ const config = {
     output: {
         filename: "[name].dll.js",
         path: path.join(__dirname, "./static/assets"),
-        library: "[name]"
+        library: "[name]_dll"
     },
     module: {
         rules: [
@@ -58,8 +58,7 @@ const config = {
             autoprefixer: true
         }),
         new webpack.ProvidePlugin({
-            "Promise": "any-promise",
-            "Observable": "any-observable"
+            "Promise": "bluebird"
         }),
         new webpack.DllPlugin({
             path: './static/assets/[name].manifest.json',

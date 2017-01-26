@@ -39,10 +39,6 @@ export default class ApiClient implements ApiClientInterface {
         this.axios = axios.create(config)
     }
 
-    // public setDefaults(defaults) {
-    //     Object.assign(this.axios.defaults, defaults)
-    // }
-
     public async request(config) {
         const res = await this.axios.request(config)
 

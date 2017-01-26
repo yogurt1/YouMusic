@@ -1,33 +1,35 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom/server"
 import Html from "app/Html"
-import {match, RouterContext, createMemoryHistory} from "react-router"
-import {ApolloProvider} from "react-apollo"
-import {IntlProvider} from "react-intl"
-import {ThemeProvider} from "styled-components"
-import {getDataFromTree} from "react-apollo/server"
-import {createNetworkInterface} from "apollo-client"
-import {syncHistoryWithStore} from "react-router-redux"
+import { match, RouterContext, createMemoryHistory } from "react-router"
+import { ApolloProvider } from "react-apollo"
+import { IntlProvider } from "react-intl"
+import { ThemeProvider } from "styled-components"
+import { getDataFromTree } from "react-apollo/server"
+import { createNetworkInterface } from "apollo-client"
+import { syncHistoryWithStore } from "react-router-redux"
 import * as styleSheet from "styled-components/lib/models/StyleSheet"
-import {injectGlobal} from "styled-components"
+// import { injectGlobal } from "styled-components"
 import routes from "app/routes"
 import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
-import * as config from "../config"
+import * as config from "../../config"
 const theme = require("app/theme.json")
 
-const isDevServer = /dev/.test(process.env.npm_lifecycle_event)
-const render = node => "<!doctype html>" + ReactDOM.renderToString(node)
-const getStyles: () => string = () => styleSheet.rules().map(r => r.cssText).join("")
+const isDevServer = /dev/.test(process.env.npm_lifecycle_event) as boolean
+const render = node => `
+    <!doctype html>
+    ${ReactDOM.renderToString(node)}
+`
+const getStyles = () => styleSheet.rules()
+    .map(r => r.cssText).join("") as string
 
 type MatchAsync = (opts: any) => Promise<Array<any>>
 const matchAsync: MatchAsync = opts => new Promise((resolve, reject) =>
-        match(opts, (err, ...rest) => {
-            if (err) return reject(err)
-            return resolve(rest)
-        }))
+        match(opts, (err, ...rest) =>
+            err ? reject(err) : resolve(rest)))
 
-export default async ctx => {
+const frontendMiddleware = async ctx => {
     ctx.type = "html"
     // styleSheet.flush()
 
@@ -58,7 +60,7 @@ export default async ctx => {
     })
 
 
-    const [redir, renderProps] = await matchAsync({location, routes, history})
+    const [ redir, renderProps ] = await matchAsync({ location, routes, history })
 
     ctx.state = {
         ...ctx.state,
@@ -81,7 +83,9 @@ export default async ctx => {
     const actions = []
 
     for (const nextComponent of renderProps.components) {
-        if (!nextComponent) continue
+        if (!nextComponent) {
+            continue
+        }
 
         const allAction = nextComponent["all"]
         const action = nextComponent[method]
@@ -106,3 +110,5 @@ export default async ctx => {
         </Html>
     )
 }
+
+export default frontendMiddleware

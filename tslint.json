@@ -42,6 +42,9 @@
         ]
     },
     "rules": {
+        "curly": true,
+        "no-console": [true, "log", "warn"],
+
         "class-name": true,
         "comment-format": [
             true,

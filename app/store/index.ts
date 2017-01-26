@@ -11,12 +11,16 @@ import { ApolloClient } from "apollo-client"
 import { combineReducers } from "redux-immutable"
 import thunkMiddleware from "redux-thunk"
 import { routerMiddleware } from "react-router-redux"
+import { autoRehydrate } from "redux-persist"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry, { State } from "./reducers"
 import { composeWithDevTools, NORMALIZE_STATE } from "./util"
 import { isBrowser, isDevEnv } from "../lib/util"
 
+export const records = []
+
 export {State}
+
 export interface EnhancedStore extends Store<State> {
     injectReducers(nextReducersRegistry: ReducersMapObject): void
 }
@@ -39,6 +43,7 @@ export default function configureStore(history: History, client: ApolloClient): 
     const reducer = combineReducers(reducersRegistry)
 
     const finalCreateStore = composeWithDevTools(
+        autoRehydrate({ log: isDevEnv }),
         applyMiddleware(...middlewares))(createStore)
 
     const store: EnhancedStore = finalCreateStore(

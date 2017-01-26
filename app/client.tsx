@@ -9,12 +9,19 @@ import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components"
 import { createNetworkInterface } from "apollo-client"
 import { syncHistoryWithStore } from "react-router-redux"
+import { persistStore } from "redux-persist-immutable"
+import * as localForage from "localforage"
 import configureStore from "./store"
 import configureApolloClient from "./store/apollo"
 import routes from "./routes"
 import { doms, isDevEnv, isBrowser, isProdEnv } from "./lib/util"
 import AuthService from "./services/AuthService"
 
+const storage = localForage.config({
+    driver: localForage.LOCALSTORAGE,
+    name: "reduxState",
+    description: "persisted redux state"
+})
 const theme = require("./theme.json")
 const target = document.querySelector("#app")
 const locale = "en"
@@ -25,6 +32,13 @@ const history = syncHistoryWithStore(browserHistory, store, {
     selectLocationState(state) {
         return state.get("routing").toJS()
     }
+})
+// TODO: "./store".records <=> Record[]
+const persistor = persistStore(store, {
+    storage,
+    key: "state",
+    blacklist: ['location'],
+    records: []
 })
 
 
@@ -59,4 +73,6 @@ window.onload = () => {
 }
 
 const { hot } = module as any
-if (hot) hot.accept()
+if (hot) {
+    hot.accept()
+}

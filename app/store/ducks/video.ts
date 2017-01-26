@@ -1,6 +1,6 @@
 import { Map } from "immutable"
-import { Action } from "flux-standard-action"
-import { Reducer } from "redux"
+// import { Action } from "flux-standard-action"
+import { Reducer, Action } from "redux"
 import { createAction, createTypes, NORMALIZE_STATE } from "../util"
 
 export const prefix = "video"
@@ -8,6 +8,10 @@ export const prefix = "video"
 export const types = createTypes(prefix,
     "SET_VIDEOID"
 )
+
+interface A<T> extends Action {
+    payload: T
+}
 
 export const actions= {
     setVideoId: createAction<string>(types.SET_VIDEOID)

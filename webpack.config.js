@@ -107,8 +107,7 @@ const config = module.exports = {
             filename: "styles.bundle.css"
         }),
         new webpack.ProvidePlugin({
-            "Promise": "any-promise",
-            "Observable": "any-observable"
+            "Promise": "bluebird"
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: isProduction

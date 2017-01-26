@@ -7,11 +7,11 @@ const cache = LRU({
 })
 
 const middleware = () => convert(cash({
-    get(key, maxAge) {
+    get (key, maxAge) {
         return cache.get(key)
     },
 
-    set(key, value) {
+    set (key, value) {
         cache.set(key, value)
     }
 }))

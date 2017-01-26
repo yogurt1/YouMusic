@@ -1,4 +1,4 @@
-const app = require('./server.node')
+const app = require("./server.node")
 const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
 const { RedBoxError } = require("redbox-react")
@@ -34,7 +34,7 @@ const tmpl = ({ error, types, endpoint }) => `
 </script>
 `
 const pubsub = new class PubSub {
-    constructor() {
+    constructor () {
         this.subscribers = []
         this.endpoint = "/__server_hmr"
         this.types = [
@@ -48,13 +48,13 @@ const pubsub = new class PubSub {
         }, {})
     }
 
-    renderError(error) {
+    renderError (error) {
         const el = createElement(RedBoxError, { error })
         const html = renderToStaticMarkup(el)
         return html
     }
 
-    render(err) {
+    render (err) {
         return tmpl({
             error: this.renderError(err),
             types: this.types,
@@ -62,7 +62,7 @@ const pubsub = new class PubSub {
         })
     }
 
-    subscribe({ res }) {
+    subscribe ({ res }) {
         const { subscribers, types } = this
         const id = subscribers.push(res) - 1
         this.publish({ type: types.INIT })
@@ -72,7 +72,7 @@ const pubsub = new class PubSub {
         }
     }
 
-    publish(action) {
+    publish (action) {
         const { subscribers } = this
         const json = JSON.stringify(action)
         const data = `data: ${json}\n\n`
@@ -82,7 +82,7 @@ const pubsub = new class PubSub {
         }
     }
 
-    onError(req, res) {
+    onError (req, res) {
         return err => {
             res.writeHead(200, {
                 "Content-Type": "text/html"
@@ -171,17 +171,19 @@ devServer.all("*", (req, res, next) => {
     }
 })
 
-const {
-    port,
-    host = "localhost"
-} = config.app
+if (!module.parent) {
+    const {
+        port,
+        host = "localhost"
+    } = config.app
 
-console.log(chalk.bold.red("Development mode.",
-    chalk.underline(`Webpack ${config.webpack ? "enabled"
-        : "disabled. To enable try `WEBPACK=1 or `yarn dev`"
-    }`)))
+    console.log(chalk.bold.red("Development mode.",
+        chalk.underline(`Webpack ${config.webpack ? "enabled"
+            : "disabled. To enable try `WEBPACK=1 or `yarn dev`"
+        }`)))
 
-devServer.listen({ port, host }, () =>
-    console.log(chalk.blue(`App listening on ${host}:${port}`)))
+    devServer.listen({ port, host }, () =>
+        console.log(chalk.blue(`App listening on ${host}:${port}`)))
+}
 
 module.exports = pubsub

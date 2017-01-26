@@ -1,0 +1,37 @@
+{
+    "extends": "standard",
+    "plugins": [
+        "typescript",
+        "standard",
+        "promise"
+    ],
+    "parser": "typescript-eslint-parser",
+    "rules": {
+        "no-unsafe-negation": ["error"],
+        "array-bracket-spacing": [
+            "error",
+            "always"
+        ],
+        "prefer-const": ["error"],
+        "no-undef": ["error"],
+        "no-console": ["warn"],
+        "no-debugger": ["warn"],
+        "eqeqeq": [
+            "error",
+            "smart"
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "indent": ["error", 4]
+    }
+}

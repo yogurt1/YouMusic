@@ -9,3 +9,13 @@ export const ConditionalError = function(err) {
         default: throw err
     }
 }
+
+export class RequestError extends Error {
+    constructor(
+        public status: number,
+        statusText: string
+    ) {
+        super(statusText)
+        Error.captureStackTrace(this)
+    }
+}

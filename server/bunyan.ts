@@ -1,10 +1,12 @@
-import { createLogger } from "bunyan"
-import config from "../config"
+import { stdSerializers, createLogger } from "bunyan"
+import * as config from "../config"
+
+const { name, logLevel } = config.app
 
 const logger = createLogger({
-    name: config.app.name,
-    level: config.app.logLevel,
-    serializers: bunyan.stdSerializers
+    name,
+    logLevel,
+    serializers: stdSerializers
 })
 
 export default logger

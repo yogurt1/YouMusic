@@ -1,4 +1,4 @@
-import {makeExecutableSchema} from "graphql-tools"
+import { makeExecutableSchema } from "graphql-tools"
 import Schema from "./schema"
 import Resolvers from "./resolvers"
 import {
@@ -15,6 +15,6 @@ const resolvers = [
 ]
 
 export default makeExecutableSchema({
-    typeDefs: [Schema, ...schemas],
+    typeDefs: [ Schema, ...schemas ],
     resolvers: Object.assign(Resolvers, ...resolvers)
 })

@@ -24,9 +24,13 @@ export default class AuthService implements AuthServiceInterface {
         return persistedToken
     }
 
+    public async setToken(token) {
+
+    }
+
     public async logIn(username, password) {
         const token = ""
-        this.token = token
+        return token
     }
 
     public async logOut(token: Token) {

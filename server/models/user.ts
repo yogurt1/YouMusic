@@ -1,7 +1,8 @@
-import Model from "./"
+import * as Joi from "joi"
+import * as Model from "bookshelf-modelbase"
 
 export default class User extends Model {
-    static async findOrCreate() {
+    get tableName: string = () => "users"
 
-    }
+    validate = {}
 }
