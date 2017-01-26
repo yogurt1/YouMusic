@@ -33,7 +33,7 @@ const frontendMiddleware = async ctx => {
     ctx.type = "html"
     // styleSheet.flush()
 
-    if (config.webpack) {
+    if (config.webpack.isWebpack) {
         ctx.body = render(<Html />)
         return
     }

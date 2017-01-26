@@ -128,7 +128,7 @@ devServer.get(pubsub.endpoint, (req, res) => {
 })
 
 
-if (config.webpack) {
+if (config.webpack.isWebpack) {
     const HotMiddleware = require("webpack-hot-middleware")
     const DevMiddleware = require("webpack-dev-middleware")
     const webpackConfig = require("./webpack.config")
@@ -178,7 +178,7 @@ if (!module.parent) {
     } = config.app
 
     console.log(chalk.bold.red("Development mode.",
-        chalk.underline(`Webpack ${config.webpack ? "enabled"
+        chalk.underline(`Webpack ${config.webpack.isWebpack ? "enabled"
             : "disabled. To enable try `WEBPACK=1 or `yarn dev`"
         }`)))
 

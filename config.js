@@ -12,15 +12,12 @@ const {
     npm_lifecycle_event: TARGET
 } = process.env
 
-const isWebpack = TARGET === "dev"
-
 const config = {
     webpack: {
-        isWebpack,
         isWebpack: (
-            isWebpack &&
+            TARGET === "dev" &&
             typeof WEBPACK === "undefined"
-        ) ? true : !!(+WEBPACK)
+        ) ? true : Boolean(Number(WEBPACK))
     },
     app: {
         name: APP_NAME || "YouMusic",
