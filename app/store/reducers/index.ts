@@ -1,9 +1,12 @@
+import { Record } from "immutable"
 import { Reducer } from "redux"
 import routingReducer, { RoutingState } from "./routing"
 import formReducer, { FormState } from "./form"
 import authReducer, { AuthState } from "./auth"
 import { reducer as configReducer, State as ConfigState } from "../ducks/config"
 import { reducer as videoReducer, State as VideoState } from "../ducks/video"
+
+export const records: Record<any, any>[] = []
 
 export interface State {
     routing: RoutingState

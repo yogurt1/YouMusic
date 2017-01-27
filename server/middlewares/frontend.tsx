@@ -1,3 +1,4 @@
+import { promisify } from "bluebird"
 import * as React from "react"
 import * as ReactDOM from "react-dom/server"
 import Html from "app/Html"
@@ -9,25 +10,17 @@ import { getDataFromTree } from "react-apollo/server"
 import { createNetworkInterface } from "apollo-client"
 import { syncHistoryWithStore } from "react-router-redux"
 import * as styleSheet from "styled-components/lib/models/StyleSheet"
-// import { injectGlobal } from "styled-components"
 import routes from "app/routes"
 import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
 import * as config from "../../config"
-const theme = require("app/theme.json")
 
-const isDevServer = /dev/.test(process.env.npm_lifecycle_event) as boolean
+const theme = require("app/theme.json")
 const render = node => `
     <!doctype html>
     ${ReactDOM.renderToString(node)}
 `
-const getStyles = () => styleSheet.rules()
-    .map(r => r.cssText).join("") as string
-
-type MatchAsync = (opts: any) => Promise<Array<any>>
-const matchAsync: MatchAsync = opts => new Promise((resolve, reject) =>
-        match(opts, (err, ...rest) =>
-            err ? reject(err) : resolve(rest)))
+const matchAsync = promisify(match)
 
 const frontendMiddleware = async ctx => {
     ctx.type = "html"
@@ -38,7 +31,7 @@ const frontendMiddleware = async ctx => {
         return
     }
 
-    const locale = "en"
+    const locale = ctx.request.getLocaleFromHeader() || "en"
     const location = ctx.request.url
 
     // const cached = ctx.cashed(2 * 60 * 60)
@@ -60,7 +53,15 @@ const frontendMiddleware = async ctx => {
     })
 
 
-    const [ redir, renderProps ] = await matchAsync({ location, routes, history })
+    const { redir, renderProps } = await new Promise<any>((resolve, reject) => {
+        return match({ location, routes, history }, (err, redir, renderProps) => {
+            if (err) {
+                return reject(err)
+            }
+
+            return resolve({ redir, renderProps })
+        })
+    })
 
     ctx.state = {
         ...ctx.state,
@@ -100,12 +101,16 @@ const frontendMiddleware = async ctx => {
     }
 
     await Promise.all(actions)
-    // await getDataFromTree(componentTree)
+    await getDataFromTree(componentTree)
+
+    const state = store.getState()
+    const styles = styleSheet.rules()
+        .map(r => r.cssText).join("")
 
     ctx.body = render(
         <Html
-            styles={getStyles()}
-            state={store.getState()}>
+            styles={styles}
+            state={state}>
             {componentTree}
         </Html>
     )

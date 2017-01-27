@@ -1,7 +1,7 @@
 import { Map } from "immutable"
 import { Reducer, Action } from "redux"
 // import { FluxStandardAction as Action } from "flux-standard-action"
-import { createReducer, createAction, createTypes } from "../util"
+import { createTypes } from "../util"
 import { createSelector } from "reselect"
 
 export const types = createTypes(

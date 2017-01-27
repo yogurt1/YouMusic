@@ -68,8 +68,10 @@ renderApp()
 
 window.onload = () => {
     // remove styled-components, because it be force rehydrated
-    doms(".__CRITICAL_CSS__",
-         ".__LOADER__")(el => el.remove())
+    doms(
+        ".__CRITICAL_CSS__",
+        ".__LOADER__"
+    )(el => el.remove())
 }
 
 const { hot } = module as any

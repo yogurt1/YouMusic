@@ -1,3 +1,5 @@
+declare const System: any
+
 import { Map, fromJS } from "immutable"
 import {
     Store,
@@ -15,14 +17,11 @@ import { autoRehydrate } from "redux-persist"
 import { REHYDRATE } from "redux-persist/constants"
 import * as createActionBuffer from "redux-action-buffer"
 import arrayMiddleware from "./middlewares/array"
-import reducersRegistry, { State } from "./reducers"
+import reducersRegistry, { records, State } from "./reducers"
 import { composeWithDevTools, NORMALIZE_STATE } from "./util"
 import { isBrowser, isDevEnv } from "../lib/util"
 
-export const records = []
-
 export { State }
-
 export interface EnhancedStore extends Store<State> {
     injectReducers(nextReducersRegistry: ReducersMapObject): void
 }
@@ -69,8 +68,10 @@ export default function configureStore({ history, client }: {
 
     const { hot } = module as any
     if (hot) hot.accept("./reducers", () => {
-        const {default: nextReducersRegistry} = require("./reducers")
-        store.injectReducers(nextReducersRegistry)
+        System.import("./reducers")
+            .then(m => m.default)
+            .then(nextReducersRegistry =>
+                  store.injectReducers(nextReducersRegistry))
     })
 
     return store

@@ -5,9 +5,10 @@ import * as conditional from "koa-conditional-get"
 import * as etag from "koa-etag"
 import * as compress from "koa-compress"
 import * as logger from "koa-logger"
+import * as locale from "koa-locale"
+import * as compose from "koa-compose"
 import * as ms from "ms"
 import { graphqlKoa, graphiqlKoa } from "graphql-server-koa"
-import compose from "./compose"
 import passport from "./passport"
 import routes from "./routes"
 import bunyayn from "./bunyan"
@@ -21,11 +22,15 @@ app.keys = [ config.app.session.secret ]
 app.silent = isNotDevEnv
 // app.name = config.app.name
 
-app.use((ctx, next) => next()
-    .catch(err => {
-        console.error(err)
-        throw err
-    }))
+locale(app)
+
+app.use((ctx, next) => {
+    return next()
+        .catch(err => {
+            console.error(err)
+            return Promise.reject(err)
+        })
+})
 
 if (isDevEnv) {
     const devServer = require("../devServer")
@@ -41,7 +46,7 @@ if (isDevEnv) {
     app.use(cache())
 }
 
-app.use(compose(
+app.use(compose([
     conditional(),
     etag(),
     compress(),
@@ -52,6 +57,6 @@ app.use(compose(
     passport.initialize(),
     routes.routes(),
     routes.allowedMethods()
-))
+]))
 
 export default app

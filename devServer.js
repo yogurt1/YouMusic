@@ -147,7 +147,7 @@ if (config.webpack.isWebpack) {
     })
 }
 
-devServer.all("*", (req, res, next) => {
+devServer.use((req, res, next) => {
     let isError = false
     const onError = err => {
         isError = true

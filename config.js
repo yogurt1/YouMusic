@@ -35,7 +35,14 @@ const config = {
             }
         },
     },
-    db: null,
+    db: {
+        knex: {
+            client: 'sqlite',
+            connection: {
+                filename: './db/app.sqlite'
+            }
+        }
+    },
     redis: null,
     socket: null,
     graphql: null,

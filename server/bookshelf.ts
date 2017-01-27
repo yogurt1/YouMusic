@@ -8,5 +8,5 @@ export const bookshelf = Bookshelf(knex)
 export const Model = ModelBase(bookshelf)
 
 bookshelf
-    .plugin("register")
+    .plugin("registry")
 

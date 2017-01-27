@@ -7,6 +7,11 @@ import { isDevEnv } from "app/lib/util"
 
 const router = new Router()
 
+router.use(async (ctx, next) => {
+    console.log("In router, req.url:", ctx.req.url)
+    await next()
+})
+
 if (isDevEnv) {
     router.use("/graphiql",
         graphiqlKoa({ endpointURL: "/graphql" }))
@@ -17,9 +22,9 @@ router.use("/graphql", graphqlKoa(ctx => ({
     context: ctx
 })))
 
-router.use("/auth",
-           auth.routes(),
-           auth.allowedMethods())
+// router.use("/auth",
+//            auth.routes(),
+//            auth.allowedMethods())
 
 router.get("/random", async ctx => {
     ctx.body = Math.random() * 10000 | 0
