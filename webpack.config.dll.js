@@ -5,7 +5,9 @@ const OptimizeJsPlugin = require("optimize-js-plugin")
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 const ImageminPlugin = require("imagemin-webpack-plugin").default
-const isProduction = process.env.NODE_ENV === "production"
+const { NODE_ENV } = process.env
+const isProduction = NODE_ENV === "production"
+
 
 const config = {
     devtool: 'source-map',
@@ -48,11 +50,9 @@ const config = {
     plugins: [
         new OptimizeJsPlugin(),
         new webpack.DefinePlugin({
-            DEV: false,
-            __DEV__: false,
             "typeof window": JSON.stringify("object"),
             "process.env": {
-                "NODE_ENV": JSON.stringify("production")
+                "NODE_ENV": JSON.stringify(NODE_ENV)
             }
         }),
         new webpack.LoaderOptionsPlugin({
