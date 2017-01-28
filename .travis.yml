@@ -11,6 +11,7 @@ before_deploy:
   - "env NODE_ENV=production npm run build:client:dll"
   - "env NODE_ENV=production npm run build:client"
   - "git add ."
+  - "git commit --no-verify -m \"transpile typescript\""
 
 addons:
   apt:
