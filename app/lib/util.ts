@@ -54,4 +54,8 @@ export const compose = (...funcs) => (...args) =>
     funcs.reduceRight((composed, next) => next(composed),
         funcs.pop()(...args))
 
-export const flatten = arrays => arrays.reduce((a, b) => a.concat(b))
+export const flatten = arrays => arrays
+    .reduce((a, b) => a.concat(b))
+
+export const objectValues = v => Object.keys(v)
+    .map(k => v[k])

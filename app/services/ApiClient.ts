@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosRequestConfig} from "axios"
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios"
 
 export interface Response {
     [key: string]: any

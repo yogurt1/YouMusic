@@ -124,7 +124,7 @@ const config = module.exports = {
 }
 
 if (isProduction) {
-    // const OptimizeJsPlugin = require("optimize-js-plugin")
+    const OptimizeJsPlugin = require("optimize-js-plugin")
     const CompressionPlugin = require("compression-webpack-plugin")
     const ImageminPlugin = require("imagemin-webpack-plugin").default
     const BabiliPlugin = require("babili-webpack-plugin")
@@ -149,7 +149,7 @@ if (isProduction) {
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
         new ImageminPlugin(),
-        // new OptimizeJsPlugin(),
+        new OptimizeJsPlugin(),
         new CompressionPlugin(),
         new BabiliPlugin()
     )

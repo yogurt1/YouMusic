@@ -1,6 +1,6 @@
-import {Reducer} from "redux"
-import {Map} from "immutable"
-import {LOCATION_CHANGE} from "react-router-redux"
+import { Reducer } from "redux"
+import { Map } from "immutable"
+import { LOCATION_CHANGE } from "react-router-redux"
 
 export type RoutingState = Map<string, any>
 export const initialState = Map<string, any>({
@@ -8,7 +8,7 @@ export const initialState = Map<string, any>({
 })
 
 const reducer: Reducer<RoutingState> = (state = initialState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case LOCATION_CHANGE: return state
             .set("locationBeforeTransitions", action.payload)
         default: return state

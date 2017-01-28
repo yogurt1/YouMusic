@@ -1,11 +1,14 @@
+import { GraphQLInt as Int } from "graphql"
 import TodoType from './type'
 
 const todoField = {
     type: TodoType,
-    resolve(todo, args, ctx, { rootValue }) {
-        return true && {
-            text: "random"
-        }
+    args: {
+        id: { type: Int }
+    },
+
+    async resolve(todo, args, ctx, { rootValue }) {
+        return loader.load(args.id)
     }
 }
 

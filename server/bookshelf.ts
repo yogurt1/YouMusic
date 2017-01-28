@@ -10,3 +10,4 @@ export const Model = ModelBase(bookshelf)
 bookshelf
     .plugin("registry")
 
+export default bookshelf

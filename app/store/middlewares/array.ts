@@ -1,8 +1,8 @@
-import {Middleware, Action} from "redux"
+import { Middleware, Action } from "redux"
 
 export type ArrayAction = Action[]
 
-const arrayMiddleware: Middleware = ({dispatch}) => next => action => {
+const arrayMiddleware: Middleware = ({ dispatch }) => next => action => {
     if (!Array.isArray(action)) {
         return next(action)
     }

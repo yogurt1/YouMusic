@@ -29,9 +29,9 @@ export const initialState: State = Map<string, string>()
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-        case types.SET_CONFIG_KEY: return state
+    case types.SET_CONFIG_KEY: return state
             .set(action.payload[0], action.payload[1])
-        default: return state
+    default: return state
     }
 }
 

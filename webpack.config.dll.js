@@ -1,6 +1,7 @@
 const path = require("path")
 const webpack = require("webpack")
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
+const OptimizeJsPlugin = require("optimize-js-plugin")
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 const ImageminPlugin = require("imagemin-webpack-plugin").default
@@ -45,6 +46,7 @@ const config = {
         }
     },
     plugins: [
+        new OptimizeJsPlugin(),
         new webpack.DefinePlugin({
             DEV: false,
             __DEV__: false,

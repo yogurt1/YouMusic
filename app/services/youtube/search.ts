@@ -74,9 +74,9 @@ export default class YouTubeSearchService implements YouTubeSearchInterface {
     public getPreviewUrl(videoId, previewQuality = 1): string {
         const prefix:string = (() => {
             switch(previewQuality) {
-                case PREVIEW_QUALITY.MEDIUM: return "mq"
-                case PREVIEW_QUALITY.HIGH: return "hq"
-                default: return ""
+            case PREVIEW_QUALITY.MEDIUM: return "mq"
+            case PREVIEW_QUALITY.HIGH: return "hq"
+            default: return ""
             }
         })()
 

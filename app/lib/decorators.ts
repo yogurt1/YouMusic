@@ -42,7 +42,7 @@ export const lazyLoad = (...importees: Promise<any>[]) =>
 
 export const LazyLoad: React.StatelessComponent<{
     modules: Promise<any>[]
-}> = ({children, modules}) => lazyLoad(...modules)(children)
+}> = ({ children, modules }) => lazyLoad(...modules)(children)
 
 export const styledDecorator = (styles, from = "div") => {
     const Styled = styled(from)`${styles}`

@@ -8,12 +8,8 @@ import {
 const TodoType = new ObjectType({
     name: "Todo",
     fields: {
-        id: {
-            type: new NonNull(ID)
-        },
-        text: {
-            type: StringType
-        }
+        id: { type: new NonNull(ID) },
+        text: { type: StringType }
     }
 })
 

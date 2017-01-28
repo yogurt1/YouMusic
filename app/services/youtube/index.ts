@@ -4,7 +4,7 @@ import ApiClient, {
     ApiClientInterface,
     Response
 } from "../ApiClient"
-const {youtube: youtubeConfig} = require("app/config")
+const { youtube: youtubeConfig } = require("app/config")
 
 export { Response }
 

@@ -3,7 +3,6 @@
     "fast": true,
     "compileOnSave": false,
     "compilerOptions": {
-        "allowJs": false,
         "target": "es6",
         "moduleResolution": "node",
         "module": "commonjs",
@@ -17,6 +16,7 @@
             "app/*": ["./app/*"]
         },
         "types": [
+            "./types",
             "jest",
             "reflect-metadata"
         ]
