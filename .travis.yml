@@ -2,10 +2,16 @@ language: node_js
 node_js:
 - '6'
 
+env:
+  - CXX=g++-4.8
+
 before_deploy:
   - "npm run predeploy"
 
-
+addons:
+  apt:
+    packages:
+      - g++-4.8
 
 deploy:
   provider: heroku
