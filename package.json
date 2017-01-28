@@ -6,6 +6,10 @@
   "repository": "https://github.com/yogurt1/YouMusic",
   "author": "yogurt1 <stalingswag1@gmail.com>",
   "license": "BSD-3-Clause",
+  "engines": {
+    "node": "6",
+    "npm": "3"
+  },
   "scripts": {
     "predeploy": "echo \"TODO: Implement predeploy hook\"; exit 0",
     "start": "node server.node",
