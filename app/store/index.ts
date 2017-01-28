@@ -39,8 +39,8 @@ export default function configureStore({ history, client }: {
         thunkMiddleware,
         arrayMiddleware,
         client.middleware(),
-        routerMiddleware(history),
-        createActionBuffer(REHYDRATE)
+        routerMiddleware(history)
+        // createActionBuffer(REHYDRATE)
     ]
 
     const apolloReducer = client.reducer() as Reducer<any>
