@@ -9,7 +9,9 @@
         "promise"
     ],
     "env": {
-        "es6": true
+        "jest": true,
+        "es6": true,
+        "shared-node-browser": true
     },
     "parserOptions": {
         "ecmaVersion": 8,
@@ -19,6 +21,8 @@
         }
     },
     "rules": {
+        "space-infix-ops": 0,
+        "space-before-function-paren": 0,
         "no-extra-parens": 0,
         "no-unsafe-negation": ["error"],
         "array-bracket-spacing": ["error", "always"],

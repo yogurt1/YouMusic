@@ -46,7 +46,8 @@ export const filterVideoItems = (items: any[]): VideoItem[] => items
         return nextItem
     })
 
-export default class YouTubeSearchService implements YouTubeSearchInterface {
+export default class YouTubeSearchService
+ implements YouTubeSearchInterface {
     private client: YouTubeService
     static YT_PREVIEW_URL = "https://i.ytimg.com/vi"
 
@@ -72,8 +73,8 @@ export default class YouTubeSearchService implements YouTubeSearchInterface {
     }
 
     public getPreviewUrl(videoId, previewQuality = 1): string {
-        const prefix:string = (() => {
-            switch(previewQuality) {
+        const prefix : string = (() => {
+            switch (previewQuality) {
             case PREVIEW_QUALITY.MEDIUM: return "mq"
             case PREVIEW_QUALITY.HIGH: return "hq"
             default: return ""
@@ -93,11 +94,11 @@ export default class YouTubeSearchService implements YouTubeSearchInterface {
                 url: "/search"
             })
 
-            if (data.kind !==  "youtube#searchListResponse") {
+            if (data.kind !== "youtube#searchListResponse") {
                 throw new Error("YouTubeSearchService: Bad Response")
             }
 
-            const items: VideoItem[] = filterVideoItems(data.items)
+            const items : VideoItem[] = filterVideoItems(data.items)
 
             return {
                 resultsPerPage: data.resultsPerPage,
@@ -105,7 +106,7 @@ export default class YouTubeSearchService implements YouTubeSearchInterface {
                 items,
                 data
             }
-        } catch(err) {
+        } catch (err) {
             console.error(err)
         }
     }

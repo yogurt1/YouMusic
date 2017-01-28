@@ -8,7 +8,7 @@ export const types = createTypes(prefix,
     "SET_VIDEOID"
 )
 
-export const actions= {
+export const actions = {
     setVideoId: () => ({ type: types.SET_VIDEID })
 }
 
@@ -17,11 +17,11 @@ const fake = {
 }
 
 export type State = Map<string, string>
-export const initialState: State = Map({
+export const initialState : State = Map({
     videoId: fake.videoId()
 })
 
-export const reducer: Reducer<State> = (state = initialState, action) => {
+export const reducer : Reducer < State > = (state = initialState, action) => {
     switch (action.type) {
     case types.SET_VIDEOID: return state
             .set("videoId", action.payload)

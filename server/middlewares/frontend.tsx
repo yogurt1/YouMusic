@@ -107,6 +107,7 @@ const frontendMiddleware = async ctx => {
     const styles = styleSheet.rules()
         .map(r => r.cssText).join("")
 
+    // state[client.reduxRootKey] = client.getInitialState()
     ctx.body = render(
         <Html
             styles={styles}

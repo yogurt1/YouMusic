@@ -1,22 +1,17 @@
 import { Map } from "immutable"
-import { Reducer, Action } from "redux"
-// import { FluxStandardAction as Action } from "flux-standard-action"
-import { createTypes } from "../util"
+import { Reducer } from "redux"
+import { Action, createTypes } from "../util"
 import { createSelector } from "reselect"
 
 export const types = createTypes(
     "SET_CONFIG_KEY"
 )
 
-interface A<T> extends Action {
-    payload: T
-}
-
 export type K = string | symbol
 export type V = string | number | boolean
 
 export const actions = {
-    setConfigKey(k: K, v: V): A<[ K, V ]> {
+    setConfigKey(k: K, v: V): Action<[K, V]> {
         return {
             type: types.SET_CONFIG_KEY,
             payload: [ k, v ]
@@ -25,9 +20,9 @@ export const actions = {
 }
 
 export type State = Map<string, string>
-export const initialState: State = Map<string, string>()
+export const initialState : State = Map<string, string>()
 
-export const reducer: Reducer<State> = (state = initialState, action) => {
+export const reducer : Reducer < State > = (state = initialState, action) => {
     switch (action.type) {
     case types.SET_CONFIG_KEY: return state
             .set(action.payload[0], action.payload[1])

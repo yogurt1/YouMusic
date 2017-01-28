@@ -6,7 +6,7 @@ import authReducer, { AuthState } from "./auth"
 import { reducer as configReducer, State as ConfigState } from "../ducks/config"
 import { reducer as videoReducer, State as VideoState } from "../ducks/video"
 
-export const records: Record<any, any>[] = []
+export const records : Record < any, any > [] = []
 
 export interface State {
     routing: RoutingState
@@ -25,7 +25,7 @@ export interface ReducersRegistry {
     config: Reducer<ConfigState>
 }
 
-const reducersRegistry: ReducersRegistry = {
+const reducersRegistry : ReducersRegistry = {
     routing: routingReducer,
     form: formReducer,
     auth: authReducer,

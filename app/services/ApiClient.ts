@@ -8,7 +8,8 @@ export interface ApiClientInterface {
     request(opts: AxiosRequestConfig): Promise<Response>
 }
 
-export class RequestError extends Error {
+export class RequestError
+ extends Error {
     constructor(public status: number, message: string) {
         super(message)
         this.status = status
@@ -16,7 +17,8 @@ export class RequestError extends Error {
     }
 }
 
-export default class ApiClient implements ApiClientInterface {
+export default class ApiClient
+ implements ApiClientInterface {
     protected axios: AxiosInstance
 
     static methods = {
@@ -27,12 +29,12 @@ export default class ApiClient implements ApiClientInterface {
     }
 
     constructor(apiUrl: string) {
-        const config: AxiosRequestConfig = {
+        const config : AxiosRequestConfig = {
             baseURL: apiUrl,
             params: {},
             headers: {
                 "Accept": "application/json",
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             }
         }
 

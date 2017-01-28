@@ -7,6 +7,7 @@
   "author": "yogurt1 <stalingswag1@gmail.com>",
   "license": "BSD-3-Clause",
   "scripts": {
+    "predeploy": "echo \"TODO: Implement predeploy hook\"; exit 0",
     "start": "node server.node",
     "dev": "node devServer",
     "build": "npm run build:server && npm run build:client",

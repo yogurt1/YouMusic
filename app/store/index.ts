@@ -26,8 +26,8 @@ export interface EnhancedStore extends Store<State> {
     injectReducers(nextReducersRegistry: ReducersMapObject): void
 }
 
-const preloadedState: State | void = !isBrowser ? void(0) :
-    fromJS(JSON.parse(
+const preloadedState : State | void = !isBrowser ? void(0)
+    : fromJS(JSON.parse(
         localStorage.getItem("state")) ||
             window["__PRELOADED_STATE__"])
 
@@ -52,7 +52,7 @@ export default function configureStore({ history, client }: {
         autoRehydrate({ log: isDevEnv })
     )(createStore)
 
-    const store: EnhancedStore = finalCreateStore(
+    const store : EnhancedStore = finalCreateStore(
         reducer, preloadedState)
 
     // Fix Immutable types
@@ -61,18 +61,21 @@ export default function configureStore({ history, client }: {
     store.injectReducers = nextReducersRegistry => {
         const finalReducersRegistry = Object.assign(
             reducersRegistry,
-            nextReducersRegistry)
+            nextReducersRegistry
+        )
         const nextReducer = combineReducers(finalReducersRegistry)
-        store.replaceReducer(reducer)
+        store.replaceReducer(reducer as Reducer<State>)
     }
 
     const { hot } = module as any
-    if (hot) hot.accept("./reducers", () => {
-        System.import("./reducers")
-            .then(m => m.default)
-            .then(nextReducersRegistry =>
-                  store.injectReducers(nextReducersRegistry))
-    })
+    if (hot) {
+        hot.accept("./reducers", () => {
+            System.import("./reducers")
+                .then(m => m.default)
+                .then(nextReducersRegistry =>
+                      store.injectReducers(nextReducersRegistry))
+        })
+    }
 
     return store
 }

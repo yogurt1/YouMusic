@@ -3,7 +3,7 @@ node_js:
 - '6'
 
 before_deploy:
-  - "npm run prepare-deploy"
+  - "npm run predeploy"
 
 
 

@@ -9,7 +9,8 @@ export interface AuthServiceInterface {
     logOut(token: Token): void
 }
 
-export default class AuthService implements AuthServiceInterface {
+export default class AuthService
+ implements AuthServiceInterface {
     private token: Token
     private client: ApiClient
     private scope = {

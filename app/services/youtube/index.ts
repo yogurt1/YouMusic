@@ -21,7 +21,8 @@ export interface YouTubeServiceInterface extends ApiClientInterface {
     }, val?: string): YouTubeServiceInterface
 }
 
-export default class YouTubeService extends ApiClient implements YouTubeServiceInterface {
+export default class YouTubeService
+ extends ApiClient implements YouTubeServiceInterface {
     private params: YouTubeRequestParams
     private headers: { [key: string]: string }
 
@@ -45,7 +46,7 @@ export default class YouTubeService extends ApiClient implements YouTubeServiceI
     }
 
     public setParam(key, val?) {
-        if (typeof(key) === "object") {
+        if (typeof (key) === "object") {
             this.forOwnEntries(key, (k, v) => this.params[k] = v)
         } else {
             this.params[key] = val
@@ -55,7 +56,7 @@ export default class YouTubeService extends ApiClient implements YouTubeServiceI
     }
 
     public setHeader(key, val?) {
-        if (typeof(key) === "object") {
+        if (typeof (key) === "object") {
             this.forOwnEntries(key, (k, v) => this.headers[k] = v)
         } else {
             this.params[key] = val

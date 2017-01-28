@@ -1,4 +1,4 @@
-import { compose } from "redux"
+import { compose, Action as A } from "redux"
 import { isBrowser, isDevEnv } from "app/lib/util"
 import { connect } from "react-redux"
 
@@ -16,3 +16,13 @@ export const composeWithDevTools = (isBrowser && isDevEnv) &&
 export const createTypes = (prefix: string, ...types: string[]): any =>
     types.reduce((ac, type) => (ac[type] = `${prefix}/${type}`, ac), {})
 
+export interface Action<T> extends A {
+    payload: T
+    meta?: T | any
+    error?: boolean
+}
+
+// export const bindActionCreators = (actionCreators: { [key: string]: ActionCreator }) =>
+//     (dispatch: Dispatch) => Object.keys(actionCreatorss)
+//         .reduce((v, k) =>
+//                 (v[k] = (...args) => dispatch(actionCreators[k]), v), {})

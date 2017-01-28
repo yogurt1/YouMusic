@@ -5,12 +5,13 @@ export const types = {
 export const ConditionalError = function(err) {
     const { type = err.message } = err
 
-    switch(type) {
+    switch (type) {
     default: throw err
     }
 }
 
-export class RequestError extends Error {
+export class RequestError
+ extends Error {
     constructor(
         public status: number,
         statusText: string

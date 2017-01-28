@@ -5,13 +5,10 @@ export const SET_TOKEN = "SET_TOKEN"
 export const AUTH_FAILURE = "AUTH_FAILURE"
 export const LOGIN = "LOGIN"
 
-
-export const setToken: ActionCreator<Action> = () => ({ type: SET_TOKEN })
+export const setToken : ActionCreator < Action > = () => ({ type: SET_TOKEN })
 // export const loginSuccess = createAction<string>(AUTH_SUCCESS)
 
-
 const fakeToken = () => "random token"
-
 
 // export const logIn = body => async dispatch => {
 //     dispatch(loginRequest())

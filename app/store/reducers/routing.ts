@@ -9,9 +9,9 @@ export const initialState = Map<string, any>({
 
 const reducer: Reducer<RoutingState> = (state = initialState, action) => {
     switch (action.type) {
-        case LOCATION_CHANGE: return state
+    case LOCATION_CHANGE: return state
             .set("locationBeforeTransitions", action.payload)
-        default: return state
+    default: return state
     }
 }
 

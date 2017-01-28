@@ -4,8 +4,8 @@ import hoistStatics from "hoist-non-react-statics"
 import { isBrowser, noopNull, thunk } from "./util"
 import { getDisplayName } from "recompose"
 
-export const browserOnly = fallback => isBrowser ? thunk :
-    () => ( fallback || noopNull )
+export const browserOnly = fallback => isBrowser ? thunk
+    : () => (fallback || noopNull)
 
 export const lazyLoad = (...importees: Promise<any>[]) =>
     WrappedComponent => hoistStatics(
@@ -45,7 +45,10 @@ export const LazyLoad: React.StatelessComponent<{
 }> = ({ children, modules }) => lazyLoad(...modules)(children)
 
 export const styledDecorator = (styles, from = "div") => {
-    const Styled = styled(from)`${styles}`
-    return component => props => React.createElement(Styled, null,
-        React.createElement(component, props))
+    const Styled = styled(from)`${styles}` as React.Component<any, any>
+    return (Component: React.Component<any, any>) => (props: any) => (
+        <Styled {...props}>
+           <Component {...props} />
+        </Styled>
+    )
 }

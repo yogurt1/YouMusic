@@ -13,7 +13,8 @@ export interface Props {
 
 export const servicesShape = React.PropTypes.object
 
-export default class ServiceProvider extends React.Component<Props, null> {
+export default class ServiceProvider
+ extends React.Component<Props, null> {
     private services: Services
 
     static propTypes = {
