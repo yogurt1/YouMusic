@@ -7,6 +7,9 @@ env:
 
 before_deploy:
   - "npm run predeploy"
+  - "npm run build:server"
+  - "env NODE_ENV=production npm run build:client:dll"
+  - "env NODE_ENV=production npm run build:client"
 
 addons:
   apt:
