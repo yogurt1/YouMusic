@@ -21,7 +21,6 @@ const app = new Koa()
 app.keys = [ config.app.session.secret ]
 app.silent = isNotDevEnv
 // app.name = config.app.name
-
 locale(app)
 
 app.use((ctx, next) => {
@@ -40,7 +39,7 @@ if (isDevEnv) {
         .then(() => devServer.publish({ type: devServer.types.UPDATE }))
         .catch(err => {
             ctx.type = "html"
-            ctx.body = devServer.tmpl(err)
+            ctx.body = devServer.render(err)
         }))
 } else {
     app.use(cache())
@@ -53,10 +52,12 @@ app.use(compose([
     serveStatic("./static", {
         maxage: isNotDevEnv ? ms("1y") : 0
     }),
-    bodyParser(),
-    passport.initialize(),
-    routes.routes(),
-    routes.allowedMethods()
+    bodyParser()
 ]))
+
+app
+    .use(passport.initialize())
+    .use(routes.routes())
+    .use(routes.allowedMethods())
 
 export default app
