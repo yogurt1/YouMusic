@@ -2,15 +2,9 @@ NPMBIN = $(shell npm bin)
 TSC = $(NPMBIN)/tsc
 WEBPACK = $(NPMBIN)/webpack
 
-echo:
-	export NODE_ENV := "production"
-	@sh ./report.sh
-	@echo $(TSC)
-	@echo $(WEBPACK)
-
 transpile:
 	# Transpile TypeScript to JavaScript
-	@$(TSC)
+	@$(TSC); exit 0
 
 test: transpile
 	# TODO: Implement
@@ -21,11 +15,11 @@ test: transpile
 	@exit 1
 
 build-prod: transpile
-	export NODE_ENV = "production"
+	@export NODE_ENV="production"; \
 	# Build vendor DLL
-	@npm run build:client:dll
+	npm run build:client:dll; \
 	# Build client bundle
-	@npm run build:client
+	npm run build:client; \
 
 clean:
 	# Remove all JavaScript's
