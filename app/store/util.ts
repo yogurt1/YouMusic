@@ -16,6 +16,9 @@ export const composeWithDevTools = (isBrowser && isDevEnv) &&
 export const createTypes = (prefix: string, ...types: string[]): any =>
     types.reduce((ac, type) => (ac[type] = `${prefix}/${type}`, ac), {})
 
+export const createAction = <T>(type: string) =>
+    (payload): Action<T> => ({ type, payload })
+
 export interface Action<T> extends A {
     payload: T
     meta?: T | any

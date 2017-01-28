@@ -21,8 +21,7 @@ export interface YouTubeServiceInterface extends ApiClientInterface {
     }, val?: string): YouTubeServiceInterface
 }
 
-export default class YouTubeService
- extends ApiClient implements YouTubeServiceInterface {
+export default class YouTubeService extends ApiClient implements YouTubeServiceInterface {
     private params: YouTubeRequestParams
     private headers: { [key: string]: string }
 

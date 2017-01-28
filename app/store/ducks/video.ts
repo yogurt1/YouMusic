@@ -9,7 +9,10 @@ export const types = createTypes(prefix,
 )
 
 export const actions = {
-    setVideoId: () => ({ type: types.SET_VIDEID })
+    setVideoId: (videoId) => ({
+        type: types.SET_VIDEOID,
+        payload: videoId
+    })
 }
 
 const fake = {

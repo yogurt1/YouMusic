@@ -46,8 +46,7 @@ export const filterVideoItems = (items: any[]): VideoItem[] => items
         return nextItem
     })
 
-export default class YouTubeSearchService
- implements YouTubeSearchInterface {
+export default class YouTubeSearchService implements YouTubeSearchInterface {
     private client: YouTubeService
     static YT_PREVIEW_URL = "https://i.ytimg.com/vi"
 
