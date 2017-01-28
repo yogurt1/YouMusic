@@ -1,22 +1,33 @@
 NPMBIN = $(shell npm bin)
-WEBPACK = $(NPMBIN)/webpack
 TSC = $(NPMBIN)/tsc
+WEBPACK = $(NPMBIN)/webpack
 
-build-prod: export NODE_ENV = production
+echo:
+	export NODE_ENV := "production"
+	@sh ./report.sh
+	@echo $(TSC)
+	@echo $(WEBPACK)
+
+transpile:
 	# Transpile TypeScript to JavaScript
-	@$(TSC) app server
-	# Build DLL with vendor deps
+	@$(TSC)
+
+test: transpile
+	# TODO: Implement
+	# Run AVA test
+	# @$(AVA)
+	# Collect coverage
+	# Format report
+	@exit 1
+
+build-prod: transpile
+	export NODE_ENV = "production"
+	# Build vendor DLL
 	@npm run build:client:dll
 	# Build client bundle
 	@npm run build:client
 
-test:
-	# TODO: Implement
-	# Transpiple TypeScript to JavaScript
-	# Run AVA
-	# Generate coverage report
-	# Clean JavaScript's
-	@exit 1
-
-
+clean:
+	# Remove all JavaScript's
+	@sh deploy/clean_javascripts.sh
 

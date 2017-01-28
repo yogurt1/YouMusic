@@ -1,0 +1,1 @@
+echo $NODE_ENV
