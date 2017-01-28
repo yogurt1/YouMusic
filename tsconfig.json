@@ -16,7 +16,6 @@
             "app/*": ["./app/*"]
         },
         "types": [
-            "./types",
             "jest",
             "reflect-metadata"
         ]
@@ -31,6 +30,7 @@
         "!node_modules/**"
     ],
     "exclude": [
+        "./app/native",
         "node_modules",
         "test"
     ]

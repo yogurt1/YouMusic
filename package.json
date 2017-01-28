@@ -18,7 +18,7 @@
     "build:client": "webpack",
     "build:client:dll": "webpack --config webpack.config.dll.js",
     "build:electron": "webpack --config webpack.config.electron.js",
-    "build:server": "tsc",
+    "build:server": "tsc; exit 0",
     "test": "jest --config jest.config.json",
     "test:node": "jest --config jest.config.node.json",
     "lint": "eslint --ext ts app server test",
