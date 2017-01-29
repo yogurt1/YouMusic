@@ -1,12 +1,13 @@
-import { Action, ActionCreator } from "redux"
+import { createAction } from "redux-actions"
 // import AuthService from "app/services/AuthService"
 
 export const SET_TOKEN = "SET_TOKEN"
 export const AUTH_FAILURE = "AUTH_FAILURE"
 export const LOGIN = "LOGIN"
 
-export const setToken : ActionCreator < Action > = () => ({ type: SET_TOKEN })
-// export const loginSuccess = createAction<string>(AUTH_SUCCESS)
+export const setToken = createAction<string>(SET_TOKEN)
+export const login = createAction<void>(LOGIN)
+export const authFailure = createAction<void>(AUTH_FAILURE)
 
 const fakeToken = () => "random token"
 

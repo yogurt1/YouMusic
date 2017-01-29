@@ -1,6 +1,7 @@
 import { Map } from "immutable"
 import { Reducer, Action } from "redux"
 import { createTypes, NORMALIZE_STATE } from "../util"
+import { createAction } from "redux-actions"
 
 export const prefix = "video"
 
@@ -9,14 +10,11 @@ export const types = createTypes(prefix,
 )
 
 export const actions = {
-    setVideoId: (videoId) => ({
-        type: types.SET_VIDEOID,
-        payload: videoId
-    })
+    setVideoId: createAction<string>(types.SET_VIDEOID)
 }
 
 const fake = {
-    videoId: () => "n3osLacrd_c"
+    videoId: () => "qMwcsIY1GYE"
 }
 
 export type State = Map<string, string>
