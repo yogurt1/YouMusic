@@ -1,12 +1,14 @@
-const app = require("./server.node")
+// Must be first because hooks
+const loadApp = require("./server.node")
 const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
 const { RedBoxError } = require("redbox-react")
-const express = require("express")
 const chalk = require("chalk")
+const tsnode = require("ts-node")
+const express = require("express")
+const Loader = require("node-es-module-loader")
 const config = require("./config")
 const tsconfig = require("./tsconfig.json")
-const tsnode = require("ts-node")
 const devServer = express()
 
 tsnode.register(tsconfig)
@@ -158,17 +160,19 @@ devServer.use((req, res, next) => {
         res.end(pubsub.render(err))
     }
 
-    try {
-        const nextApp = require("./server").default
-        nextApp.onerror = onError
-        nextApp.callback()(req, res)
-    } catch (err) {
-        return onError(err)
-    } finally {
-        if (!isError) {
-            pubsub.publish({ type: pubsub.types.UPDATE })
-        }
-    }
+    loadApp()
+        .then(app => {
+            try {
+                app.onerror = onError
+                app.callback()(req, res)
+            } catch (err) {
+                return onError(err)
+            } finally {
+                if (!isError) {
+                    pubsub.publish({ type: pubsub.types.UPDATE })
+                }
+            }
+        })
 })
 
 if (!module.parent) {

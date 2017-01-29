@@ -61,8 +61,8 @@ const config = module.exports = {
                 include: path.join(__dirname, "app"),
                 exclude: /(node_modules|\/vendor\.js$)/,
                 options: {
-                    configFileName: "tsconfig.webpack.json",
-                    configFilename: "tsconfig.webpack.json"
+                    configFileName: "tsconfig.json",
+                    configFilename: "tsconfig.json"
                 }
             },
             {
@@ -96,9 +96,9 @@ const config = module.exports = {
         // new webpack.IgnorePlugin(/^\.\/locale-data$/, /react-intl$/),
         new CheckerPlugin(),
         new TsConfigPathsPlugin({
-            tsconfig: "tsconfig.webpack.json",
-            configFilename: "tsconfig.webpack.json",
-            configFileName: "tsconfig.webpack.json",
+            tsconfig: "tsconfig.json",
+            configFilename: "tsconfig.json",
+            configFileName: "tsconfig.json",
             compiler: "typescript"
         }),
         new ExtractText({

@@ -9,8 +9,10 @@ if (process.env.NODE_ENV !== "production") {
     require("dotenv/config")
 }
 
-const gql = require("graphql-tag")
 const fs = require("fs")
+const gql = require("graphql-tag")
+const Loader = require("node-es-module-loader")
+const loader = new Loader()
 
 require.extensions[".gql"] =
     require.extensions[".graphql"] = (module, filename) => {
@@ -26,22 +28,33 @@ require.extensions[".gql"] =
 const http = require("http")
 const chalk = require("chalk")
 const config = require("./config")
-const app = () => require("./server").default
-
-if (!module.parent) {
+const listen = app => {
+    // eslint-disable-next-line no-console
     const log = msg => console.log(chalk.blue.bold(msg))
     const { port, host } = config.app
     const listener = app().callback()
     const server = http.createServer()
         .on("request", listener)
-        .listen({ port, host },
-            () => log(`App listening on ${host || "ALL"}:${port}`))
+        .listen({ port, host }, () =>
+            log(`App listening on ${host || "ALL"}:${port}`))
 
     process.on("SIGTERM", code => {
         server.close()
         process.exit(code)
     })
-
 }
 
-module.exports = app
+const loadApp = () => loader.import("./server")
+    .then(module => module.default)
+    .catch(err => {
+        // eslint-disable-next-line no-console
+        console.error(err.stack)
+        process.exit(1)
+    })
+
+if (!module.parent) {
+    loadApp()
+        .then(listen)
+}
+
+module.exports = loadApp

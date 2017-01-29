@@ -5,12 +5,13 @@
     "compilerOptions": {
         "target": "es6",
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "es6",
         "sourceMap": true,
         "jsx": "react",
         "removeComments": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "importHelpers": true,
         "baseUrl": ".",
         "paths": {
             "app/*": ["./app/*"]
