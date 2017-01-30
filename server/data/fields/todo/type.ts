@@ -9,6 +9,7 @@ const TodoType = new ObjectType({
     name: "Todo",
     fields: {
         id: { type: new NonNull(ID) },
+        author: { type: StringType },
         text: { type: StringType }
     }
 })

@@ -1,5 +1,6 @@
 import { GraphQLInt as Int } from "graphql"
-import TodoType from './type'
+import TodoType from "./type"
+import todoLoader from "./loader"
 
 const todoField = {
     type: TodoType,
@@ -8,7 +9,7 @@ const todoField = {
     },
 
     async resolve(todo, args, ctx, { rootValue }) {
-        return loader.load(args.id)
+        return todoLoader.load(args.id)
     }
 }
 

@@ -7,15 +7,16 @@ import { isDevEnv } from "app/lib/util"
 
 const router = new Router()
 
-if (isDevEnv) {
-    router.use("/graphiql",
-        graphiqlKoa({ endpointURL: "/graphql" }))
-}
-
-router.use("/graphql", graphqlKoa(ctx => ({
+router.all("/graphql", graphqlKoa(ctx => ({
     schema,
     context: ctx
 })))
+
+if (isDevEnv) {
+    router.all("/graphiql",
+        graphiqlKoa({ endpointURL: "/graphql" }))
+}
+
 
 router.use("/auth",
            auth.routes(),

@@ -1,3 +1,4 @@
+const path = require("path")
 const app = require("./server.node")
 const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
@@ -94,7 +95,8 @@ const pubsub = new class PubSub {
 }
 
 const watchApp = () => require("chokidar")
-    .watch(["./server","./app"]).on("change", () => {
+    .watch(["./app", "./server"])
+    .on("change", () => {
         const re = /[\/\\](server|app)[\/\\]/
 
         Object.keys(require.cache)
@@ -103,7 +105,7 @@ const watchApp = () => require("chokidar")
 
         try {
             app()
-            // publish({ type: pubsub.types.UPDATE })
+            publish({ type: pubsub.types.UPDATE })
         } catch (err) {
             publish({
                 type: types.ERROR,
@@ -172,6 +174,7 @@ devServer.use((req, res, next) => {
 })
 
 if (!module.parent) {
+    watchApp()
     const {
         port,
         host = "localhost"

@@ -68,7 +68,7 @@ const config = {
         }),
         new ExtractTextPlugin({
             allChunks: true,
-            disable: !isProduction,
+            disable: false,
             filename: "[name].dll.css"
         }),
         new webpack.optimize.UglifyJsPlugin({
