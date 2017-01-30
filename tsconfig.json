@@ -27,11 +27,23 @@
         "useCache": true
     },
     "filesGlob": [
-        "!node_modules/**"
+        "!node_modules/**",
+        "!db/**",
+        "!pseudo/**",
+        "!tmp/**",
+        "!landing/**",
+        "!static/**",
+        "!deploy/**"
     ],
     "exclude": [
-        "./app/native",
-        "node_modules",
-        "test"
+        "app/native",
+        "pseudo",
+        "landing",
+        "tmp",
+        "test",
+        "deploy",
+        "db",
+        "static",
+        "node_modules"
     ]
 }
