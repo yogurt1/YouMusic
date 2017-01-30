@@ -13,7 +13,7 @@ export const composeWithDevTools = (isBrowser && isDevEnv) &&
         ? window[DEVTOOLS_COMPOSE_KEY]
         : compose
 
-export const createTypes = (prefix: string, ...types: string[]): any =>
+export const createTypes = (prefix: string, types: string[]): any =>
     types.reduce((ac, type) => (ac[type] = `${prefix}/${type}`, ac), {})
 
 export const createAction = <T>(type: string) =>

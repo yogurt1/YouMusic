@@ -2,12 +2,11 @@ import { Map } from "immutable"
 import { Reducer, Action } from "redux"
 import { createTypes, NORMALIZE_STATE } from "../util"
 import { createAction } from "redux-actions"
+// import VideoRecord from "../records/VideoRecord"
 
-export const prefix = "video"
-
-export const types = createTypes(prefix,
+export const types = createTypes("video", [
     "SET_VIDEOID"
-)
+])
 
 export const actions = {
     setVideoId: createAction<string>(types.SET_VIDEOID)
@@ -18,14 +17,14 @@ const fake = {
 }
 
 export type State = Map<string, string>
-export const initialState : State = Map({
+export const initialState: State = Map({
     videoId: fake.videoId()
 })
 
-export const reducer : Reducer < State > = (state = initialState, action) => {
+export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-    case types.SET_VIDEOID: return state
+        case types.SET_VIDEOID: return state
             .set("videoId", action.payload)
-    default: return state
+        default: return state
     }
 }

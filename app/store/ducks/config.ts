@@ -4,9 +4,9 @@ import { createAction } from "redux-actions"
 import { createSelector } from "reselect"
 import { createTypes } from "../util"
 
-export const types = createTypes(
+export const types = createTypes("config", [
     "SET_CONFIG_KEY"
-)
+])
 
 export type K = string | symbol
 export type V = string | number | boolean

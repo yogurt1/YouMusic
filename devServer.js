@@ -105,9 +105,9 @@ const watchApp = () => require("chokidar")
 
         try {
             app()
-            publish({ type: pubsub.types.UPDATE })
+            pubusb.publish({ type: pubsub.types.UPDATE })
         } catch (err) {
-            publish({
+            pubsub.publish({
                 type: types.ERROR,
                 content: pubsub.renderError(err)
             })
