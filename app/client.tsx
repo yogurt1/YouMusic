@@ -22,6 +22,15 @@ const storage = localForage.config({
     name: "reduxState",
     description: "persisted redux state"
 })
+const persistConfig = {
+    // storage,
+    key: "state",
+    blacklist: [
+        "routing",
+        "apollo"
+    ],
+    records: []
+}
 const theme = require("./theme.json")
 const target = document.querySelector("#app")
 const locale = "en"
@@ -30,16 +39,10 @@ const client = configureApolloClient(networkInterface)
 const store = configureStore({ client, history: browserHistory })
 const history = syncHistoryWithStore(browserHistory, store, {
     selectLocationState(state) {
-        return state.get("routing").toJS()
+        return state.get("routing").toJSON()
     }
 })
-// TODO: "./store".records <=> Record[]
-const persistor = persistStore(store, {
-    storage,
-    key: "state",
-    blacklist: ['location'],
-    records: []
-})
+const persistor = persistStore(store, persistConfig)
 
 
 if (isDevEnv) {
@@ -67,7 +70,7 @@ const renderApp = () => match({ history, routes },
 renderApp()
 
 window.onload = () => {
-    // remove styled-components, because it be force rehydrated
+    // remove styled-components css, because it be force rehydrated
     doms(
         ".__CRITICAL_CSS__",
         ".__LOADER__"

@@ -2,7 +2,8 @@ import { Reducer } from "redux"
 import { OrderedSet, Map, Record } from "immutable"
 import { createAction } from "redux-actions"
 import { createSelector } from "reselect"
-import { createTypes, NORMALIZE_STATE } from "../util"
+import { createTypes } from "../util"
+import { REHYDRATE } from "redux-persist/constants"
 
 export const types = createTypes("playlist", [
     "ADD",
@@ -38,7 +39,7 @@ export const reducer: Reducer<State> = (state = initialState, action) => {
 
         case types.CLEAR: return state.clear()
 
-        case NORMALIZE_STATE: return OrderedSet(state)
+        case REHYDRATE: return OrderedSet(state)
         default: return state
     }
 }

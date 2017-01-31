@@ -2,8 +2,6 @@ import { compose, Action as A } from "redux"
 import { isBrowser, isDevEnv } from "app/lib/util"
 import { connect } from "react-redux"
 
-export const NORMALIZE_STATE = "app/NORMALIZE_STATE"
-
 export const reduxify = (...args) => target =>
     (connect as any)(...args)(target)
 

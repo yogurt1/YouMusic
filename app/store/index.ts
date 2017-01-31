@@ -11,12 +11,13 @@ import {
 import { History } from "history"
 import { ApolloClient } from "apollo-client"
 import { combineReducers } from "redux-immutable"
+import transit from "transit-immutable-js"
 import thunkMiddleware from "redux-thunk"
 import { routerMiddleware } from "react-router-redux"
 import { autoRehydrate } from "redux-persist"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry, { records, State } from "./reducers"
-import { composeWithDevTools, NORMALIZE_STATE } from "./util"
+import { composeWithDevTools } from "./util"
 import { isBrowser, isDevEnv } from "../lib/util"
 
 export { State }
@@ -24,8 +25,11 @@ export interface EnhancedStore extends Store<State> {
     injectReducers(nextReducersRegistry: ReducersMapObject): void
 }
 
-const preloadedState : State | void = !isBrowser ? void(0)
-    : fromJS(window["__PRELOADED_STATE__"])
+// const preloadedStateKey = "__PRELOADED__STATE__"
+// const preloadedState : State | void = !(
+//     isBrowser && window[preloadedStateKey]
+// ) ? undefined : transit.fromJSON(window[preloadedStateKey])
+const preloadedState = undefined
 
 export default function configureStore({ history, client }: {
     history: History,
@@ -51,7 +55,7 @@ export default function configureStore({ history, client }: {
         reducer, preloadedState)
 
     // Fix Immutable types
-    store.dispatch({ type: NORMALIZE_STATE })
+    // store.dispatch({ type: NORMALIZE_STATE })
 
     store.injectReducers = nextReducersRegistry => {
         const finalReducersRegistry = Object.assign(

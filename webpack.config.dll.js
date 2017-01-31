@@ -70,7 +70,12 @@ const config = {
             allChunks: true,
             disable: false,
             filename: "[name].dll.css"
-        }),
+        })
+    ]
+}
+
+if (process.env.NODE_ENV === "production") {
+    config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true,
             compress: {
@@ -102,7 +107,7 @@ const config = {
         }),
         new ImageminPlugin(),
         new CompressionPlugin()
-    ]
+    )
 }
 
 module.exports = config

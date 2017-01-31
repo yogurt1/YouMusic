@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as Helmet from "react-helmet"
 import styled, { injectGlobal, keyframes } from "styled-components"
-import { Record } from "immutable"
+import * as transit from "transit-immutable-js"
 import { flatten } from "lodash"
 import { State } from "app/store"
 
@@ -70,7 +70,7 @@ export interface HtmlProps {
 const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, children }) => {
     const head = Helmet.rewind()
     const attrs = head.htmlAttributes.toComponent()
-    const serializedState = JSON.stringify(state)
+    const serializedState = JSON.stringify(transit.toJSON(state))
     const script = `
         window.__PRELOADED__STATE__ = ${serializedState};
         document.getElementById("__PRELOAD_CSS__").rel = "stylesheet";

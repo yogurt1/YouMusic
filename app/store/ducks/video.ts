@@ -1,7 +1,8 @@
 import { Map } from "immutable"
 import { Reducer, Action } from "redux"
-import { createTypes, NORMALIZE_STATE } from "../util"
+import { REHYDRATE } from "redux-persist/constants"
 import { createAction } from "redux-actions"
+import { createTypes } from "../util"
 // import VideoRecord from "../records/VideoRecord"
 
 export const types = createTypes("video", [

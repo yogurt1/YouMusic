@@ -1,13 +1,10 @@
 require("any-promise/register/bluebird")
 require("any-observable/register/rxjs-all")
 require("app-module-path/cwd")
+require("dotenv").config({ silent: true })
 
 global.Promise = require("any-promise")
 global.Observable = require("any-observable")
-
-if (process.env.NODE_ENV !== "production") {
-    require("dotenv/config")
-}
 
 const gql = require("graphql-tag")
 const fs = require("fs")
