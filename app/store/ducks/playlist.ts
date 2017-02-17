@@ -32,15 +32,15 @@ export const initialState: State = OrderedSet<VideoRecord>()
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-        case types.ADD: return state
+    case types.ADD: return state
             .add(action.payload)
-        case types.REMOVE: return state
+    case types.REMOVE: return state
             .delete(action.payload)
 
-        case types.CLEAR: return state.clear()
+    case types.CLEAR: return state.clear()
 
-        case REHYDRATE: return OrderedSet(state)
-        default: return state
+    case REHYDRATE: return OrderedSet(state)
+    default: return state
     }
 }
 
@@ -53,5 +53,5 @@ export const selectors = {
 
     selectCurrent() {
 
-    },
+    }
 }

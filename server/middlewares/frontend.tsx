@@ -2,15 +2,14 @@ import { promisify } from "bluebird"
 import * as React from "react"
 import * as ReactDOM from "react-dom/server"
 import Html from "app/Html"
-import { match, RouterContext, createMemoryHistory } from "react-router"
+import Root from "app/Root"
+import { StaticRouter } from "react-router-dom"
 import { ApolloProvider } from "react-apollo"
 import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components"
 import { getDataFromTree } from "react-apollo/server"
 import { createNetworkInterface } from "apollo-client"
-import { syncHistoryWithStore } from "react-router-redux"
 import * as styleSheet from "styled-components/lib/models/StyleSheet"
-import routes from "app/routes"
 import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
 import * as config from "../../config"
@@ -20,8 +19,6 @@ const render = node => `
     <!doctype html>
     ${ReactDOM.renderToString(node)}
 `
-const matchAsync = promisify(match)
-
 const frontendMiddleware = async ctx => {
     ctx.type = "html"
     // styleSheet.flush()
@@ -44,28 +41,12 @@ const frontendMiddleware = async ctx => {
     })
 
     const client = configureApolloClient(networkInterface)
-    const memoryHistory = createMemoryHistory(location)
-    const store = configureStore({ client, history: memoryHistory })
-    const history = syncHistoryWithStore(memoryHistory, store, {
-        selectLocationState(state) {
-            return state.get("routing").toJS()
-        }
-    })
-
-
-    const { redir, renderProps } = await new Promise<any>((resolve, reject) => {
-        return match({ location, routes, history }, (err, redir, renderProps) => {
-            if (err) {
-                return reject(err)
-            }
-
-            return resolve({ redir, renderProps })
-        })
-    })
+    const store = configureStore({ client })
+    const context = {} as any
 
     ctx.state = {
         ...ctx.state,
-        params: renderProps.params
+        routingContext: context
     }
 
     const componentTree = (
@@ -74,33 +55,22 @@ const frontendMiddleware = async ctx => {
             store={store}>
             <IntlProvider locale={locale}>
                 <ThemeProvider theme={theme}>
-                    <RouterContext {...renderProps} />
+                    <StaticRouter
+                        location={location}
+                        context={context}>
+                        <Root />
+                    </StaticRouter>
                 </ThemeProvider>
             </IntlProvider>
         </ApolloProvider>
     )
 
-    const method = ctx.method.toLowerCase()
-    const actions = []
-
-    for (const nextComponent of renderProps.components) {
-        if (!nextComponent) {
-            continue
-        }
-
-        const allAction = nextComponent["all"]
-        const action = nextComponent[method]
-
-        if (typeof(allAction) === "function") {
-            actions.push(allAction(ctx, store))
-        }
-
-        if (typeof(action) === "function") {
-            actions.push(action(ctx, store))
-        }
+    if (context.url) {
+        ctx.redirect(context.url)
+        return
     }
 
-    await Promise.all(actions)
+    // await Promise.all(actions)
     await getDataFromTree(componentTree)
 
     const state = store.getState()

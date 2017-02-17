@@ -3,7 +3,7 @@ import {
     GraphQLID as ID,
     GraphQLString as StringType,
     GraphQLNonNull as NonNull
-} from 'graphql'
+} from "graphql"
 
 const TodoType = new ObjectType({
     name: "Todo",

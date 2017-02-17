@@ -23,7 +23,7 @@ const config = module.exports = {
     devtool: isProduction ? "source-map" : "cheap-module-inline-source-map",
     performance: { hints: false },
     entry: {
-        app: ["./app/client.tsx"]
+        app: ["./app/main.web.tsx"]
     },
     output: {
         path: path.resolve("./static/assets"),

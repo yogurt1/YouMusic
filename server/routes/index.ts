@@ -17,7 +17,6 @@ if (isDevEnv) {
         graphiqlKoa({ endpointURL: "/graphql" }))
 }
 
-
 router.use("/auth",
            auth.routes(),
            auth.allowedMethods())

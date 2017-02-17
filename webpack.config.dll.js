@@ -8,9 +8,8 @@ const ImageminPlugin = require("imagemin-webpack-plugin").default
 const { NODE_ENV } = process.env
 const isProduction = NODE_ENV === "production"
 
-
 const config = {
-    devtool: 'source-map',
+    devtool: "source-map",
     node: {
         global: true,
         net: "mock",
@@ -18,7 +17,7 @@ const config = {
     },
     output: {
         filename: "[name].dll.js",
-        path: path.join(__dirname, "./static/assets"),
+        path: path.join(__dirname, "./build"),
         library: "[name]_dll"
     },
     module: {
@@ -40,7 +39,7 @@ const config = {
         ]
     },
     entry: {
-        vendor: [ "./app/vendor.js" ]
+        vendor: [ "./app/web/vendor.js" ]
     },
     resolve: {
         alias: {

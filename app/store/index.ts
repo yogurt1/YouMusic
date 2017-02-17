@@ -8,12 +8,10 @@ import {
     applyMiddleware,
     createStore
 } from "redux"
-import { History } from "history"
 import { ApolloClient } from "apollo-client"
 import { combineReducers } from "redux-immutable"
 import transit from "transit-immutable-js"
 import thunkMiddleware from "redux-thunk"
-import { routerMiddleware } from "react-router-redux"
 import { autoRehydrate } from "redux-persist"
 import arrayMiddleware from "./middlewares/array"
 import reducersRegistry, { records, State } from "./reducers"
@@ -31,15 +29,13 @@ export interface EnhancedStore extends Store<State> {
 // ) ? undefined : transit.fromJSON(window[preloadedStateKey])
 const preloadedState = undefined
 
-export default function configureStore({ history, client }: {
-    history: History,
+const configureStore = ({ client }: {
     client: ApolloClient
-}): EnhancedStore {
+}): EnhancedStore => {
     const middlewares = [
         thunkMiddleware,
         arrayMiddleware,
-        client.middleware(),
-        routerMiddleware(history)
+        client.middleware()
     ]
 
     const apolloReducer = client.reducer() as Reducer<any>
@@ -54,7 +50,7 @@ export default function configureStore({ history, client }: {
     const store : EnhancedStore = finalCreateStore(
         reducer, preloadedState)
 
-    // Fix Immutable types
+    // Normalize Immutable types
     // store.dispatch({ type: NORMALIZE_STATE })
 
     store.injectReducers = nextReducersRegistry => {
@@ -78,3 +74,5 @@ export default function configureStore({ history, client }: {
 
     return store
 }
+
+export default configureStore

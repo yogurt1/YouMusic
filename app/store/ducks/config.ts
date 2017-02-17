@@ -20,10 +20,10 @@ export const initialState: State = Map<K, V>()
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-        case types.SET_CONFIG_KEY:
-            const [ k, v ] = action.payload
-            return state.set(k, v)
-        default: return state
+    case types.SET_CONFIG_KEY:
+        const [ k, v ] = action.payload
+        return state.set(k, v)
+    default: return state
     }
 }
 

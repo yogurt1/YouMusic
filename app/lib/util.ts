@@ -1,22 +1,12 @@
+import { always } from "ramda"
+
 export const arrayBuilder = <T>(...fns: Array<(i: number) => T | any>): Array<T> =>
     fns.map((fn, i) => fn(i))
 
 export const xor = (a, b) => !!(a ^ b)
-export const noopNull = () => null
-export const noop = () => void(null)
+export const noopNull = always(null)
+export const noop = always()
 export const thunk = f => f
-
-export const dom = (selector: string) => {
-    const el: Element = document.querySelector(selector)
-    return (done: Function) => el !== null && done(el)
-}
-
-export const doms = (...selectors: string[]) => {
-    const els = selectors
-        .map(selector => document.querySelector(selector))
-        .filter(el => el !== null)
-    return (done: Function) => els.forEach(el => done(el))
-}
 
 export const getIsBrowser = () => (<any>process).browser ||
     typeof(window) === "object"
@@ -50,12 +40,12 @@ export const orNull = expr => or(null)
 export const toString = s => Object.prototype.toString.call(s)
 export const toClass = s => /\[object\s(.*)\]/gm.exec(toString(s))
 
-export const compose = (...funcs) => (...args) =>
-    funcs.reduceRight((composed, next) => next(composed),
-        funcs.pop()(...args))
+export const compose = (...fns) => data =>
+    fns.reduceRight((v, fn) => fn(v), data)
 
 export const flatten = arrays => arrays
     .reduce((a, b) => a.concat(b))
 
 export const objectValues = v => Object.keys(v)
     .map(k => v[k])
+

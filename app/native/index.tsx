@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as ReactNative from "react-native"
-import { MemoryRouter } from "react-router"
+import { NativeRouter } from "react-router-native"
 import { ApolloProvider } from "react-apollo"
 import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components/native"
@@ -35,18 +35,18 @@ const persistor = persistStore(store, {
 })
 
 
-const Root = () => (
+const App = () => (
     <ApolloProvider
         client={client}
         store={store}
         <IntlProvider locale={locale}>
             <ThemeProvider theme={theme}>
                 <MemoryRouter>
-                    <NativeApp />
+                    <Root />
                 </MemoryRouter>
             </ThemeProvider>
         </IntlProvider>
     </ApolloProvider>
 )
 
-ReactNative.AppRegistry.registerComponent('Root', () => Root)
+ReactNative.AppRegistry.registerComponent('App', () => App)

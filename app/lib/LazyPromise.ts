@@ -1,6 +1,7 @@
 import * as Promise from "any-promise"
 
-export default class LazyPromise<T> implements Promise<T> {
+export default class LazyPromise
+<T> implements Promise<T> {
     private fn: (resolve, reject) => void
     private promise: Promise<T>
 

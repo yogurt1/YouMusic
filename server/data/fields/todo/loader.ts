@@ -17,4 +17,3 @@ const todoLoader = new DataLoader(
 
 export default todoLoader
 
-

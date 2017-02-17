@@ -1,6 +1,6 @@
 import { Reducer } from "redux"
 import { Map, fromJS } from "immutable"
-import { SET_TOKEN } from "../actions/auth"
+import { SET_TOKEN, RESET_TOKEN } from "../actions/auth"
 
 export type AuthState = Map<string, string>
 export const initialState : AuthState = Map<string, string>({

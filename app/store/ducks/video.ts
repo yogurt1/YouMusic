@@ -24,8 +24,8 @@ export const initialState: State = Map({
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-        case types.SET_VIDEOID: return state
+    case types.SET_VIDEOID: return state
             .set("videoId", action.payload)
-        default: return state
+    default: return state
     }
 }

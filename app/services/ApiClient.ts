@@ -17,7 +17,8 @@ export class RequestError
     }
 }
 
-export default class ApiClient implements ApiClientInterface {
+export default class ApiClient
+ implements ApiClientInterface {
     protected axios: AxiosInstance
 
     static methods = {

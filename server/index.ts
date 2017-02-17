@@ -8,6 +8,7 @@ import * as logger from "koa-logger"
 import * as locale from "koa-locale"
 import * as compose from "koa-compose"
 import * as ms from "ms"
+import { not } from "ramda"
 import { graphqlKoa, graphiqlKoa } from "graphql-server-koa"
 import passport from "./passport"
 import routes from "./routes"
@@ -23,24 +24,29 @@ app.silent = isNotDevEnv
 // app.name = config.app.name
 locale(app)
 
-app.use((ctx, next) => {
-    return next()
-        .catch(err => {
-            console.error(err)
-            return Promise.reject(err)
-        })
-})
+// app.use(async (ctx, next) => {
+//     try {
+//         await next()
+//     } catch(err) {
+//         console.error(err)
+//         throw err
+//     }
+// })
 
+// if (not(isEnv)(env.PROD)) {
 if (isDevEnv) {
-    const devServer = require("../devServer")
-
     app.use(logger())
-    app.use((ctx, next) => next()
-        .then(() => devServer.publish({ type: devServer.types.UPDATE }))
-        .catch(err => {
+    app.use(async (ctx, next) => {
+        // Should be injected by `devServer.js`
+        const { __devServer } = ctx as any
+        try {
+            await next()
+            __devServer.publishUpdate()
+        } catch (err) {
             ctx.type = "html"
-            ctx.body = devServer.render(err)
-        }))
+            ctx.body = __devServer.render(err)
+        }
+    })
 } else {
     app.use(cache())
 }
@@ -49,15 +55,13 @@ app.use(compose([
     conditional(),
     etag(),
     compress(),
-    serveStatic("./static", {
+    serveStatic("./build", {
         maxage: isNotDevEnv ? ms("1y") : 0
     }),
-    bodyParser()
+    bodyParser(),
+    passport.initialize(),
+    routes.routes(),
+    routes.allowedMethods()
 ]))
-
-app
-    .use(passport.initialize())
-    .use(routes.routes())
-    .use(routes.allowedMethods())
 
 export default app

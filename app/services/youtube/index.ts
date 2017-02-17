@@ -4,7 +4,8 @@ import ApiClient, {
     ApiClientInterface,
     Response
 } from "../ApiClient"
-const { youtube: youtubeConfig } = require("app/config")
+const config = require("../../config")
+export { default as YouTubeSearchService } from "./search"
 
 export { Response }
 
@@ -26,17 +27,17 @@ export default class YouTubeService extends ApiClient implements YouTubeServiceI
     private headers: { [key: string]: string }
 
     constructor(apiKey?: string) {
-        super(youtubeConfig.API_URL)
+        super(config.youtube.API_URL)
 
         this.headers = this.axios.defaults.headers
         this.params = this.axios.defaults.params
 
         this.setParam({
-            key: apiKey || youtubeConfig.API_KEY
+            key: apiKey || config.youtube.API_KEY
         })
     }
 
-    private forOwnEntries(obj: Object, done: (string, any) => void) {
+    private forOwnEntries(obj: Object, done: (k: string, v: any) => void) {
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
                 done(key, obj[key])

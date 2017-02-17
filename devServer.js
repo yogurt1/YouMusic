@@ -1,20 +1,26 @@
-const path = require("path")
-const app = require("./server.node")
+require("./polyfills.server")
+require("tsnode/register")
 const { renderToStaticMarkup } = require("react-dom/server")
 const { createElement } = require("react")
 const { RedBoxError } = require("redbox-react")
+const R = require("ramda")
 const express = require("express")
 const chalk = require("chalk")
 const config = require("./config")
-const tsconfig = require("./tsconfig.json")
-const tsnode = require("ts-node")
 const devServer = express()
+
+const app = () =>
+{
+    const _ = require("./server").default
+    _.context.__devServer = pubsub
+    return _
+}
 
 tsnode.register(tsconfig)
 
-const tmpl = ({ error, types, endpoint }) => `
+const tmpl = ({ html, types, endpoint }) => `
 <span id="notification"></span>
-<div id="error">${error}</div>
+<div id="error">${html}</div>
 <script>
     var n = document.getElementById("notification");
     var div = document.getElementById("error");
@@ -34,63 +40,57 @@ const tmpl = ({ error, types, endpoint }) => `
     }
 </script>
 `
+
 const pubsub = new class PubSub {
     constructor () {
         this.subscribers = []
         this.endpoint = "/__server_hmr"
-        this.types = [
+        this.types = R.zipObj(...R.repeat([
             "INIT",
             "ERROR",
             "MESSAGE",
             "UPDATE"
-        ].reduce((ac, t) => {
-            ac[t] = t
-            return ac
-        }, {})
+        ], 2))
+
+        this.renderError = R.pipe(
+            (error) => ({ error }),
+            R.curry(createElement)(RedBoxError),
+            renderToStaticMarkup
+        )
+
+        this.render = error => tmpl(R.assoc('html',
+            this.renderError(error),
+            R.pick(['types', 'endpoint'], this)
+        ))
     }
 
-    renderError (error) {
-        const el = createElement(RedBoxError, { error })
-        const html = renderToStaticMarkup(el)
-        return html
+    publishUpdate() {
+        const { UPDATE } = this.types
+        this.publish({ type: UPDATE })
     }
 
-    render (err) {
-        return tmpl({
-            error: this.renderError(err),
-            types: this.types,
-            endpoint: this.endpoint
-        })
+    publishError(error) {
+        const { ERROR } = this.types
+        this.publish({ type: ERROR, content: this.renderError(error) })
+    }
+
+    publishInit() {
+        const { INIT } = this.types
+        this.publish({ type: INIT })
     }
 
     subscribe ({ res }) {
-        const { subscribers, types } = this
-        const id = subscribers.push(res) - 1
-        this.publish({ type: types.INIT })
+        const i = this.subscribers.push(res)
+        this.publishInit()
 
-        return function unsubscribe() {
-            subscribers.splice(id, 1)
+        return () => {
+            this.subscribers.splice(i - 1, 1)
         }
     }
 
     publish (action) {
-        const { subscribers } = this
-        const json = JSON.stringify(action)
-        const data = `data: ${json}\n\n`
-
-        for (const subscriber of subscribers) {
-            subscriber.write(data)
-        }
-    }
-
-    onError (req, res) {
-        return err => {
-            res.writeHead(200, {
-                "Content-Type": "text/html"
-            })
-
-            res.end(this.render(err))
-         }
+        const data = `data: ${JSON.stringify(action)}\n\n`
+        R.forEach(s => s.write(data), this.subscribers)
     }
 }
 
@@ -99,18 +99,16 @@ const watchApp = () => require("chokidar")
     .on("change", () => {
         const re = /[\/\\](server|app)[\/\\]/
 
-        Object.keys(require.cache)
-            .filter(id => re.test(id))
-            .forEach(id => delete require.cache[id])
+        R.pipe(
+            R.filter(R.test(re)),
+            R.forEach(id => delete require.cache[id])
+        )(R.keys(require.cache))
 
         try {
             app()
-            pubusb.publish({ type: pubsub.types.UPDATE })
+            pubusb.publishUpdate()
         } catch (err) {
-            pubsub.publish({
-                type: pubsub.types.ERROR,
-                content: pubsub.renderError(err)
-            })
+            pubsub.publishError(error)
         }
     })
 
@@ -161,14 +159,14 @@ devServer.use((req, res, next) => {
     }
 
     try {
-        const nextApp = require("./server").default
+        const nextApp = app()
         nextApp.onerror = onError
         nextApp.callback()(req, res)
     } catch (err) {
         return onError(err)
     } finally {
         if (!isError) {
-            pubsub.publish({ type: pubsub.types.UPDATE })
+            pubsub.publishUpdate()
         }
     }
 })

@@ -8,12 +8,14 @@
         "module": "commonjs",
         "sourceMap": true,
         "jsx": "react",
+        "outDir": "./build",
         "removeComments": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "baseUrl": ".",
         "paths": {
-            "app/*": ["./app/*"]
+            "app/*": ["./app/*"],
+            "server/*": ["./server/*"]
         },
         "types": [
             "jest",
