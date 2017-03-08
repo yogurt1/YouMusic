@@ -1,7 +1,7 @@
 import * as passport from "koa-passport"
-import { Strategy as GoogleStrategy } from "passport-google-oauth20"
 import User from "./models/user"
 import * as config from "../config"
+const { Strategy: GoogleStrategy } = require("passport-google-oauth20")
 
 // passport.use(new GoogleStrategy(config.passport.google,
 //     async (accessToken, refreshToken, profile, done) => {
@@ -13,5 +13,21 @@ import * as config from "../config"
 //         }
 //     }
 // ))
+
+passport.serializeUser((user, done) => {
+    done(null, user.id)
+})
+
+passport.deserializeUser((id, done) => {
+    User.findById(id)
+        .then(user => {
+            if (!user) {
+                throw new Error("User not found")
+            }
+
+            done(null, user)
+        })
+        .catch(done)
+})
 
 export default passport

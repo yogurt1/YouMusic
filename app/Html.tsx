@@ -4,6 +4,12 @@ import styled, { injectGlobal, keyframes } from "styled-components"
 import * as transit from "transit-immutable-js"
 import { flatten } from "lodash"
 import { State } from "app/store"
+import {
+    INITIAL_STATE_KEY,
+    LOADER_SELECTOR,
+    CRITICAL_CSS_SELECTOR,
+    TARGET_SELECTOR
+} from "app/lib/constants"
 
 injectGlobal`
     .__LOADER__ {
@@ -48,12 +54,38 @@ const baseStyles = `
         font-family: Roboto, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
         color: #222;
     }
+
+    #__NOSCRIPT__ > a {
+        display: block;
+        position: absolute;
+        color: "white";
+        text-decoration: "none";
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .75);
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    #__NOSCRIPT__ > a > div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        overflow: hidden;
+    }
+
+    #__NOSCRIPT__ > a > div > h1 {
+        text-align: center;
+    }
 `
 
-export const ASSET_PREFIX = "/assets"
-export const assets = {
+const ASSET_PREFIX = ""
+const assets = {
     app: {
-        js: `/assets/app.bundle.js`
+        js: `${ASSET_PREFIX}/app.bundle.js`
     },
     vendor: {
         js: `${ASSET_PREFIX}/vendor.dll.js`,
@@ -61,26 +93,33 @@ export const assets = {
     }
 }
 
-export interface HtmlProps {
+type HtmlProps = {
     state?: State,
     locale?: string,
-    styles?: string
+    styles?: string,
 }
 
-const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, children }) => {
+const Html: React.StatelessComponent<HtmlProps> = ({
+    locale,
+    state,
+    styles,
+    children
+}) => {
     const head = Helmet.rewind()
     const attrs = head.htmlAttributes.toComponent()
     const serializedState = JSON.stringify(transit.toJSON(state))
     const script = `
-        window.__PRELOADED__STATE__ = ${serializedState};
+        window.${INITIAL_STATE_KEY} = ${serializedState};
         document.getElementById("__PRELOAD_CSS__").rel = "stylesheet";
     `
 
-    // <link as="style"... />
     return (
         <html {...attrs}>
             <head>
-                <title>YouMusic</title>
+                <Helmet
+                    defaultTitle="YouMusic"
+                    titleTemplate="%s - YouMusic"
+                />
                 <meta charSet="utf-8" />
                 <meta
                     name="viewport"
@@ -90,12 +129,12 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
                     id="__PRELOAD_CSS__"
                     rel="preload"
                     href={assets.vendor.css}
-                    />
+                />
                 <style
                     dangerouslySetInnerHTML={{__html: baseStyles}}
                 />
                 <style
-                    className="__CRITICAL_CSS__"
+                    id={CRITICAL_CSS_SELECTOR}
                     dangerouslySetInnerHTML={{__html: styles}}
                 />
 
@@ -104,36 +143,14 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
                 {head.link.toComponent()}
             </head>
             <body>
-                <div className="__LOADER__">
+                <div id={LOADER_SELECTOR}>
                     <span />
                 </div>
 
-                <noscript>
-                    <a href="" style={{
-                        display: "block",
-                        position: "absolute",
-                        color: "white",
-                        textDecoration: "none",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "rgba(0,0,0,.75)",
-                        overflow: "hidden",
-                        zIndex: 9999
-                    }}>
-                        <div style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            overflow: "hidden"
-                        }}>
-                            <h1 style={{
-                                textAlign: "center"
-                            }}>
+                <noscript id="__NOSCRIPT__">
+                    <a href="">
+                        <div>
+                            <h1>
                                 Enable JavaScript
                                 <br />
                                 (click to reload)
@@ -145,10 +162,10 @@ const Html: React.StatelessComponent<HtmlProps> = ({ locale, state, styles, chil
                     `}} />
                 </noscript>
 
-                <div id="app">
+                <div id={TARGET_SELECTOR}>
                     {children}
                 </div>
-                <script dangerouslySetInnerHTML={{__html: script}} />
+                <script dangerouslySetInnerHTML={{ __html: script }} />
                 <script defer src={assets.vendor.js} />
                 <script defer src={assets.app.js} />
             </body>

@@ -1,17 +1,17 @@
-import * as Joi from "joi"
-import { Model } from "../bookshelf"
+import { Model, DataTypes } from "sequelize"
+import { Attribute } from "sequelize-decorators"
+import { Table } from "../sequelize"
+import User from "./user"
 
-export default class Todo
- extends Model {
-    get tableName() {
-        return "todos"
-    }
+@Table("todos")
+export default class Todo extends Model {
+    @Attribute()
+    public name: string
 
-    validate = {
-        text: Joi.string()
-    }
+    @Attribute(DataTypes.TEXT("long"))
+    public text: string
 
-    public user() {
-        return this.hasOne("User")
+    static associate(): void {
+        Todo.belongsTo(User)
     }
 }

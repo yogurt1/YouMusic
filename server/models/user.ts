@@ -1,9 +1,17 @@
-import * as Joi from "joi"
-import { Model } from "../bookshelf"
+import * as crypto from "crypto"
+import { Model, DataTypes } from "sequelize"
+import { Attribute } from "sequelize-decorators"
+import { Table } from "../sequelize"
 
-export default class User
- extends Model {
-    get tableName(): string {
-        return "users"
-    }
+@Table("users")
+export default class User extends Model {
+    @Attribute()
+    public username: string
+
+    @Attribute()
+    public role: string
+
+    @Attribute()
+    public age: number
 }
+

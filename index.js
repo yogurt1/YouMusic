@@ -1,23 +1,35 @@
-require("./polyfills.server")
+require("any-promise/register/bluebird")
+require("any-observable/register/rxjs-all")
+require("app-module-path").config({ path: __dirname })
+
+const SystemRegisterLoader = require('system-register-loader')
 const http = require("http")
 const chalk = require("chalk")
+const R = require("ramda")
 const config = require("./config")
-const app = () => require("./server").default
+const loader = new SystemRegisterLoader(__filename)
 
-if (!module.parent) {
-    const log = msg => console.log(chalk.blue.bold(msg))
-    const { port, host } = config.app
-    const listener = app().callback()
-    const server = http.createServer()
-        .on("request", listener)
-        .listen({ port, host },
-            () => log(`App listening on ${host || "ALL"}:${port}`))
+loader.import('./server')
+    .then(namespace => {
+        const server = namespace.default
 
-    process.on("SIGTERM", code => {
-        server.close()
-        process.exit(code)
+        const { port, host } = config.app
+        const log = R.pipe(
+            chalk.blue.bold,
+            console.log
+        )
+
+        const listener = app().callback()
+        const server = http.createServer()
+            .on("request", listener)
+            .on("listening",
+                () => log(`App listening on port ${port}`)
+            )
+            .listen({ port })
+
+        process.on("SIGTERM", code => {
+            server.close()
+            process.exit(code)
+        })
     })
 
-}
-
-module.exports = app

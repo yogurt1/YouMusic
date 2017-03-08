@@ -1,31 +1,48 @@
-require("./polyfills.server")
-require("tsnode/register")
-const { renderToStaticMarkup } = require("react-dom/server")
-const { createElement } = require("react")
+require("any-promise/register/bluebird")
+require("ts-node/register")
+require("dotenv").config({ silent: true })
+require("app-module-path/cwd")
+const ReactDOMServer = require("react-dom/server")
+const React = require("react")
 const { RedBoxError } = require("redbox-react")
 const R = require("ramda")
-const express = require("express")
 const chalk = require("chalk")
+const express = require("express")
 const config = require("./config")
 const devServer = express()
 
-const app = () =>
-{
-    const _ = require("./server").default
-    _.context.__devServer = pubsub
-    return _
+const { WEBPACK, npm_lifecycle_event: TARGET } = process.env
+const isWebpack = (
+    TARGET === "dev" &&
+    typeof process.env.WEBPACK === "undefined"
+        ? true
+        : JSON.parse(WEBPACK)
+)
+const getApp = () => {
+    const app = require("./server").default
+    // TODO: Find better solution
+    app.context.__devServer = pubsub
+    return app
 }
-
-tsnode.register(tsconfig)
-
-const tmpl = ({ html, types, endpoint }) => `
+const types = R.zipObj(...R.repeat([
+    "INIT",
+    "ERROR",
+    "MESSAGE",
+    "UPDATE"
+], 2))
+const endpoint = "/__server_hmr"
+const renderError = error => ReactDOMServer.renderToStaticMarkup(
+    React.createElement(RedBoxError, { error })
+)
+const tmpl = ({ error }) => `
 <span id="notification"></span>
-<div id="error">${html}</div>
+<div id="error">${renderError(error)}</div>
 <script>
     var n = document.getElementById("notification");
     var div = document.getElementById("error");
     var es = new EventSource("${endpoint}");
     es.onmessage = function(msg) {
+        console.log("Got message", msg);
         var action = JSON.parse(msg.data);
         switch(action.type) {
             case "${types.UPDATE}":
@@ -35,53 +52,42 @@ const tmpl = ({ html, types, endpoint }) => `
                     window.location.reload()
                 }, 300)
             case "${types.ERROR}":
-                return div.innerHTML = content;
+                return div.innerHTML = action.content;
         }
     }
 </script>
 `
 
+const subscribers = []
 const pubsub = new class PubSub {
     constructor () {
-        this.subscribers = []
-        this.endpoint = "/__server_hmr"
-        this.types = R.zipObj(...R.repeat([
-            "INIT",
-            "ERROR",
-            "MESSAGE",
-            "UPDATE"
-        ], 2))
-
-        this.renderError = R.pipe(
-            (error) => ({ error }),
-            R.curry(createElement)(RedBoxError),
-            renderToStaticMarkup
-        )
-
-        this.render = error => tmpl(R.assoc('html',
-            this.renderError(error),
-            R.pick(['types', 'endpoint'], this)
-        ))
+        this.subscribers = subscribers
+        this.send = R.curryN(2, (action, res) => {
+            console.log("sending action", action);
+            const data = `data: ${JSON.stringify(action)}\n\n`
+            res.write(data)
+            console.log("sended action; done", action)
+        })
     }
 
-    publishUpdate() {
-        const { UPDATE } = this.types
-        this.publish({ type: UPDATE })
+    publishUpdate () {
+        this.publish({
+            type: types.UPDATE
+        })
     }
 
-    publishError(error) {
-        const { ERROR } = this.types
-        this.publish({ type: ERROR, content: this.renderError(error) })
+    publishError (error) {
+        this.publish({
+            type: types.ERROR,
+            content: renderError(error)
+        })
     }
 
-    publishInit() {
-        const { INIT } = this.types
-        this.publish({ type: INIT })
-    }
-
-    subscribe ({ res }) {
+    subscribe (res) {
         const i = this.subscribers.push(res)
-        this.publishInit()
+        this.send({
+            type: types.INIT
+        }, res)
 
         return () => {
             this.subscribers.splice(i - 1, 1)
@@ -89,8 +95,7 @@ const pubsub = new class PubSub {
     }
 
     publish (action) {
-        const data = `data: ${JSON.stringify(action)}\n\n`
-        R.forEach(s => s.write(data), this.subscribers)
+        R.forEach(this.send, this.subscribers)
     }
 }
 
@@ -105,21 +110,21 @@ const watchApp = () => require("chokidar")
         )(R.keys(require.cache))
 
         try {
-            app()
-            pubusb.publishUpdate()
+            getApp()
+            pubsub.publishUpdate()
         } catch (err) {
-            pubsub.publishError(error)
+            pubsub.publishError(err)
         }
     })
 
 
-devServer.get(pubsub.endpoint, (req, res) => {
+devServer.get(endpoint, (req, res) => {
     res.writeHead(200, {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache"
     })
 
-    const unsubscribe = pubsub.subscribe(req)
+    const unsubscribe = pubsub.subscribe(res)
 
     req.on("close", () => {
         unsubscribe()
@@ -128,14 +133,18 @@ devServer.get(pubsub.endpoint, (req, res) => {
 })
 
 
-if (config.webpack.isWebpack) {
+if (isWebpack) {
     const HotMiddleware = require("webpack-hot-middleware")
     const DevMiddleware = require("webpack-dev-middleware")
     const webpackConfig = require("./webpack.config")
     const webpack = require("webpack")
     const compiler = webpack(webpackConfig)
-    const devMiddleware = DevMiddleware(compiler,
-        webpackConfig.devServer)
+    const devMiddleware = DevMiddleware(
+        compiler,
+        webpackConfig.devServer
+    )
+
+    console.log(devMiddleware.fileSystem)
 
     devServer
         .use(devMiddleware)
@@ -148,25 +157,36 @@ if (config.webpack.isWebpack) {
 }
 
 devServer.use((req, res, next) => {
+    // Recompile app on each reload
     let isError = false
-    const onError = err => {
+    let headersSent = false
+    const onError = error => {
         isError = true
-        res.writeHead(200, {
-            "Content-Type": "text/html"
-        })
+        if (!headersSent) {
+            res.writeHead(200, {
+                "Content-Type": "text/html"
+            })
+        }
 
-        res.end(pubsub.render(err))
+        res.end(
+            tmpl({ error })
+        )
     }
 
     try {
-        const nextApp = app()
+        const nextApp = getApp()
         nextApp.onerror = onError
         nextApp.callback()(req, res)
+        headersSent = true
     } catch (err) {
         return onError(err)
     } finally {
         if (!isError) {
             pubsub.publishUpdate()
+            // TODO: Clean subscribers
+            // pubsub.subscribers.splice(0,
+            //     pubsub.subscribers.length
+            // )
         }
     }
 })
@@ -178,13 +198,25 @@ if (!module.parent) {
         host = "localhost"
     } = config.app
 
-    console.log(chalk.bold.red("Development mode.",
-        chalk.underline(`Webpack ${config.webpack.isWebpack ? "enabled"
-            : "disabled. To enable try `WEBPACK=1 or `yarn dev`"
-        }`)))
+    const enabledMsg = "Webpack enabled"
+    const disabledMsg = "Webpack disabled. To enable try `WEBPACK=1` or `yarn dev`"
+    console.log(
+        chalk.bold.red(
+            "Development mode.",
+            chalk.underline(
+                isWebpack
+                    ? enabledMsg
+                    : disabledMsg
+            )
+        )
+    )
 
-    devServer.listen({ port, host }, () =>
-        console.log(chalk.blue(`App listening on ${host}:${port}`)))
+    devServer
+        .listen({ port, host })
+        .on("listening", () => console.log(
+            chalk.blue(`App listening on ${host}:${port}`)
+        ))
 }
 
 module.exports = pubsub
+module.exports.tmpl = tmpl

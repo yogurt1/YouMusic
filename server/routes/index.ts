@@ -3,18 +3,22 @@ import { graphqlKoa, graphiqlKoa } from "graphql-server-koa"
 import schema from "../data/schema"
 import auth from "./auth"
 import frontend from "../middlewares/frontend"
-import { isDevEnv } from "app/lib/util"
+import platform from "app/lib/platform"
+import { GRAPHQL_ENDPOINT } from "app/lib/constants"
 
 const router = new Router()
 
-router.all("/graphql", graphqlKoa(ctx => ({
-    schema,
-    context: ctx
-})))
+router.all(GRAPHQL_ENDPOINT,
+    graphqlKoa(ctx => ({
+        schema,
+        context: ctx
+    }))
+)
 
-if (isDevEnv) {
+if (platform.isDev) {
     router.all("/graphiql",
-        graphiqlKoa({ endpointURL: "/graphql" }))
+        graphiqlKoa({ endpointURL: GRAPHQL_ENDPOINT })
+    )
 }
 
 router.use("/auth",

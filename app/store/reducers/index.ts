@@ -1,15 +1,16 @@
-import { Record } from "immutable"
+import { Map, Record } from "immutable"
 import { Reducer } from "redux"
-import routingReducer, { RoutingState } from "./routing"
 import formReducer, { FormState } from "./form"
 import authReducer, { AuthState } from "./auth"
+// import { reducer as routingReducer, State as RoutingState } from "../ducks/routing"
 import { reducer as configReducer, State as ConfigState } from "../ducks/config"
 import { reducer as videoReducer, State as VideoState } from "../ducks/video"
 
-export const records : Record < any, any > [] = []
+export const records: Record<any, any>[] = []
 
-export interface State {
-    routing: RoutingState
+export type State = {
+    apollo: any,
+    // routing: RoutingState
     form: FormState
     auth: AuthState
     video: VideoState
@@ -18,7 +19,7 @@ export interface State {
 
 export interface ReducersRegistry {
     [key: string]: Reducer<any>
-    routing: Reducer<RoutingState>
+    // routing: Reducer<RoutingState>
     form: Reducer<FormState>
     auth: Reducer<AuthState>
     video: Reducer<VideoState>
@@ -26,7 +27,7 @@ export interface ReducersRegistry {
 }
 
 const reducersRegistry : ReducersRegistry = {
-    routing: routingReducer,
+    // routing: routingReducer,
     form: formReducer,
     auth: authReducer,
     config: configReducer,

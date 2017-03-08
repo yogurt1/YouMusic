@@ -34,6 +34,7 @@ const config = {
                 maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
             }
         },
+
     },
     db: {
         knex: {
@@ -43,10 +44,12 @@ const config = {
             }
         }
     },
-    redis: null,
-    socket: null,
-    graphql: null,
-    api: null,
+    redis: {
+    },
+    socket: {
+    },
+    graphql: {
+    },
     passport: {
         google: {
             clientID: process.env.GOOGLE_CLIENT_ID,
@@ -57,3 +60,4 @@ const config = {
 }
 
 module.exports = config
+module.exports["default"] = config

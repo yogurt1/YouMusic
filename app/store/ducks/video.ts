@@ -2,15 +2,12 @@ import { Map } from "immutable"
 import { Reducer, Action } from "redux"
 import { REHYDRATE } from "redux-persist/constants"
 import { createAction } from "redux-actions"
-import { createTypes } from "../util"
-// import VideoRecord from "../records/VideoRecord"
+import VideoRecord from "../records/VideoRecord"
 
-export const types = createTypes("video", [
-    "SET_VIDEOID"
-])
+export const SET_VIDEOID = "@video/SET_VIDEOID"
 
 export const actions = {
-    setVideoId: createAction<string>(types.SET_VIDEOID)
+    setVideoId: createAction<string>(SET_VIDEOID)
 }
 
 const fake = {
@@ -24,8 +21,8 @@ export const initialState: State = Map({
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-    case types.SET_VIDEOID: return state
+        case SET_VIDEOID: return state
             .set("videoId", action.payload)
-    default: return state
+        default: return state
     }
 }

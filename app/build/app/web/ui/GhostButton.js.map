@@ -1,1 +1,0 @@
-{"version":3,"file":"GhostButton.js","sourceRoot":"","sources":["../../../../web/ui/GhostButton.tsx"],"names":[],"mappings":";AAAA,oCAA4B,mBAE5B,CAAC,CAF8C;AAElC,mBAAW,GAAG,uBAAG,CAAA;;;;;;;;;;;;;;;;;;CAkB7B,CAAA;AAED,MAAM,WAAW,GAAG,2BAAM,CAAC,IAAI,CAAA,GAAG,mBAAW,EAAE,CAAA;AAE/C;kBAAe,WAAW,CAAA;AAEb,uBAAe,GAAG,SAAS,IACpC,2BAAM,CAAC,SAAS,CAAC,CAAA,GAAG,mBAAW,EAAE,CAAA"}

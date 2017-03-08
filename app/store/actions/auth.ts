@@ -15,16 +15,17 @@ export const authFailure = createAction<void>(AUTH_FAILURE)
 const fakeToken = () => "random token"
 
 export const logIn = body => async dispatch => {
-    const authService = new AuthService()
+    // const authService = new AuthService()
+    const authService = { logIn: () => null } as any
     const { username, password } = body
     authService.logIn(username, password)
 
     try {
         // const token = await authService.login(username, password)
         const token = await fakeToken()
-        dispatch(loginSuccess(token))
+        dispatch(setToken(token))
     } catch (err) {
-        dispatch(loginFailure(err))
+        dispatch(authFailure(err))
     }
 }
 

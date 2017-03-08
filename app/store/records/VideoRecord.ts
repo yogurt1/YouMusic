@@ -1,11 +1,13 @@
-import { Map, Record } from "immutable"
+import { Record } from "immutable"
 
-const R = Record<{
+export type VideoItem = {
     title: string
     description: string
     videoId: string
     publishedAt: string
-}>({
+}
+
+const VideoRecord = Record({
     title: "",
     description: "",
     videoId: "",

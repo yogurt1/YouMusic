@@ -1,64 +1,36 @@
-import process from "global/process"
-import global from "global"
-import * as R from "ramda"
-import { capitalize } from "lodash"
-import { InferableComponentEnhancer, hoistStatics, renderNothing } from "recompose"
+import * as process from "global/process"
+import * as global from "global"
 
-const keys = [
-    "NODE",
-    "BROWSER",
-    "DEVELOPMENT",
-    "PRODUCTION"
-]
+export default {
+    get isNode() {
+        // TODO: Should be true if Electron?
+        return process.title === "node"
+    },
 
-export const env = R.zipObj(keys,
-    R.times(R.pipe(R.add(1), R.multiply(0x1)), keys.length))
+    get isBrowser() {
+        return global.window === global
+    },
 
-const isNotNil = R.pipe(R.isNil, R.not)
-const getProcessVersion = v => R.path(["versions", v], process)
-const hasProcessVersion = R.pipe(getProcessVersion, isNotNil)
-const isProcessTitle = R.equals(process.title)
-const isTrue = R.eqBy(Boolean, true)
-const isAllTrue = R.all(isTrue)
-const isAnyTrue = R.any(isTrue)
+    get isElectron() {
+        return (
+            "versions" in process &&
+            "electron" in process.versions
+        )
+    },
 
-const envTests = {
-    isNode: isAllTrue([
-        hasProcessVersion("node"),
-        isProcessTitle("node")
-    ]),
-    isBrowser: isAllTrue([
-        R.equals(global.window, global),
-        R.prop(process, "browser"),
-        isProcessTitle("browser")
-    ]),
-    isElectron: isAllTrue([
-        hasProcessVersion("electron")
-    ])
+    get isReactNative() {
+        return typeof global.__fbBatchedBridgeConfig !== "undefined"
+    },
+
+    get isProd() {
+        return process.env.NODE_ENV === 'production'
+    },
+
+    get isTest() {
+        return process.env.NODE_ENV === 'test'
+    },
+
+    get isDev() {
+        return !(this.isProd || this.isTest)
+    }
 }
-
-const testEnv = (envName: string): number => {
-    const formatName = R.pipe(R.toLower, capitalize)
-    const test = R.prop(`is${formatName(envName)}`, envTests) as () => boolean
-    return Number(test())
-}
-const getEnv = R.flip(R.prop)(env)
-const andEachByKey = R.flip((a: string) => R.pipe(
-    R.map((fn: Function) => fn()),
-    R.reduce((a, b) => a && b, 1)
-))
-
-const envMask = R.pipe(
-    R.keys,
-    R.map(andEachByKey([testEnv, getEnv])),
-    R.filter(R.pipe(R.equals(0), R.not)),
-    R.reduce(R.or, 0)
-)(env)
-
-export const isEnv = R.pipe(R.reduce(R.and(envMask), 0x0), Boolean)
-export const isNotEnv = R.pipe(isEnv, R.not)
-export const envDecorator = (mask: number[], not?: boolean) =>
-    (component: InferableComponentEnhancer): InferableComponentEnhancer =>
-        (not ? isNotEnv : isEnv)(mask)
-            ? component
-            : hoistStatics(R.always(null))(component)

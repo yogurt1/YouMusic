@@ -1,35 +1,30 @@
 {
-    "presets": [
-        ["env", {
-            "modules": false,
-            "targets": {
-                "chrome": 50,
-                "firefox": 45,
-                "ios": 9,
-                "safari": 9,
-                "edge": 13
-            }
-        }],
-        "react"
-    ],
-    "plugins": [
-        "transform-runtime"
+  "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "chrome": 55,
+        "firefox": 52
+      }
+    }],
+    "react"
+  ],
+  "plugins": [
+    "transform-runtime"
     ],
     "env": {
-        "development": {
-            "plugins": [
-                "react-hot-loader/babel"
-            ]
-        },
-        "production": {
-            "minified": true,
-            "comments": false,
-            "presets": [
-                "react-optimize"
-            ],
-            "plugins": [
-            ]
-        }
+      "development": {
+        "plugins": [
+        ]
+      },
+      "production": {
+        "minified": true,
+        "presets": [
+          "react-optimize"
+        ],
+        "plugins": [
+        ]
+      }
     }
 
 }

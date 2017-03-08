@@ -2,29 +2,19 @@ import { Reducer } from "redux"
 import { OrderedSet, Map, Record } from "immutable"
 import { createAction } from "redux-actions"
 import { createSelector } from "reselect"
-import { createTypes } from "../util"
 import { REHYDRATE } from "redux-persist/constants"
+import VideoRecord from "../records/VideoRecord"
 
-export const types = createTypes("playlist", [
-    "ADD",
-    "REMOVE",
-    "CLEAR",
-    "CLEAR_PREVIOUS",
-    "CLEAR_NEXT"
-])
-
-export interface VideoRecord extends Map<string, string | number> {
-    title: string
-    videoId: string
-    description: string
-    publishedAt: string
-    channelId: string
-    channelTitle: string
-}
+export const PREFIX = "@playlist"
+export const ADD = `${PREFIX}/ADD`
+export const REMOVE = `${PREFIX}/REMOVE`
+export const CLEAR = `${PREFIX}/CLEAR`
+export const CLEAR_PREVIOUS = `${PREFIX}/CLEAR_PREVIOUS`
+export const CLEAR_NEXT = `${PREFIX}/CLEAR_NEXT`
 
 export const actions = {
-    addNext: createAction<VideoRecord>(types.ADD),
-    remove: createAction<number>(types.REMOVE)
+    addNext: createAction<VideoRecord>(ADD),
+    remove: createAction<number>(REMOVE)
 }
 
 export type State = OrderedSet<VideoRecord>
@@ -32,15 +22,13 @@ export const initialState: State = OrderedSet<VideoRecord>()
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-    case types.ADD: return state
+        case ADD: return state
             .add(action.payload)
-    case types.REMOVE: return state
+        case REMOVE: return state
             .delete(action.payload)
-
-    case types.CLEAR: return state.clear()
-
-    case REHYDRATE: return OrderedSet(state)
-    default: return state
+        case CLEAR: return state.clear()
+        case REHYDRATE: return OrderedSet(state)
+        default: return state
     }
 }
 
@@ -51,7 +39,7 @@ export const selectors = {
     selectNext() {
     },
 
-    selectCurrent() {
+    selectCurrent(state) {
 
     }
 }

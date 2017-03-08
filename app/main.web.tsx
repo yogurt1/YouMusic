@@ -1,88 +1,110 @@
+// import "react-hot-loader/patch"
 import "./vendor"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import { AppContainer } from "react-hot-loader"
-import { BrowserRouter as Router } from "react-router-dom"
+import * as R from "ramda"
+import * as transit from "transit-immutable-js"
+import {
+    INDEXEDDB as IndexedDBStorageDriver
+} from "localforage"
+import { Router } from "react-router"
+// import { AppContainer } from "react-hot-loader"
 import { ApolloProvider } from "react-apollo"
 import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components"
+import App from "./containers/App"
 import ServiceProvider from "./services/ServiceProvider"
 import AuthService from "./services/AuthService"
 import StorageService from "./services/StorageService"
-import App from "./containers/App"
+import createHistory from "history/createBrowserHistory"
 import { createNetworkInterface } from "apollo-client"
 import { persistStore } from "redux-persist-immutable"
-import * as R from "ramda"
-import * as localForage from "localforage"
 import configureStore from "./store"
 import configureApolloClient from "./store/apollo"
-import { isPlatform, isEnv, platform, env } from "./lib/platform"
+import configureStorage from "./lib/configureStorage"
+import {
+    TARGET_SELECTOR,
+    CRITICAL_CSS_SELECTOR,
+    LOADER_SELECTOR,
+    INITIAL_STATE_KEY,
+    STORAGE_STATE_KEY,
+    APOLLO_CLIENT_KEY,
+    APOLLO_STATE_KEY,
+    DEFAULT_LOCALE
+} from "./lib/constants"
+import platform from "./lib/platform"
+import theme from "./theme"
 
-const storage = localForage.config({
-    driver: localForage.LOCALSTORAGE,
-    name: "reduxState",
-    description: "persisted redux state"
+const AppContainer = ({ children }) => children
+const locale = (
+    navigator.language ||
+    DEFAULT_LOCALE
+)
+const preloadedState = JSON.parse(window[INITIAL_STATE_KEY] || "null")
+const initialState = preloadedState
+    ? transit.fromJSON(preloadedState)
+    : undefined
+const storage = configureStorage(IndexedDBStorageDriver)
+const history = createHistory()
+const client = configureApolloClient(
+    createNetworkInterface({
+        uri: "/graphql"
+    })
+)
+const store = configureStore({
+    client,
+    history,
+    initialState,
 })
-const persistConfig = {
-    // storage,
-    key: "state",
-    blacklist: [
-        "apollo"
-    ],
-    records: []
-}
-const theme = require("./theme.json")
-const target = document.querySelector("#app")
-const locale = "en"
-const networkInterface = createNetworkInterface({uri: "/graphql"})
-const client = configureApolloClient(networkInterface)
-const store = configureStore({ client })
-const persistor = persistStore(store, persistConfig)
+const persistor = persistStore(store, {
+    storage,
+    key: STORAGE_STATE_KEY,
+    blacklist: [APOLLO_STATE_KEY],
+    records: [],
+})
 const services = {
     authService: new AuthService(),
     storageService: new StorageService()
 }
 
-// if (isEnv(env.BROWSER)) {
-if (isEnv(env.DEV)) {
-    window["__APOLLO_CLIENT__"] = client
-    // const { whyDidYouUpdate } = require("why-did-you-update")
-    // whyDidYouUpdate(React, {
-    //     exclude: /^(Connect|Form)/
-    // })
+if (platform.isDev) {
+    // inject client to window for devtools
+    window[APOLLO_CLIENT_KEY] = client
 }
 
-ReactDOM.render(
+const renderApp = (A) => ReactDOM.render(
     <AppContainer>
-        <ApolloProvider
-            client={client}
-            store={store}>
+        <ApolloProvider client={client} store={store}>
             <IntlProvider locale={locale}>
                 <ThemeProvider theme={theme}>
                     <ServiceProvider services={services}>
-                        <Router>
-                            <App />
+                        <Router history={history}>
+                            <A />
                         </Router>
                     </ServiceProvider>
                 </ThemeProvider>
             </IntlProvider>
         </ApolloProvider>
-    </AppContainer>, target
+    </AppContainer>,
+    document.getElementById(TARGET_SELECTOR)
 )
 
+
 window.onload = () => {
-    // remove styled-components css, because it be force rehydrated
-    R.pipe(
-        R.map((selector: string) => document.querySelector(selector)),
-        R.filter(R.pipe(R.isNil, R.not)),
-        R.forEach((el: HTMLElement) => el.remove())
-    )([
-        ".__CRITICAL_CSS__",
-        ".__LOADER__"
-    ])
+    renderApp(App)
+    document
+        .getElementById(LOADER_SELECTOR)
+        .remove()
+    const criticalCss = document
+        .getElementById(CRITICAL_CSS_SELECTOR)
+    criticalCss.addEventListener("load", () => {
+        criticalCss.remove()
+    })
 }
 
 const { hot } = module as any
 if (hot) {
-    hot.accept()
+    hot.accept("./containers/App", () => {
+        renderApp(App)
+    })
 }

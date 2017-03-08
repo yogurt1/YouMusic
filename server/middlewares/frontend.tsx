@@ -1,85 +1,93 @@
-import { promisify } from "bluebird"
+import global from "global"
 import * as React from "react"
-import * as ReactDOM from "react-dom/server"
+import { renderToString } from "react-dom/server"
+import LRURenderCache from "react-dom-stream/lru-render-cache"
+import * as R from "ramda"
 import Html from "app/Html"
-import Root from "app/Root"
-import { StaticRouter } from "react-router-dom"
+import App from "app/containers/App"
+import { Router, StaticRouter } from "react-router"
 import { ApolloProvider } from "react-apollo"
 import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components"
 import { getDataFromTree } from "react-apollo/server"
 import { createNetworkInterface } from "apollo-client"
 import * as styleSheet from "styled-components/lib/models/StyleSheet"
+import createHistory, { Context as RoutingContext } from "app/lib/staticHistory"
 import configureStore from "app/store"
 import configureApolloClient from "app/store/apollo"
+import { DEFAULT_LOCALE } from "app/lib/constants"
+import theme from "app/theme"
 import * as config from "../../config"
 
-const theme = require("app/theme.json")
-const render = node => `
-    <!doctype html>
-    ${ReactDOM.renderToString(node)}
-`
-const frontendMiddleware = async ctx => {
+const renderCache = LRURenderCache({ max: 64 * 1024 * 1024 })
+const joinRules = R.pipe(
+    R.map(R.prop("cssText")),
+    R.join(""),
+)
+
+export default async ctx => {
     ctx.type = "html"
     // styleSheet.flush()
 
-    if (config.webpack.isWebpack) {
-        ctx.body = render(<Html />)
-        return
-    }
-
-    const locale = ctx.request.getLocaleFromHeader() || "en"
+    const routingContext: RoutingContext = {}
+    const locale = ctx.request.getLocaleFromHeader() || DEFAULT_LOCALE
     const location = ctx.request.url
+    const client = configureApolloClient(
+        createNetworkInterface({
+            uri: ctx.request.host,
+            opts: {
+                credentials: "same-origin",
+                headers: ctx.request.headers,
+            },
+        })
+    )
+    const history = createHistory({ location, context: routingContext })
+    const store = configureStore({ client, history })
+    // store.dispatch({
+    //     type: "SET_CONFIG_KEY",
+    //     payload: {
+    //         userAgent: ctx.request.headers["user-agent"]
+    //     }
+    // })
 
-    // const cached = ctx.cashed(2 * 60 * 60)
-    const networkInterface = createNetworkInterface({
-        uri: ctx.request.host,
-        opts: {
-            credentials: "same-origin",
-            headers: ctx.request.headers
-        }
+    Object.assign(ctx.state, {
+        locale,
+        client,
+        history,
+        store,
+        routingContext,
     })
 
-    const client = configureApolloClient(networkInterface)
-    const store = configureStore({ client })
-    const context = {} as any
-
-    ctx.state = {
-        ...ctx.state,
-        routingContext: context
-    }
-
     const componentTree = (
-        <ApolloProvider
-            client={client}
-            store={store}>
-            <IntlProvider locale={locale}>
+        <ApolloProvider client={client} store={store}>
+            <IntlProvider
+                locale={locale}>
                 <ThemeProvider theme={theme}>
-                    <StaticRouter
-                        location={location}
-                        context={context}>
-                        <Root />
-                    </StaticRouter>
+                    <Router history={history}>
+                        <App />
+                    </Router>
                 </ThemeProvider>
             </IntlProvider>
         </ApolloProvider>
     )
 
-    if (context.url) {
-        ctx.redirect(context.url)
+    const { url: redirectUrl } = routingContext
+    if (redirectUrl) {
+        ctx.redirect(redirectUrl)
         return
     }
 
     // await Promise.all(actions)
-    await getDataFromTree(componentTree)
+    // await getDataFromTree(componentTree)
 
     const state = store.getState()
-    const styles = styleSheet.rules()
-        .map(r => r.cssText).join("")
+    const styles = joinRules(styleSheet.styleSheet.sheet.cssRules)
+    // const finalState = state.set(client.reduxRootKey, client.getInitialState())
 
-    // state[client.reduxRootKey] = client.getInitialState()
-    ctx.body = render(
+    // ctx.res.write("<!doctype html")
+    ctx.body = renderToString(
         <Html
+            locale={locale}
             styles={styles}
             state={state}>
             {componentTree}
@@ -87,4 +95,3 @@ const frontendMiddleware = async ctx => {
     )
 }
 
-export default frontendMiddleware

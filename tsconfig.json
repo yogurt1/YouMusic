@@ -1,11 +1,12 @@
 {
     "lazy": true,
     "fast": true,
+    "disableWarnings": true,
     "compileOnSave": false,
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2017",
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "system",
         "sourceMap": true,
         "jsx": "react",
         "outDir": "./build",
@@ -24,7 +25,8 @@
     },
     "awesomeTypescriptLoader": {
         "transpileOnly": true,
-        "usetranspileModule": true,
+        "forkChecker": true,
+        "useTranspileModule": true,
         "useBabel": true,
         "useCache": true
     },

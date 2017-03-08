@@ -22,11 +22,20 @@ const config = {
     },
     module: {
         rules: [
+            // {
+            //     test: /\.js$/,
+            //     loader: "source-map-loader",
+            //     enforce: "pre",
+            // },
             {
                 test: /\.css$/,
                 loader: ExtractTextPlugin.extract({
-                    fallbackLoader: "style-loader",
-                    loader: "css-loader"
+                    fallback: "style-loader",
+                    use: [
+                        {
+                            loader: "css-loader"
+                        }
+                    ]
                 })
             },
             {
@@ -39,20 +48,14 @@ const config = {
         ]
     },
     entry: {
-        vendor: [ "./app/web/vendor.js" ]
+        vendor: [ "./app/vendor.js" ]
     },
     resolve: {
-        alias: {
-            "styled-componets$": "styled-components/lib/index.js"
-        }
     },
     plugins: [
         new OptimizeJsPlugin(),
-        new webpack.DefinePlugin({
-            "typeof window": JSON.stringify("object"),
-            "process.env": {
-                "NODE_ENV": JSON.stringify(NODE_ENV)
-            }
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: "development"
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true,

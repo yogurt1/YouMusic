@@ -19,62 +19,82 @@ const tryCatch = (t, c) => {
     }
 }
 
-const config = module.exports = {
-    devtool: isProduction ? "source-map" : "cheap-module-inline-source-map",
+const config = {
+    devtool: isProduction
+        ? "inline-source-map"
+        : "cheap-module-inline-source-map",
     performance: { hints: false },
     entry: {
         app: ["./app/main.web.tsx"]
     },
     output: {
-        path: path.resolve("./static/assets"),
-        publicPath: "/assets/",
+        path: path.resolve("./build"),
+        publicPath: "/",
         filename: "[name].bundle.js",
-        chunkFilename: "[id].chunk.js"
+        chunkFilename: "[id].chunk.js",
+        sourceMapFilename: "[file].map",
         // devtoolModuleFilenameTemplate: "/[resourcePath]"
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".json"],
         alias: {
             "app": path.resolve("./app"),
-            "styled-components$": "styled-components/lib/index.js"
-        }
+        },
     },
     devServer: {
         stats: "errors-only",
-        publicPath: "/assets/",
+        publicPath: "/",
         noInfo: true,
         inline: true,
         hot: true,
         historyApiFallback: true
     },
     node: {
+        child_process: "empty",
         global: true,
         net: "mock",
         dns: "mock"
-        // child_process: "mock"
     },
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                loader: "awesome-typescript-loader",
-                include: path.join(__dirname, "app"),
-                exclude: /(node_modules|\/vendor\.js$)/,
-                options: {
-                    configFileName: "tsconfig.webpack.json",
-                    configFilename: "tsconfig.webpack.json"
-                }
+                test: /\.(js|tsx?)$/,
+                loader: "source-map-loader",
+                enforce: "pre",
             },
             {
-                test: /\.(graphql|gql)$/,
-                exclude: /node_modules/,
-                loader: "graphql-tag/loader"
+                test: /\.tsx?$/,
+                use: [
+                    {
+                        loader: "awesome-typescript-loader",
+                        options: {
+                            configFileName: "tsconfig.webpack.json",
+                        },
+                    },
+                ],
+                include: path.join(__dirname, "app"),
+                exclude: /(node_modules|\/vendor\.js$)/,
             },
             {
                 test: /\.css$/,
                 loader: ExtractText.extract({
-                    fallbackLoader: "style-loader?-singleton&insertAt=top",
-                    loader: "css-loader?mimize&autorepfixer&sourceMap"
+                    fallback: {
+                        loader: "style-loader",
+                        options: {
+                            singleton: false,
+                            insertAt: "top"
+                        },
+                    },
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                minimize: true,
+                                autoprefixer: true,
+                                sourceMap: true
+                            }
+                        },
+                    ],
                 })
             },
             {
@@ -83,44 +103,40 @@ const config = module.exports = {
                 options: {
                     limit: 10240
                 }
-            }
-        ]
+            },
+        ],
     },
     plugins: [
+        // new webpack.LoaderOptionsPlugin({
+        //     debug: true,
+        //     sourceMap: true,
+        // }),
         new webpack.DllReferencePlugin({
             contenxt: '.',
             manifest: tryCatch(
                 () => require('./static/assets/vendor.manifest.json'),
-                () => ({ name: "vendor_dll", content: {} }))
+                () => ({ name: "vendor_dll", content: {} })
+            )
         }),
         // new webpack.IgnorePlugin(/^\.\/locale-data$/, /react-intl$/),
         new CheckerPlugin(),
         new TsConfigPathsPlugin({
             tsconfig: "tsconfig.webpack.json",
-            configFilename: "tsconfig.webpack.json",
             configFileName: "tsconfig.webpack.json",
-            compiler: "typescript"
+            compiler: "typescript",
         }),
         new ExtractText({
             allChunks: true,
             disable: !isProduction,
-            filename: "styles.bundle.css"
+            filename: "styles.bundle.css",
         }),
         new webpack.ProvidePlugin({
-            "Promise": "bluebird"
+            "Promise": "bluebird",
         }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: isProduction
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: "development",
         }),
-        new webpack.DefinePlugin({
-            DEV: !isProduction,
-            __DEV__: !isProduction,
-            "typeof window": JSON.stringify("object"),
-            "process.env": {
-                "NODE_ENV": JSON.stringify(process.env.NODE_ENV)
-            }
-        })
-    ]
+    ],
 }
 
 if (isProduction) {
@@ -130,7 +146,6 @@ if (isProduction) {
     const BabiliPlugin = require("babili-webpack-plugin")
     const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
 
-    // config.entry["vendor"] = "./app/vendor.js"
     config.plugins.push(
         // new webpack.optimize.CommonsChunkPlugin({
         //     name: "vendor"
@@ -151,7 +166,7 @@ if (isProduction) {
         new ImageminPlugin(),
         new OptimizeJsPlugin(),
         new CompressionPlugin(),
-        new BabiliPlugin()
+        new BabiliPlugin({ sourceMap: true })
     )
 } else {
     config.plugins.unshift(
@@ -159,8 +174,10 @@ if (isProduction) {
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin()
     )
-    config.entry["app"].unshift(
-        "react-hot-loader/patch",
-        "webpack-hot-middleware/client?overlay=true&reload=false&quiet=true"
-    )
+    // config.entry["app"].unshift(
+    //     "webpack-hot-middleware/client?overlay=true&reload=false&quiet=true"
+    // )
 }
+
+// TODO: Function
+module.exports = config

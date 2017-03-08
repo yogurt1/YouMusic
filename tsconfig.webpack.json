@@ -4,8 +4,9 @@
         "target": "es6",
         "moduleResolution": "node",
         "module": "es6",
+        "alwaysStrict": true,
         "sourceMap": true,
-        "jsx": "preserve",
+        "jsx": "react",
         "removeComments": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -21,14 +22,28 @@
     },
     "awesomeTypescriptLoaderOptions": {
         "transpileOnly": true,
+        "forkChecker": true,
         "useTranspileModule": true,
         "useBabel": true,
         "useCache": true
     },
     "filesGlob": [
-        "!node_modules/**"
+        "!node_modules/**",
+        "!db/**",
+        "!pseudo/**",
+        "!tmp/**",
+        "!landing/**",
+        "!static/**"
     ],
     "exclude": [
+        "app/native",
+        "pseudo",
+        "landing",
+        "tmp",
+        "test",
+        "deploy",
+        "db",
+        "static",
         "node_modules"
     ]
 }
