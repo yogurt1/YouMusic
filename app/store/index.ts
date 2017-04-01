@@ -3,20 +3,15 @@ declare const System: {
 }
 
 import global from "global"
-import {
-    Store,
-    Reducer,
-    ReducersMapObject,
-    createStore,
-    applyMiddleware,
-    compose
-} from "redux"
+import { History } from "history"
 import { ApolloClient } from "apollo-client"
+import * as R from "ramda"
+import * as Redux from "redux"
 import { combineReducers } from "redux-immutable"
 import thunk from "redux-thunk"
 import promise from "redux-promise"
 import array from "./middlewares/array"
-import routing from "./middlewares/routing"
+import { routerReducer, routerMiddleware } from "react-router-redux"
 import { autoRehydrate } from "redux-persist-immutable"
 import reducersRegistry, { State } from "./reducers"
 import platform from "../lib/platform"
@@ -25,65 +20,51 @@ import { APOLLO_STATE_KEY } from "../lib/constants"
 const composeWithDevTools = (
     platform.isBrowser &&
     platform.isDev &&
-    global["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] ||
-    compose
-)
+    global["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]
+) || Redux.compose
 
 
 export { State }
-export interface EnhancedStore extends Store<State> {
-    injectReducers(nextReducersRegistry: ReducersMapObject): void
-}
 
 export default ({ initialState, history, client }: {
     initialState?: Object | void,
     history: History,
     client: ApolloClient
-}): EnhancedStore => {
-    // const normalizedState = reducer(
-    //     initialState,
-    //     { type: NORMALIZE_STATE }
-    // )
-    const middleware = applyMiddleware(
+}): Redux.Store<State> => {
+    const middleware: Redux.StoreEnhancer<State> = Redux.applyMiddleware(
         thunk,
-        // promise,
-        // array,
+        promise,
         client.middleware(),
-        routing(history),
+        routerMiddleware(history),
     )
 
-    const apolloReducer = client.reducer() as Reducer<any>
-    reducersRegistry[APOLLO_STATE_KEY] = apolloReducer
-    const reducer = combineReducers(reducersRegistry)
+    const injectClient = R.set(
+        R.lensProp(APOLLO_STATE_KEY),
+        client.reducer()
+    )
+
+    const finalCombineReducers = R.pipe(
+        injectClient,
+        combineReducers,
+    ) as (reducersRegistry: Redux.ReducersMapObject) => Redux.Reducer<State>
 
     const finalCreateStore = composeWithDevTools(
         middleware,
-        autoRehydrate({ log: platform.isDev })
-    )(createStore)
+        autoRehydrate({ log: platform.isDev }),
+    )(Redux.createStore)
 
-    const store: EnhancedStore = finalCreateStore(
-        reducer,
-        initialState
-    )
-
-    store.injectReducers = nextReducersRegistry => {
-        const finalReducersRegistry = Object.assign(
-            reducersRegistry,
-            nextReducersRegistry
-        )
-        const nextReducer = combineReducers(finalReducersRegistry)
-        store.replaceReducer(reducer as Reducer<State>)
-    }
+    const reducer = finalCombineReducers(reducersRegistry)
+    const store: Redux.Store<State> = finalCreateStore(reducer, initialState)
 
     const { hot } = module as any
     if (hot) {
         hot.accept("./reducers", () => {
+            // TODO: dynamic import() syntax
             System.import("./reducers")
-                .then(m => m.default)
-                .then(nextReducersRegistry => {
-                    store.injectReducers(
-                        nextReducersRegistry
-                    )
+                .then(ns => {
+                    const nextReducersRegistry = ns.default
+                    const nextReducer = finalCombineReducers(nextReducersRegistry)
+                    store.replaceReducer(nextReducer)
                 })
         })
     }

@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as R from "ramda"
-import { compose, withProps, hoistStatics, getContext } from "recompose"
+import { compose, withProps, hoistStatics, withContext, getContext } from "recompose"
 
 type Services = {
     [key: string]: Object
@@ -32,7 +32,11 @@ export default class ServiceProvider extends React.Component<{ services: Service
     }
 }
 
+export const injectServices = getContext({
+    services: servicesShape.isRequired,
+})
+
 export const injectService = (...serviceNames: string[]) => compose(
     withProps(({ services }) => R.pick(serviceNames, services)),
-    getContext({ services: servicesShape.isRequired })
+    injectServices,
 )

@@ -1,15 +1,21 @@
-import * as React from "react"
-import * as Helmet from "react-helmet"
-import styled, { injectGlobal, keyframes } from "styled-components"
-import * as transit from "transit-immutable-js"
-import { flatten } from "lodash"
-import { State } from "app/store"
+import * as R from 'ramda'
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import styled, { injectGlobal, keyframes } from 'styled-components'
+import * as Helmet from 'react-helmet'
+import * as transit from 'transit-immutable-js'
+import { flatten } from 'lodash'
+import { State } from 'app/store'
 import {
     INITIAL_STATE_KEY,
     LOADER_SELECTOR,
     CRITICAL_CSS_SELECTOR,
-    TARGET_SELECTOR
-} from "app/lib/constants"
+    TARGET_SELECTOR,
+    NOSCRIPT_SELECTOR
+} from 'app/lib/constants'
+
+const getJs = R.prop('js')
+const getCss = R.prop('css')
 
 injectGlobal`
     .__LOADER__ {
@@ -51,39 +57,30 @@ const baseStyles = `
         font-size: 1.5em;
         line-height: 1.6;
         font-weight: 300;
-        font-family: Roboto, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-family: Roboto, HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         color: #222;
-    }
-
-    #__NOSCRIPT__ > a {
-        display: block;
-        position: absolute;
-        color: "white";
-        text-decoration: "none";
-        top: 0;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, .75);
-        overflow: hidden;
-        z-index: 9999;
-    }
-
-    #__NOSCRIPT__ > a > div {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        overflow: hidden;
-    }
-
-    #__NOSCRIPT__ > a > div > h1 {
-        text-align: center;
     }
 `
 
-const ASSET_PREFIX = ""
-const assets = {
+type Asset = {
+    js?: string,
+    css?: string
+}
+
+type Assets = {
+    app?: Asset,
+    vendor?: Asset
+}
+
+type HtmlProps = {
+    state?: State,
+    assets?: Assets,
+    locale?: string,
+    styles?: string
+}
+
+const ASSET_PREFIX = ''
+const defaultAssets = {
     app: {
         js: `${ASSET_PREFIX}/app.bundle.js`
     },
@@ -93,42 +90,91 @@ const assets = {
     }
 }
 
-type HtmlProps = {
-    state?: State,
-    locale?: string,
-    styles?: string,
-}
+const noScript = `
+    <noscript id='${NOSCRIPT_SELECTOR}'>
+        <style>
+            .${LOADER_SELECTOR} { display: none; }
+
+            #${NOSCRIPT_SELECTOR} > a {
+                display: block;
+                position: absolute;
+                color: 'white';
+                text-decoration: 'none';
+                top: 0;
+                bottom: 0;
+                right: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, .75);
+                overflow: hidden;
+                z-index: 9999;
+                display: block
+            }
+
+            #${NOSCRIPT_SELECTOR} > a > div {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                overflow: hidden;
+            }
+
+           #${NOSCRIPT_SELECTOR} > a > div > h1 { text-align: center; }
+        </style>
+        <a href=''>
+            <div>
+                <h1>Enable JavaScript<br>(click to reload)</h1>
+            </div>
+        </a>
+    </noscript>
+`
+
+const serializeState = R.pipe(
+    transit.toJSON,
+    JSON.stringify
+)
+
+const pickAssetFromAssets = (assets: Assets) => R.pipe(
+    R.unapply(R.identity),
+    R.pathOr('', (R as any).__, assets) as any
+
+) as (...strs: string[]) => string
+
 
 const Html: React.StatelessComponent<HtmlProps> = ({
     locale,
     state,
     styles,
+    assets = defaultAssets,
     children
 }) => {
-    const head = Helmet.rewind()
-    const attrs = head.htmlAttributes.toComponent()
-    const serializedState = JSON.stringify(transit.toJSON(state))
+    const helmet = Helmet.rewind();
+    const htmlAttrs = helmet.htmlAttributes.toComponent()
+    const bodyAttrs = helmet.bodyAttributes.toComponent()
     const script = `
-        window.${INITIAL_STATE_KEY} = ${serializedState};
-        document.getElementById("__PRELOAD_CSS__").rel = "stylesheet";
+        window.${INITIAL_STATE_KEY} = ${serializeState(state)};
+        document.getElementById('__PRELOAD_CSS__').rel = 'stylesheet';
     `
-
+    const pickAsset = pickAssetFromAssets(assets)
     return (
-        <html {...attrs}>
+        <html {...htmlAttrs}>
             <head>
                 <Helmet
-                    defaultTitle="YouMusic"
-                    titleTemplate="%s - YouMusic"
+                    defaultTitle='YouMusic'
+                    titleTemplate='%s - YouMusic'
                 />
-                <meta charSet="utf-8" />
+                <title>{helmet.title.toComponent()}</title>
+                {helmet.meta.toComponent()}
+                {helmet.link.toComponent()}
+
+                <meta charSet='utf-8' />
                 <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1"
+                    name='viewport'
+                    content='width=device-width, initial-scale=1'
                 />
                 <link
-                    id="__PRELOAD_CSS__"
-                    rel="preload"
-                    href={assets.vendor.css}
+                    id='__PRELOAD_CSS__'
+                    rel='preload'
+                    href={pickAsset('vendor', 'css')}
                 />
                 <style
                     dangerouslySetInnerHTML={{__html: baseStyles}}
@@ -137,37 +183,18 @@ const Html: React.StatelessComponent<HtmlProps> = ({
                     id={CRITICAL_CSS_SELECTOR}
                     dangerouslySetInnerHTML={{__html: styles}}
                 />
-
-                {head.title.toComponent()}
-                {head.meta.toComponent()}
-                {head.link.toComponent()}
             </head>
-            <body>
+            <body {...bodyAttrs}>
                 <div id={LOADER_SELECTOR}>
                     <span />
                 </div>
-
-                <noscript id="__NOSCRIPT__">
-                    <a href="">
-                        <div>
-                            <h1>
-                                Enable JavaScript
-                                <br />
-                                (click to reload)
-                            </h1>
-                        </div>
-                    </a>
-                    <style dangerouslySetInnerHTML={{__html: `
-                        .__LOADER__ { display:none; }
-                    `}} />
-                </noscript>
-
+                {noScript}
                 <div id={TARGET_SELECTOR}>
                     {children}
                 </div>
                 <script dangerouslySetInnerHTML={{ __html: script }} />
-                <script defer src={assets.vendor.js} />
-                <script defer src={assets.app.js} />
+                <script defer src={pickAsset('vendor', 'js')} />
+                <script defer src={pickAsset('app', 'js')} />
             </body>
         </html>
     )

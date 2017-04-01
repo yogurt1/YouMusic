@@ -7,15 +7,18 @@ import VideoRecord from "../records/VideoRecord"
 export const SET_VIDEOID = "@video/SET_VIDEOID"
 
 export const actions = {
-    setVideoId: createAction<string>(SET_VIDEOID)
+    setVideoId: createAction<string>(SET_VIDEOID),
 }
 
 const fake = {
     videoId: () => "qMwcsIY1GYE"
 }
 
-export type State = Map<string, string>
-export const initialState: State = Map({
+export type State = {
+    videoId: string
+}
+
+const initialState: State = Map({
     videoId: fake.videoId()
 })
 

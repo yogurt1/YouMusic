@@ -1,12 +1,19 @@
-import * as R from "ramda"
-import ApolloClient from "apollo-client"
-import platform from "../lib/platform"
-import { APOLLO_STATE_KEY } from "../lib/constants"
+import * as R from 'ramda'
+import { lensProp as lensPropImmutable } from 'ramda-immutable'
+import ApolloClient, { NetworkInterface } from 'apollo-client'
+import platform from 'app/lib/platform'
+import { APOLLO_STATE_KEY } from 'app/lib/constants'
 
-export default function configureApolloClient(networkInterface) {
+const stateSelector = (R.view as any)(
+    lensPropImmutable(APOLLO_STATE_KEY)
+)
+
+export default (networkInterface: NetworkInterface): ApolloClient => {
     const opts = {
         networkInterface,
-        reduxRootSelector: state => state.get(APOLLO_STATE_KEY),
+        connectToDevTools: platform.isDev,
+        reduxRootKey: APOLLO_STATE_KEY,
+        reduxRootSelector: stateSelector,
         ssrMode: !(
             platform.isElectron ||
             platform.isBrowser

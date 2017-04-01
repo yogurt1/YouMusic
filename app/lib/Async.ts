@@ -1,8 +1,9 @@
-import * as React from "react"
+import * as React from 'react'
+import * as R from 'ramda'
 
-export const im = (importee: Promise<any>): Promise<any> =>
+export const getDefault = (importee: Promise<any>): Promise<any> =>
     importee
-        .then(namespace => namespace.default)
+        .then(R.prop('default'))
 
 type Props = {
     [key: string]: any,

@@ -2,16 +2,17 @@ import { Reducer } from "redux"
 import { Map, fromJS } from "immutable"
 import { SET_TOKEN, RESET_TOKEN } from "../actions/auth"
 
-export type AuthState = Map<string, string>
-export const initialState : AuthState = Map<string, string>({
+export type State = Map<string, string>
+
+const initialState: State = Map({
     token: null
 })
 
-const reducer = (state = initialState, action) => {
+const reducer: Reducer<State> = (state = initialState, action) => {
     switch (action.type) {
-    case SET_TOKEN: return state
+        case SET_TOKEN: return state
             .set("token", action.payload)
-    default: return state
+        default: return state
     }
 }
 

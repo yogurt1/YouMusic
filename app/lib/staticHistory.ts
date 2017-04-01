@@ -1,5 +1,6 @@
 import { History, Location } from "history"
 import { addLeadingSlash, createPath, parsePath } from "history/PathUtils"
+
 const noop = () => {}
 
 const normalizeLocation = ({
@@ -57,6 +58,12 @@ export type Context = {
     action?: string,
     location?: Location
     url?: string,
+}
+
+export type RoutingContext = {
+    action?: string,
+    location?: string | Location,
+    url?: string
 }
 
 export default ({ basename, location, context }: {

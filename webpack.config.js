@@ -180,4 +180,19 @@ if (isProduction) {
 }
 
 // TODO: Function
-module.exports = config
+module.exports = ({
+} = {}) => {
+    const config = {}
+
+    if (hot) {
+        enableHot(config)
+    }
+
+    if (dev) {
+        enableDev(config)
+    }
+
+    targetSpecific(config, target)
+
+    return config
+}

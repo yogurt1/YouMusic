@@ -1,11 +1,14 @@
-// TODO: YouTubeService :-)
-import * as querystring from "querystring"
+import * as querystring from 'querystring'
 import ApiClient, {
     ApiClientInterface,
     Response
-} from "../ApiClient"
-const config = require("../../config")
-export { default as YouTubeSearchService } from "./search"
+} from '../ApiClient'
+import {
+    YOUTUBE_API_KEY,
+    YOUTUBE_API_URL
+} from 'app/lib/constants'
+
+export { default as YouTubeSearchService } from './search'
 
 export { Response }
 
@@ -27,13 +30,13 @@ export default class YouTubeService extends ApiClient implements YouTubeServiceI
     private headers: { [key: string]: string }
 
     constructor(apiKey?: string) {
-        super(config.youtube.API_URL)
+        super(YOUTUBE_API_URL)
 
         this.headers = this.axios.defaults.headers
         this.params = this.axios.defaults.params
 
         this.setParam({
-            key: apiKey || config.youtube.API_KEY
+            key: apiKey || YOUTUBE_API_KEY
         })
     }
 
@@ -46,7 +49,7 @@ export default class YouTubeService extends ApiClient implements YouTubeServiceI
     }
 
     public setParam(key, val?) {
-        if (typeof (key) === "object") {
+        if (typeof (key) === 'object') {
             this.forOwnEntries(key, (k, v) => this.params[k] = v)
         } else {
             this.params[key] = val
@@ -56,7 +59,7 @@ export default class YouTubeService extends ApiClient implements YouTubeServiceI
     }
 
     public setHeader(key, val?) {
-        if (typeof (key) === "object") {
+        if (typeof (key) === 'object') {
             this.forOwnEntries(key, (k, v) => this.headers[k] = v)
         } else {
             this.params[key] = val
