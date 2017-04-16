@@ -1,6 +1,7 @@
 export const TARGET_SELECTOR = 'app'
 export const LOADER_SELECTOR = '__LOADER__'
 export const CRITICAL_CSS_SELECTOR = '__CRITICAL_CSS__'
+export const NOSCRIPT_SELECTOR = '__NOSCRIPT__'
 
 export const ROUTING_STATE_KEY = 'routing'
 export const APOLLO_STATE_KEY = 'apollo'

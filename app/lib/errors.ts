@@ -1,22 +1,13 @@
-export const types = {
+export class RequestError extends Error {
+  static fromResponse(response: Response): RequestError {
+    return new this(response.status, response.statusText)
+  }
 
-}
-
-export const ConditionalError = function(err) {
-    const { type = err.message } = err
-
-    switch (type) {
-    default: throw err
-    }
-}
-
-export class RequestError
- extends Error {
-    constructor(
-        public status: number,
-        statusText: string
-    ) {
-        super(statusText)
-        Error.captureStackTrace(this)
-    }
+  constructor(
+    public status: number,
+    statusText: string
+  ) {
+    super(statusText)
+    Error.captureStackTrace(this)
+  }
 }

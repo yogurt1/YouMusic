@@ -1,5 +1,5 @@
-import * as process from "global/process"
 import * as global from "global"
+import * as process from "global/process"
 
 export default {
     get isNode() {
@@ -8,18 +8,19 @@ export default {
     },
 
     get isBrowser() {
-        return global.window === global
+        return global['window'] === global
     },
 
     get isElectron() {
-        return (
-            "versions" in process &&
-            "electron" in process.versions
-        )
+      const { versions } = process
+      return (
+        typeof versions === 'object' &&
+        'electron' in versions
+      )
     },
 
     get isReactNative() {
-        return typeof global.__fbBatchedBridgeConfig !== "undefined"
+        return typeof global['__fbBatchedBridgeConfig'] !== "undefined"
     },
 
     get isProd() {

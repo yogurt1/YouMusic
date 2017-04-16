@@ -1,7 +1,6 @@
 import { Map, fromJS } from 'immutable'
 import { Reducer } from 'redux'
 import { createAction } from 'redux-actions'
-import { createSelector } from 'reselect'
 import * as R from 'ramda'
 import { lensProp as lensPropImmutable } from 'ramda-immutable'
 

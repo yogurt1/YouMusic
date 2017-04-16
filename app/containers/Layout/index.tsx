@@ -1,12 +1,15 @@
 import * as React from "react"
-import { Location } from "history"
-import styled, { css, keyframes } from "app/lib/styled"
+import { Location } from 'history'
+import styled, { css, keyframes } from 'styled-components'
 import { Link } from "react-router-dom"
-import { autobind } from "core-decorators"
 import FontAwesome from "app/components/ui/FontAwesome"
 import ClickOutside from "app/components/ui/ClickOutside"
 import Sidebar from "./sidebar"
 import TopBarSearchForm from "./search"
+import menuItems from './menuItems'
+
+const Button = styled.button``
+const MenuButton = styled(Button)``
 
 const TopBar = styled.div`
     position: fixed;
@@ -23,33 +26,8 @@ const TopBar = styled.div`
     padding: 7px;
 `
 
-const Button = styled.button`
-    color: #212121;
-    background: none;
-    border: none;
-    outline: none;
-    text-rendering: auto;
-    text-align: center;
-    // font-size: 36px;
-    cursor: pointer;
-    transition: all .3s ease-in-out;
-    transform-origin: center;
-
-    &:hover,
-    &:focus {
-        border: none;
-        outline: none;
-        color: inherit;
-    }
-`
-
-const MenuButton = styled(Button)`
-    margin-left: 4px;
-    margin-right: 5px;
-`
-
-const SearchButton = styled(Button)`
-    ${p => !(p as any).show && css`
+const SearchButton = styled(MenuButton)`
+    ${(p: any) => !p.show && css`
         display: none;
     `}
     float: right;
@@ -97,44 +75,31 @@ const Content = styled.div`
     `}
 `
 
-const menuItems = [
-    {
-        name: "Home",
-        icon: "home",
-        path: "/"
-    },
-    {
-        name: "Search",
-        icon: "search",
-        path: "/search"
-    }
-]
-
 type State = {
     open?: boolean,
     search?: boolean
 }
 
-export default class Layout extends React.Component<void, State> {
-    private menuButtonRef: HTMLElement
-    private setMenuButtonRef = (ref: HTMLElement) => {
-        this.menuButtonRef = ref
-    }
-
-    state = {
+export default class Layout extends React.Component<null, State> {
+   state = {
         open: false,
         search: false
     }
 
-    @autobind
-    private toggleSidebar() {
+
+  private menuButtonRef: HTMLElement
+    private setMenuButtonRef = (ref: HTMLElement) => {
+        this.menuButtonRef = ref
+    }
+
+
+    private toggleSidebar = () => {
         this.setState((prevState, props) => ({
             open: !prevState.open
         }))
     }
 
-    @autobind
-    private handleMenuButonClick(ev) {
+    private handleMenuButonClick = (ev) => {
         if (this.menuButtonRef.contains(ev.target) &&
            this.menuButtonRef !== ev.target) {
             ev.stopPropagation()
@@ -142,13 +107,11 @@ export default class Layout extends React.Component<void, State> {
         }
     }
 
-    @autobind
-    private handleSearch() {
+    private handleSearch = () => {
         this.setState({ search: true })
     }
 
-    @autobind
-    private handleClickOutside(ev) {
+    private handleClickOutside = (ev) => {
         if (!this.menuButtonRef.contains(ev.target as any)) {
             this.setState(prevState => (
                 prevState.open &&
