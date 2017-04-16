@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as Webpack from 'webpack'
-import ExtractText from 'extract-text-webpack-plugin'
+import * as ExtractText from 'extract-text-webpack-plugin'
 import { CheckerPlugin, TsConfigPathsPlugin } from 'awesome-typescript-loader'
 import * as OptimizeJsPlugin from 'optimize-js-plugin'
 import * as CompressionPlugin from 'compression-webpack-plugin'
@@ -31,7 +31,8 @@ const buildTsxRule: BuildRule = (opts) => {
         {
             loader: 'awesome-typescript-loader',
             options: {
-                config: buildConfig(opts)
+                configFileName: './tsconfig.webpack.json'
+                // config: buildConfig(opts)
             }
         }
     ]
@@ -73,7 +74,7 @@ const buildCssRule: BuildRule = (opts) => {
 const buildAssetsRule: BuildRule = (opts) => {
     return {
         test: /\.(jpe?g|webp|bmp|ico|png|svg|woff2?|ttf|eot)/,
-        use: "url-loader",
+        loader: 'url-loader',
         options: {
             limit: 10240
         }
@@ -139,7 +140,11 @@ const buildPlugins= (opts: Opts): Webpack.Plugin[] => {
 }
 
 module.exports = (opts: Opts = defaultOpts): Webpack.Configuration => {
-    const { mode, target } = opts
+    const {
+        mode = defaultOpts.mode,
+        target = defaultOpts.target
+    } = opts
+
     const rules = [
         buildTsxRule(opts),
         buildCssRule(opts),

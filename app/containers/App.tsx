@@ -31,9 +31,12 @@ export default class App extends React.Component<any, State> {
         const { location } = this.props
         return (
             <Layout>
+                {/*
                 <Route exact path="/" component={HomePage} />
                 <Route path="/video/:videoId" component={VideoPage} />
                 <Route component={NoMatchPage} />
+                */}
+                <h1>Hello, world</h1>
             </Layout>
         )
     }

@@ -54,12 +54,6 @@ const createURL = (location: string | Location) =>
 const createHref = (basename: string) => (path: string) =>
     addLeadingSlash(basename + createURL(path))
 
-export type Context = {
-    action?: string,
-    location?: Location
-    url?: string,
-}
-
 export type RoutingContext = {
     action?: string,
     location?: string | Location,
@@ -68,7 +62,7 @@ export type RoutingContext = {
 
 export default ({ basename, location, context }: {
     basename?: string,
-    context: Context
+    context: RoutingContext
     location: Location,
 }): History => {
     const handleAction = (action: string) => (location: string | Location) => {

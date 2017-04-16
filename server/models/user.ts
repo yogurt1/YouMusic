@@ -3,7 +3,7 @@ import { Model, DataTypes } from "sequelize"
 import { Attribute } from "sequelize-decorators"
 import { Table } from "../sequelize"
 
-@Table("users")
+@Table('users')
 export default class User extends Model {
     @Attribute()
     public username: string

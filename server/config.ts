@@ -1,4 +1,3 @@
-/// <reference path="config.d.ts" />
 const isDev = process.env.NODE_ENV !== "production"
 
 const {

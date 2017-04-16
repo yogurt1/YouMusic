@@ -6,7 +6,7 @@ export type Opts = {
     mode: Mode
 }
 
-export const defaultOpts = {
+export const defaultOpts: Opts = {
     target: 'browser',
     mode: 'dev'
 }

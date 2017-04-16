@@ -1,6 +1,7 @@
 import * as passport from "koa-passport"
 import User from "./models/user"
-import * as config from "../config"
+import config from "./config"
+
 const { Strategy: GoogleStrategy } = require("passport-google-oauth20")
 
 // passport.use(new GoogleStrategy(config.passport.google,

@@ -9,6 +9,9 @@ const chalk = require("chalk")
 const loader = new Loader(__dirname)
 
 (async () => {
+    // await models assoc
+    const loadModels = await import('./server/models')
+    loadModels(loader)
     const { default: config } = await loader.import('./server/config')
     const { default: app } = await loader.import('./server')
     const { port, host } = config.app
