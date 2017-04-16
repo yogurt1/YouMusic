@@ -1,7 +1,7 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const Slider = styled.div`
-    width: ${p => p.width};
+    width: ${(p: any) => p.width};
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
@@ -9,5 +9,7 @@ const Slider = styled.div`
     scroll-snap-points-y: repeat(100%);
     font-size: 0;
 `
+
+Slider.displayName = 'Slider'
 
 export default Slider

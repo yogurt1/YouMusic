@@ -1,5 +1,6 @@
-import * as React from "react"
-import styled, { css, injectGlobal } from "styled-components"
+import * as React from 'react'
+import * as R from 'ramda'
+import styled from 'styled-components'
 
 const sizes = {
     1: 4.66666666667,
@@ -25,14 +26,14 @@ const breakpoints = {
 }
 
 const clearfix = `
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 `
 export const Container = styled.div`
-    max-width: ${p => p.wide ? "99%" : "960px"};
+    max-width: ${(p: any) => p.wide ? '99%' : '960px'};
     position: relative;
     width: 100%;
     margin: 0 auto;
@@ -50,22 +51,26 @@ export const Container = styled.div`
 
     ${clearfix}
 `
-export const fullWidth = "width:100%;max-width:100%;"
+export const fullWidth = `
+  width: 100%;
+  max-width: 100%;
+`
+
 export const Section = styled(Container)`
     ${fullWidth}
     @media (min-width: 400px) { ${fullWidth} }
     @media (min-width: 550px) { ${fullWidth} }
-    height: ${p => p.height || "100%"};
+    height: ${(p: any) => p.height || '100%'};
 `
 
 export const Column = styled.div`
     width: 100%;
-    float: ${p => p.right ? "right" : "left"};
+    float: ${(p: any) => p.right ? 'right' : 'left'};
     box-sizing: border-box;
 
     @media (min-width: 550px) {
-        margin-left: ${p => p.size === 12 ? 0 : "4%"};
-        width: ${p => sizes[p.size]}%;
+        margin-left: ${(p: any) => p.size === 12 ? 0 : '4%'};
+        width: ${(p: any) => sizes[p.size]}%;
 
         &:first-child {
             margin-left: 0;
@@ -74,24 +79,36 @@ export const Column = styled.div`
 `
 
 export const Clearfix = styled.div`${clearfix}`
-export const Row = ({ children }) => React.createElement(Clearfix, {
-    children: children.find(child =>
-            (child.type === Column && child.props.size))
-        ? children
-        : children.map((child, key) => React.createElement(Column, {
-            key,
-            children: child,
-            size: 12 / children.length
-        }))
-})
+export const Row = ({ children }) => {
+  const { length } = children
+  const finalChildren = children
+    .some((child) => child.type === Column && child.props.size)
+    ? children
+    : children
+      .map((child, key) => (
+        <Column key={key} size={12 / length}>
+          {child}
+        </Column>
+      ))
+
+  return (
+    <Clearfix>
+      {finalChildren}
+    </Clearfix>
+  )
+}
 
 export const Col = Column
 export const Flex = styled.div`
     display: flex;
-    flex-direction: ${p => p.vertical ? "column" : "row"};
+    flex-direction: ${(p: any) => p.vertical ? 'column' : 'row'};
 `
 
-export const getColumnBySize = size => props => <Column size={size} {...props} />
+export const getColumnBySize = R.curry(
+  (size, props) => (
+    <Column size={size} {...props} />
+  )
+)
 
 // Column.name = "Column"
 // Clearfix.name = "Clearfix"

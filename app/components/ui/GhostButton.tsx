@@ -1,4 +1,5 @@
-import styled, { css } from "styled-components"
+import * as React from 'react'
+import styled, { css } from 'styled-components'
 
 export const ghostButton = css`
     display: inline-block;
@@ -22,7 +23,9 @@ export const ghostButton = css`
 
 const GhostButton = styled.span`${ghostButton}`
 
+export const wrapGhostButton = (
+  component: React.Component<any, any>
+) => styled(component)`${ghostButton}`
+
 export default GhostButton
 
-export const wrapGhostButton = component =>
-    styled(component)`${ghostButton}`

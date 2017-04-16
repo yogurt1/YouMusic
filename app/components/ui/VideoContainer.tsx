@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const VideoContainer = styled.div`
     position: relative;
@@ -17,5 +17,6 @@ const VideoContainer = styled.div`
     }
 `
 
-VideoContainer.displayName = "VideoContainer"
+VideoContainer.displayName = 'VideoContainer'
+
 export default VideoContainer
