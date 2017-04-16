@@ -71,6 +71,7 @@
     "@types/redux-immutable": "^3.0.31",
     "@types/reselect": "^2.0.27",
     "@types/sequelize": "^4.0.0",
+    "@types/webpack": "^2.2.14",
     "awesome-typescript-loader": "^3.1.2",
     "axios-mock-adapter": "^1.7.1",
     "babel-core": "^6.24.0",

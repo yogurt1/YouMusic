@@ -13,7 +13,7 @@
 + Critical CSS
 + TypeScript
 + CSS-in-JS via `styled-components`
-+ Bootstrap 4 and Reactstrap, TinyMCE, YouTube
++ Material-UI, TinyMCE, YouTube
 
 ###### TODO
 + Cache bursting

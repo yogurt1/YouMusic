@@ -4,20 +4,25 @@ import { ConnectedRouter as Router } from "react-router-redux"
 import { ApolloProvider } from "react-apollo"
 import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components"
+import App from './containers/App/native'
+import createMemoryHistory from 'history/createMemoryHistory'
+import { configureClient, configureStore } from './store'
 
+const store = configureStore()
+const client = configureClient()
 const history = createMemoryHistory({})
 
 type State = {
     isLoaded: boolean
 }
 
-class A extends React.Component<null, State> {
+class YouMusic extends React.Component<null, State> {
     state = {
         isLoaded: false
     }
 
     async componentWillMount() {
-        const authData = await AsyncStorage.getItem("auth_data")
+        const authData = await SessionApi.getAuthData()
 
     }
 
@@ -41,3 +46,5 @@ class A extends React.Component<null, State> {
         )
     }
 }
+
+AppRegistry.registerComponent('YouMusic', () => YouMusic)

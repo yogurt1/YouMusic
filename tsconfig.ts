@@ -1,9 +1,17 @@
-module.exports = ({
-    isWebpack = false,
-    isDevServer = false,
-    isNode = true,
-    isJest = false
-} = {}) => {
+import { Opts } from './global'
+
+type Module = 'es6' | 'commonjs'
+
+const defaultOpts: Opts = {
+    target: 'browser',
+    mode: 'dev'
+}
+
+const getModule = ({ target }: Opts): Module => target === 'browser'
+    ? 'es6'
+    : 'commonjs'
+
+const buildConfig = (opts: Opts = defaultOpts) => {
     const compilerOptions = {
         outDir: './build',
         moduleResolution: 'node',
@@ -22,13 +30,8 @@ module.exports = ({
             'reflect-metadata'
         ],
         target: 'es7',
-        // jsx: isWebpack ? 'preserve' : 'react',
         jsx: 'react',
-        module: isWebpack
-            ? 'es6'
-            : isProd
-                ? 'systemjs'
-                : 'commonjs'
+        module: getModule(opts)
     }
 
     const config = {
@@ -69,7 +72,7 @@ module.exports = ({
     return config
 }
 
-{
+const t: any = {
     lazy: true,
     fast: true,
     'disableWarnings': true,

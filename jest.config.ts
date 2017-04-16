@@ -1,8 +1,22 @@
-module.exports = ({
-    node = false,
-    coverage = false
-}) => {
-    const config = {
+type Opts = {
+    node?: boolean,
+    coverage?: boolean
+}
+
+const defaultOpts: Opts = {
+    node: true,
+    coverage: false
+}
+
+type JestConfig = any
+
+module.exports = (opts: Opts = defaultOpts): JestConfig => {
+    const {
+        node = defaultOpts.node,
+        coverage = defaultOpts.coverage
+    } = opts
+
+    const config: JestConfig = {
         testResultsProcessor: '<rootDir>/node_modules/ts-jest/coverageprocessor.js',
         unmockedModulePathPatterns: [
             'node_modules/react/',

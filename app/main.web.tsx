@@ -2,109 +2,107 @@
 import "./vendor"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import * as R from "ramda"
 import * as transit from "transit-immutable-js"
-import {
-    INDEXEDDB as IndexedDBStorageDriver
-} from "localforage"
 import { Router } from "react-router"
-// import { AppContainer } from "react-hot-loader"
+import { AppContainer } from "react-hot-loader"
 import { ApolloProvider } from "react-apollo"
 import { IntlProvider } from "react-intl"
 import { ThemeProvider } from "styled-components"
 import App from "./containers/App"
-import ServiceProvider from "./services/ServiceProvider"
-import AuthService from "./services/AuthService"
-import StorageService from "./services/StorageService"
-import createHistory from "history/createBrowserHistory"
 import { createNetworkInterface } from "apollo-client"
 import { persistStore } from "redux-persist-immutable"
-import configureStore from "./store"
-import configureApolloClient from "./store/apollo"
-import configureStorage from "./lib/configureStorage"
-import {
-    TARGET_SELECTOR,
-    CRITICAL_CSS_SELECTOR,
-    LOADER_SELECTOR,
-    INITIAL_STATE_KEY,
-    STORAGE_STATE_KEY,
-    APOLLO_CLIENT_KEY,
-    APOLLO_STATE_KEY,
-    DEFAULT_LOCALE
-} from "./lib/constants"
-import platform from "./lib/platform"
-import theme from "./theme"
+import createHistory from 'history/createBrowserHistory'
+import configureStore, { State } from './store'
+import configureApolloClient from './store/apollo'
+import configureStorage from './lib/configureStorage'
+import * as constants from './lib/constants'
+import platform from './lib/platform'
+import theme from './theme'
 
-const AppContainer = ({ children }) => children
 const locale = (
     navigator.language ||
-    DEFAULT_LOCALE
+    constants.DEFAULT_LOCALE
 )
-const preloadedState = JSON.parse(window[INITIAL_STATE_KEY] || "null")
-const initialState = preloadedState
-    ? transit.fromJSON(preloadedState)
-    : undefined
-const storage = configureStorage(IndexedDBStorageDriver)
+
+const initialState: State | void = (() => {
+    try {
+        const { [constants.INITIAL_STATE_KEY]: json } = window
+
+        if (typeof json !== 'object') {
+            return undefined
+        }
+
+        return transit.fromJSON(JSON.parse(json))
+    } catch (err) {
+        return undefined
+    }
+})()
+
+const storage = configureStorage({
+    target: 'browser'
+})
 const history = createHistory()
 const client = configureApolloClient(
     createNetworkInterface({
-        uri: "/graphql"
+        uri: constants.GRAPHQL_ENDPOINT
     })
 )
 const store = configureStore({
     client,
     history,
+    locale,
     initialState,
 })
-const persistor = persistStore(store, {
-    storage,
-    key: STORAGE_STATE_KEY,
-    blacklist: [APOLLO_STATE_KEY],
-    records: [],
-})
-const services = {
-    authService: new AuthService(),
-    storageService: new StorageService()
-}
 
-if (platform.isDev) {
-    // inject client to window for devtools
-    window[APOLLO_CLIENT_KEY] = client
-}
-
-const renderApp = (A) => ReactDOM.render(
-    <AppContainer>
-        <ApolloProvider client={client} store={store}>
-            <IntlProvider locale={locale}>
-                <ThemeProvider theme={theme}>
-                    <ServiceProvider services={services}>
+const renderApp = (AppComponent) => {
+    const node = document.getElementById(constants.TARGET_SELECTOR)
+    const tree = (
+        <AppContainer>
+            <ApolloProvider client={client} store={store}>
+                <IntlProvider locale={locale}>
+                    <ThemeProvider theme={theme}>
                         <Router history={history}>
-                            <A />
+                            <AppComponent />
                         </Router>
-                    </ServiceProvider>
-                </ThemeProvider>
-            </IntlProvider>
-        </ApolloProvider>
-    </AppContainer>,
-    document.getElementById(TARGET_SELECTOR)
-)
+                    </ThemeProvider>
+                </IntlProvider>
+            </ApolloProvider>
+        </AppContainer>
+    )
 
+    ReactDOM.render(tree, node)
+}
 
-window.onload = () => {
+window.onload = async () => {
+    const persistor = await new Promise(
+        (resolve, reject) => {
+            const opts = {
+                storage,
+                key: constants.STORAGE_STATE_KEY,
+                blacklist: [constants.APOLLO_STATE_KEY],
+                records: [],
+            }
+            const callback = () => {
+                resolve(persistor)
+            }
+
+            const persistor = persistStore(store, opts, callback)
+        }
+    )
     renderApp(App)
     document
-        .getElementById(LOADER_SELECTOR)
+        .getElementById(constants.LOADER_SELECTOR)
         .remove()
     const criticalCss = document
-        .getElementById(CRITICAL_CSS_SELECTOR)
-    criticalCss.addEventListener("load", () => {
+        .getElementById(constants.CRITICAL_CSS_SELECTOR)
+    criticalCss.addEventListener('load', () => {
         criticalCss.remove()
     })
 }
 
 const { hot } = module as any
 if (hot) {
-    hot.accept("./containers/App", () => {
+    hot.accept('./containers/App', () => {
         renderApp(App)
     })
 }

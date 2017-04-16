@@ -44,6 +44,7 @@ export default async ctx => {
     // TODO: Set globals in store
     store.dispatch(
         configActions.setConfigKeys({
+            locale,
             userAgent: ctx.request.headers['user-agent']
         })
     )
@@ -79,7 +80,9 @@ export default async ctx => {
     // await Promise.all(actions)
     await getDataFromTree(componentTree)
 
-    const componentTreeMarkup = renderToString(componentTree)
+    // emit mount
+    const markup = renderToString(componentTree)
+
     // TODO: Inject Apollo state
     // const state = injectApolloState(
     //     client.getInitialState(),
@@ -88,17 +91,24 @@ export default async ctx => {
     const state = store.getState()
     const styles = styleSheet.getCSS()
 
+    // TODO: Should HTML be simple template?
     const finalMarkup = renderToString(
         <Html
             locale={locale}
             styles={styles}
             state={state}
         >
-            {componentTreeMarkup}
+            {markup}
         </Html>
     )
 
     ctx.type = 'html'
     ctx.body = `<!doctype html>${finalMarkup}`
+    // ctx.body = renderHtml({
+    //     markup,
+    //     locale,
+    //     state: store.getState(),
+    //     styles: stylSheet.getCSS()
+    // })
 }
 
